@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    AERPAW CI/CD
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated and is_pc or is_po or user.is_site_admin %}
+        <div class="container">
+            <h2>Create CI/CD</h2>
+            <form id="create-cicd" method="POST" class="post-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+            </form>
+            <button class="btn btn-success mr-2" type="submit" form="create-cicd" value="save">Save</button>
+            <button class="btn btn-secondary mr-2" value="cancel">
+                <a href="{% url 'cicd' %}" class="unlink">Back</a>
+            </button>
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or are not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

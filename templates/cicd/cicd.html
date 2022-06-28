@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    AERPAW CI/CD
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated and user.is_resource_manager or user.is_site_admin %}
+        <div class="container">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <h2>CI/CD Deployments</h2>
+                {#                <button class="btn btn-success mr-2">#}
+                {#                    <a href="{% url 'cicd_create' %}" class="unlink">Create New CI/CD</a>#}
+                {#                </button>#}
+                <button class="btn btn-info mr-2">
+                    <a href="{% url 'cicd_host_info' %}" class="unlink">Host Configuration</a>
+                </button>
+            </div>
+            <table class="table table-striped table-bordered mt-4">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Project</th>
+                    <th>Created By</th>
+                    <th>Created Date</th>
+                </tr>
+                {% for cicd in cicds %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'cicd_detail' cicd_uuid=cicd.uuid %}">
+                                {{ cicd.name }}
+                            </a>
+                        </td>
+                        <td>{{ cicd.description }}</td>
+                        <td>{{ cicd.aerpaw_uuid }}</td>
+                        <td>{{ cicd.created_by }}</td>
+                        <td>{{ cicd.created_date }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

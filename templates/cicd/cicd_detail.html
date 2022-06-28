@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    AERPAW CI/CD
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated and user.is_site_admin or is_pc or is_po or is_pm %}
+        <div class="container">
+            <h2>{{ cicd.name }}</h2>
+            <table class="table table-striped table-bordered my-4">
+                <tr>
+                    <td>Description</td>
+                    <td>{{ cicd.description }}</td>
+                </tr>
+                <tr>
+                    <td>Project</td>
+                    {% if project.uuid %}
+                        <td>
+                            <a href="{% url 'project_detail' project.uuid %}" class="unlink"
+                               style="color: dodgerblue">
+                                {{ project.name }}
+                            </a>
+                            {% else %}
+                        <td>NO PROJECT ASSOCIATED</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>
+                        URL
+                    </td>
+                    <td>
+                        <a href="https://{{ cicd.cicd_host_info.fqdn_or_ip }}:{{ cicd.cicd_host_info.nginx_https_port }}"
+                           target="_blank" class="unlink" style="color: dodgerblue">
+                            https://{{ cicd.cicd_host_info.fqdn_or_ip }}:{{ cicd.cicd_host_info.nginx_https_port }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Credentials</td>
+                    {% if user.is_site_admin or is_pc or is_po %}
+                        <td>
+                            user = <b>{{ cicd.jenkins_admin_id }}</b><br/>
+                            pass = <b>{{ cicd.jenkins_admin_password }}</b>
+                        </td>
+                    {% else %}
+                        <td>
+                            user = <b>ASK PROJECT OWNER FOR DETAILS</b><br/>
+                            pass = <b>ASK PROJECT OWNER FOR DETAILS</b>
+                        </td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>UUID</td>
+                    <td>{{ cicd.uuid }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        CI/CD Status
+                    </td>
+                    <td>
+                        Status: {{ status.message|safe }}<br>Timestamp: {{ status.timestamp }}
+                    </td>
+                    <td>
+                        <button class="btn btn-success mr-2">
+                            <a href="{% url 'cicd_detail' cicd_uuid=cicd.uuid %}" class="unlink">
+                                Refresh Status
+                            </a>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Created By</td>
+                    <td>{{ cicd.created_by }}</td>
+                </tr>
+                <tr>
+                    <td>Created Date</td>
+                    <td>{{ cicd.created_date }}</td>
+                </tr>
+                <tr>
+                    <td>Modified By</td>
+                    <td>{{ cicd.modified_by }}</td>
+                </tr>
+                <tr>
+                    <td>Modified Date</td>
+                    <td>{{ cicd.modified_date }}</td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <form action="#" method="get">
+                {% if user.is_site_admin or is_pc or is_po %}
+                    <input type="submit" class="btn btn-success mr-2" value="Deploy" name="deploy_cicd">
+                    <input type="submit" class="btn btn-success mr-2" value="Restart" name="restart_cicd">
+                    <input type="submit" class="btn btn-warning mr-2" value="Stop" name="stop_cicd">
+                    <input type="submit" class="btn btn-danger mr-2" value="Delete/Purge" name="purge_cicd"
+                           onclick="return confirm('Are you sure you want to DELETE: {{ cicd.name }}?')">
+                {% else %}
+                    <input type="submit" class="btn btn-success mr-2" value="Deploy" name="deploy_cicd" disabled>
+                    <input type="submit" class="btn btn-success mr-2" value="Restart" name="restart_cicd" disabled>
+                    <input type="submit" class="btn btn-warning mr-2" value="Stop" name="stop_cicd" disabled>
+                    <input type="submit" class="btn btn-danger mr-2" value="Delete/Purge" name="purge_cicd"
+                           onclick="return confirm('Are you sure you want to DELETE: {{ cicd.name }}?')" disabled>
+                {% endif %}
+                <button class="btn btn-secondary mr-2">
+                    <a href="{% url 'project_detail' project_uuid=project.uuid %}" class="unlink">Back</a>
+                </button>
+            </form>
+            <br><br>
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

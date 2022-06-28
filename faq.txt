@@ -1,0 +1,32 @@
+```how to kill the server process
+# kill it more conviniently
+$ kill -INT `cat /tmp/project-master.pid`
+# or 
+$ uwsgi --stop /tmp/project-master.pid
+
+
+```how to create superuser
+#Create super user
+$python manage.py createsuperuser
+
+```how to reset model migrations
+$find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+$find . -path "*/migrations/*.pyc"  -delete
+
+#Drop the current database, or delete the db.sqlite3 if it is your case.
+
+$ python manage.py showmigrations
+$ python manage.py migrate --fake app zero
+$ python manage.py showmigrations
+
+```how to start
+$ django-admin startproject mysite
+$ python manage.py runserver
+$ python manage.py startapp polls
+
+```how to start aerpaw-portal
+UWSGI_UID=$(id -u) UWSGI_GID=$(id -g) ./run_uwsgi.sh
+```
+
+```Create super user
+$python manage.py createsuperuser

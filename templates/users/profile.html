@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load user_groups %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="w-75">
+            <h1>User Profile</h1>
+            <table class="table table-striped table-bordered my-4">
+                <tbody>
+                <tr>
+                    <td style="width: 25%">Username</td>
+                    <td style="width: 75%"><b>{{ user.username }}</b></td>
+                </tr>
+                <tr>
+                    <td style="width: 25%">Display Name</td>
+                    <td style="width: 75%;">
+                        <form action="#" method="post">
+                            {% csrf_token %}
+                            <input type="text" name="display_name" size="60" value="{{ user.display_name }}">
+                            <!-- TODO: add edit display_name -->
+                            <button class="message-btn btn btn-success" style="float: right;">Save</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><b>{{ user.email }}</b></td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td><b>{{ user.first_name }} {{ user.last_name }}</b></td>
+                </tr>
+                <tr>
+                    <td>Affiliation</td>
+                    <td><b>{{ user.oidc_claim_idp_name }}</b></td>
+                </tr>
+                <tr>
+                    <td>Roles</td>
+                    <td>
+                        {% if not user.is_aerpaw_user %}
+                            Request to become an <a href="{% url 'request_roles' %}">AERPAW User</a>
+                        {% endif %}
+                        {% for group in user.groups.all|sort_by:'name' %}
+                            <b>{{ group|role_name }}</b><br>
+                        {% endfor %}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Hide additional attributes for now - commented out for reference -->
+        {#        <b>default user attributes</b><br>#}
+        {#        username: {{ user.username }} <br>#}
+        {#        first_name: {{ user.first_name }} <br>#}
+        {#        last_name: {{ user.last_name }} <br>#}
+        {#        email: {{ user.email }} <br>#}
+        {#        password: {{ user.password }} <br>#}
+        {#        groups: {{ user.groups.all.0 }} <br>#}
+        {#        user_permissions: {{ user.user_permissions.all.0 }} <br>#}
+        {#        is_staff: {{ user.is_staff }} <br>#}
+        {#        is_active: {{ user.is_active }} <br>#}
+        {#        is_superuser: {{ user.is_superuser }} <br>#}
+        {#        last_login: {{ user.last_login }} <br>#}
+        {#        date_joined: {{ user.date_joined }} <br>#}
+        {#        publickey: {{ user.publickey }} <br>#}
+        {#        <br>#}
+        {##}
+        {#        <b>universally unique identifier for user within infrastructure</b><br>#}
+        {#        uuid: {{ user.uuid }} <br>#}
+        {#        <br>#}
+        {##}
+        {#        <b>oidc scope openid</b><br>#}
+        {#        oidc_claim_sub: {{ user.oidc_claim_sub }} <br>#}
+        {#        oidc_claim_iss: {{ user.oidc_claim_iss }} <br>#}
+        {#        oidc_claim_aud: {{ user.oidc_claim_aud }} <br>#}
+        {#        oidc_claim_token_id: {{ user.oidc_claim_token_id }} <br>#}
+        {#        <br>#}
+        {##}
+        {#        <b>oidc scope email</b><br>#}
+        {#        oidc_claim_email: {{ user.oidc_claim_email }} <br>#}
+        {#        <br>#}
+        {##}
+        {#        <b>oidc scope profile</b><br>#}
+        {#        oidc_claim_given_name: {{ user.oidc_claim_given_name }} <br>#}
+        {#        oidc_claim_family_name: {{ user.oidc_claim_family_name }} <br>#}
+        {#        oidc_claim_name: {{ user.oidc_claim_name }} <br>#}
+        {#        <br>#}
+        {##}
+        {#        <b>oidc scope org.cilogon.userinfo</b><br>#}
+        {#        oidc_claim_idp: {{ user.oidc_claim_idp }} <br>#}
+        {#        oidc_claim_idp_name: {{ user.oidc_claim_idp_name }} <br>#}
+        {#        oidc_claim_eppn: {{ user.oidc_claim_eppn }} <br>#}
+        {#        oidc_claim_eptid: {{ user.oidc_claim_eptid }} <br>#}
+        {#        oidc_claim_affiliation: {{ user.oidc_claim_affiliation }} <br>#}
+        {#        oidc_claim_ou: {{ user.oidc_claim_ou }} <br>#}
+        {#        oidc_claim_oidc: {{ user.oidc_claim_oidc }} <br>#}
+        {#        oidc_claim_cert_subject_dn: {{ user.oidc_claim_cert_subject_dn }} <br>#}
+        {#        <br>#}
+        {##}
+        {#        <b>oidc other values</b><br>#}
+        {#        oidc_claim_acr: {{ user.oidc_claim_acr }} <br>#}
+        {#        oidc_claim_entitlement: {{ user.oidc_claim_entitlement }} <br>#}
+        {#        <br>#}
+    {% else %}
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">
+            <button class="message-btn btn btn-success">Login</button>
+        </a>
+    {% endif %}
+{% endblock %}

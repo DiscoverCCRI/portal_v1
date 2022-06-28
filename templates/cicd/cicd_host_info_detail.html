@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    AERPAW CI/CD
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated and user.is_resource_manager or user.is_site_admin %}
+        <div class="container">
+            <h2>{{ cicd_hi.name }}</h2>
+            <table class="table table-striped table-bordered my-4">
+                <tr>
+                    <td>Description</td>
+                    <td>{{ cicd_hi.description }}</td>
+                </tr>
+                <tr>
+                    <td>IS_ALLOCATED</td>
+                    <td>{{ cicd_hi.is_allocated }}</td>
+                </tr>
+                <tr>
+                    <td>PROJECT_UUID</td>
+                    <td>{{ cicd_hi.project_uuid }}</td>
+                </tr>
+                <tr>
+                    <td>FQDN_OR_IP</td>
+                    <td>{{ cicd_hi.fqdn_or_ip }}</td>
+                </tr>
+                <tr>
+                    <td>DOCKER_SUBNET</td>
+                    <td>{{ cicd_hi.docker_subnet }}</td>
+                </tr>
+                <tr>
+                    <td>NGINX_HTTP_PORT</td>
+                    <td>{{ cicd_hi.nginx_http_port }}</td>
+                </tr>
+                <tr>
+                    <td>NGINX_HTTPS_PORT</td>
+                    <td>{{ cicd_hi.nginx_https_port }}</td>
+                </tr>
+                <tr>
+                    <td>JENKINS_SERVICE_AGENT_PORT</td>
+                    <td>{{ cicd_hi.jenkins_service_agent_port }}</td>
+                </tr>
+                <tr>
+                    <td>JENKINS_SSH_AGENT_PORT</td>
+                    <td>{{ cicd_hi.jenkins_ssh_agent_port }}</td>
+                </tr>
+                <tr>
+                    <td>GITEA_SSH_AGENT_PORT</td>
+                    <td>{{ cicd_hi.gitea_ssh_agent_port }}</td>
+                </tr>
+                <tr>
+                    <td>Created By</td>
+                    <td>{{ cicd_hi.created_by }}</td>
+                </tr>
+                <tr>
+                    <td>Created Date</td>
+                    <td>{{ cicd_hi.created_date }}</td>
+                </tr>
+                <tr>
+                    <td>Modified By</td>
+                    <td>{{ cicd_hi.modified_by }}</td>
+                </tr>
+                <tr>
+                    <td>Modified Date</td>
+                    <td>{{ cicd_hi.modified_date }}</td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <form action="#" method="get">
+                <button class="btn btn-primary mr-2">
+                    <a href="{% url 'cicd_host_info_update' cicd_host_info_uuid=cicd_hi.uuid %}" class="unlink">Update
+                        Config</a>
+                </button>
+
+                <input type="submit" class="btn btn-danger mr-2" value="Delete/Purge" name="purge_cicd"
+                       onclick="return confirm('Are you sure you want to DELETE: {{ cicd_hi.name }}?')"
+                       {% if cicd_hi.is_allocated %}disabled{% endif %}>
+                <button class="btn btn-secondary mr-2">
+                    <a href="{% url 'cicd_host_info' %}" class="unlink">Back</a>
+                </button>
+            </form>
+            <br><br>
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

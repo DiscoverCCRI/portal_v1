@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    AERPAW: Requst Roles
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+            <h2>AERPAW Role Requests</h2>
+            {% if has_role_options %}
+                <form id="request-role" method="POST" class="post-form">
+                    {% csrf_token %}
+                    <br>
+                    {{ form.requested_role.label }}: {{ form.requested_role }}
+                    <br><br>
+                    {{ form.purpose.label }}: {{ form.purpose }}
+                    <br><br>
+                </form>
+                <button class="btn btn-success mr-2" type="submit" form="request-role" value="save">Save</button>
+                <button class="btn btn-secondary mr-2" value="cancel">
+                    <a href="{% url 'profile' %}" class="unlink">Back</a>
+                </button>
+            {% else %}
+                No roles available for request at this time<br><br>
+                <button class="btn btn-secondary mr-2" value="cancel">
+                    <a href="{% url 'profile' %}" class="unlink">Back</a>
+                </button>
+            {% endif %}
+        </div>
+        <p>
+            <b>New testbed administrators</b>: Please send an email to
+            <a href="mailto:?subject=[AERPAW] Portal - Administrative Role Request">AERPAW Admin</a> and specify which
+            level(s) of
+            access you require (Administrator, Operator, Resource Manager, User Role Manager)
+        </p>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or are not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

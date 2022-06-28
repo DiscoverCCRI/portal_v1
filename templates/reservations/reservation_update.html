@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Update: {{ reservation_name }}
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+            <h2>Update Reservation</h2>
+            <form method="POST" class="form-group">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class="btn btn-success mr-2" type="submit" value="Save"/>
+                <button class="btn btn-secondary mr-2">
+                    <a href="{% url 'reservation_detail_own' reservation_uuid=reservation_uuid %}"
+                       class="unlink">Cancel</a>
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or are not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

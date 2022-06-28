@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Delete: {{ profile.name }}
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+            <div class="post">
+                <h2 class="text-danger">Are you sure you want to delete the following:
+                    <br>Experiment Resource Definition (ERD) and Experiment(s)?</h2>
+                <h3>ERD: {{ profile.name }}</h3>
+                <table class="table table-striped table-bordered my-4">
+                    <tr>
+                        <td>Description</td>
+                        <td>{{ profile.description }}</td>
+                    </tr>
+                    <tr>
+                        <td>Project</td>
+                        <td>{{ profile.project }}</td>
+                    </tr>
+                    <tr>
+                        <td>Created By</td>
+                        <td>{{ profile.created_by }}</td>
+                    </tr>
+                    <tr>
+                        <td>Created Date</td>
+                        <td>{{ profile.created_date }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h3>Experiment(s)</h3>
+                <table class="table table-striped table-bordered my-4">
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Profile</th>
+                    </tr>
+                    {% for exp in experiments %}
+                        <tr>
+                            <td>{{ exp.name }}</td>
+                            <td>{{ exp.description }}</td>
+                            <td>{{ exp.profile }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <form method="POST" class="post-form">
+                {% csrf_token %}
+                <input class="btn btn-danger mr-2" type="submit" value="Delete"/>
+                <a href="{% url 'profile_detail' profile_uuid=profile.uuid %}" class="btn btn-secondary">Back</a>
+            </form>
+
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

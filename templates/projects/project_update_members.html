@@ -1,0 +1,40 @@
+{% extends 'base_no_footer.html' %}
+{% load static bootstrap4 %}
+
+{% block content %}
+    {% with ua=user.is_authenticated admin=user.is_site_admin operator=user.is_operator %}
+        {% if ua and admin or ua and is_pc or ua and is_po %}
+            <div class="container">
+                {% block extrastyle %}
+                    {% bootstrap_javascript jquery='full' %}  {# Embed Bootstrap JS+jQuery #}
+                    {{ form.media }}
+                    <style>
+                        .selector h2 {
+                            margin: 0;
+                            padding: 8px;
+                            font-weight: 400;
+                            font-size: 15px;
+                            text-align: left;
+                            background: #343a40;
+                            color: white;
+                        }
+                    </style>
+                {% endblock extrastyle %}
+                <h2>{{ project_name }}: Project Members</h2>
+                <form method="POST" class="form-group">
+                    {% csrf_token %}
+                    <input class="btn btn-success mr-2" type="submit" value="Save"/>
+                    <button class="btn btn-secondary mr-2">
+                        <a href="{% url 'project_detail' project_uuid=project_uuid %}" class="unlink">Cancel</a>
+                    </button>
+                    <br><br><br>
+                    {{ form.project_members }}
+                </form>
+            </div>
+        {% else %}
+            <div class="container">
+                <p>You are not currently logged in or are not authorized to view this page</p>
+            </div>
+        {% endif %}
+    {% endwith %}
+{% endblock content %}

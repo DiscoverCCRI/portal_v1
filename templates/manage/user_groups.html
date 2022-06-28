@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    User Role Management
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated and user.is_aerpaw_user and user.is_user_manager or user.is_site_admin %}
+        <div class="container">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <h2>User Role Management</h2>
+            </div>
+            <form action="#" method="post">
+                <table class="table table-striped table-bordered mt-4">
+                    <tr>
+                        <th>Display Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>AERPAW User</th>
+                        <th>Principal Investigator (PI)</th>
+                        {% if user.is_site_admin %}
+                            <th>Resource Manager</th>
+                            <th>User Role Manager</th>
+                            <th>Operator</th>
+                        {% endif %}
+                        {% if user.is_superuser %}
+                            <th>Administrator</th>
+                        {% endif %}
+                    </tr>
+                    {% for u in all_users %}
+                        <tr>
+                            <td>{{ u.display_name }}</td>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.username }}</td>
+                            <td style="text-align: center">
+                                <input type="submit"
+                                       class={% if u.is_aerpaw_user %}
+                                           "btn btn-success mr-2"
+                                       {% else %}
+                                           "btn btn-danger mr-2"
+                                       {% endif %}
+                                name="aerpaw_user_{{ u.id }}" value={{ u.is_aerpaw_user }}>
+                            </td>
+                            <td style="text-align: center">
+                                <input type="submit"
+                                       class={% if u.is_project_manager %}
+                                           "btn btn-success mr-2"
+                                       {% else %}
+                                           "btn btn-danger mr-2"
+                                       {% endif %}
+                                name="project_manager_{{ u.id }}" value={{ u.is_project_manager }}>
+                            </td>
+                            {% if user.is_site_admin %}
+                                <td style="text-align: center">
+                                    <input type="submit"
+                                           class={% if u.is_resource_manager %}
+                                               "btn btn-success mr-2"
+                                           {% else %}
+                                               "btn btn-danger mr-2"
+                                           {% endif %}
+                                    name="resource_manager_{{ u.id }}" value={{ u.is_resource_manager }}>
+                                </td>
+                                <td style="text-align: center">
+                                    <input type="submit"
+                                           class={% if u.is_user_manager %}
+                                               "btn btn-success mr-2"
+                                           {% else %}
+                                               "btn btn-danger mr-2"
+                                           {% endif %}
+                                    name="user_manager_{{ u.id }}" value={{ u.is_user_manager }}>
+                                </td>
+                                <td style="text-align: center">
+                                    <input type="submit"
+                                           class={% if u.is_operator %}
+                                               "btn btn-success mr-2"
+                                           {% else %}
+                                               "btn btn-danger mr-2"
+                                           {% endif %}
+                                    name="operator_{{ u.id }}" value={{ u.is_operator }}>
+                                </td>
+                            {% endif %}
+                            {% if user.is_superuser %}
+                                <td style="text-align: center">
+                                    <input type="submit"
+                                           class={% if u.is_site_admin %}
+                                               "btn btn-success mr-2"
+                                           {% else %}
+                                               "btn btn-danger mr-2"
+                                           {% endif %}
+                                    name="site_admin_{{ u.id }}" value={{ u.is_site_admin }}>
+                                </td>
+                            {% endif %}
+                        </tr>
+
+                    {% endfor %}
+                </table>
+                {% csrf_token %}
+            </form>
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

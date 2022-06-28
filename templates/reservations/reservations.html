@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    AERPAW reservations
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <h2>Reservations</h2>
+            </div>
+            <table class="table table-striped table-bordered mt-4">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Experiment</th>
+                    <th>Resource</th>
+                    <th>Units</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+                {% for reservation in reservations %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'reservation_detail_own' reservation_uuid=reservation.uuid %}">
+                                {{ reservation.name }}
+                            </a>
+                        </td>
+                        <td>{{ reservation.description }}</td>
+                        <td>{{ reservation.experiment }}</td>
+                        <td>{{ reservation.resource }}</td>
+                        <td>{{ reservation.units }}</td>
+                        <td>{{ reservation.start_date }}</td>
+                        <td>{{ reservation.end_date }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

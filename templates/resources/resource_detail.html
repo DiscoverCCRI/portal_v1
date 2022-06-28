@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Resource: {{ resource.name }}
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+            <h2>{{ resource.name }}</h2>
+            <table class="table table-striped table-bordered my-4">
+                <tr>
+                    <td>Description</td>
+                    <td>{{ resource.description }}</td>
+                </tr>
+                <tr>
+                    <td>Resource Type</td>
+                    <td>{{ resource.resourceType }}</td>
+                </tr>
+                <tr>
+                    <td>Total units</td>
+                    <td>{{ resource.units }}</td>
+                </tr>
+                <tr>
+                    <td>Available units</td>
+                    <td>{{ resource.availableUnits }}</td>
+                </tr>
+                <tr>
+                    <td>Location</td>
+                    <td>
+                        {{ resource.location }}
+                        {% if resource_map %}
+                            (<a href="{{ resource_map }}" target="_blank">map</a>)
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if user.is_operator or user.is_resource_manager or user.is_site_admin %}
+                    <tr>
+                        <td>Managed By</td>
+                        <td>{{ resource.admin }}</td>
+                    </tr>
+                    <tr>
+                        <td>Created Date</td>
+                        <td>{{ resource.created_date }}</td>
+                    </tr>
+                    <tr>
+                        <td>Resource Stage</td>
+                        <td>{{ resource.stage }}</td>
+                    </tr>
+                    <tr>
+                        <td>IP Address</td>
+                        <td>{{ resource.ip_address }}</td>
+                    </tr>
+                    <tr>
+                        <td>Hostname</td>
+                        <td>{{ resource.hostname }}</td>
+                    </tr>
+                {% endif %}
+                {#                <tr>#}
+                {#                    <td>Reservations</td>#}
+                {#                    {% for reservation in reservations %}#}
+                {#                        <td>#}
+                {#                            <a href="{% url 'reservation_detail_own' reservation_uuid=reservation.uuid %}">#}
+                {#                                {{ reservation.name }}#}
+                {#                            </a>#}
+                {#                        </td>#}
+                {#                        <td>#}
+                {#                            reservation.units#}
+                {#                        </td>#}
+                {#                    {% endfor %}#}
+                {#                </tr>#}
+            </table>
+            {% if user.is_resource_manager %}
+                <button class="btn btn-success mr-2">
+                    <a href="{% url 'resource_update' resource_uuid=resource.uuid %}" class="unlink">Update</a>
+                </button>
+            {% endif %}
+            <button class="btn btn-secondary mr-2">
+                <a href="{% url 'resources' %}" class="unlink">Back</a>
+            </button>
+            {% if user.is_resource_manager %}
+                <button class="btn btn-danger">
+                    <a href="{% url 'resource_delete' resource_uuid=resource.uuid %}" class="unlink">Delete</a>
+                </button>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

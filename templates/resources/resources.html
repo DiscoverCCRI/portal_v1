@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    AERPAW Resources
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <head>
+            <meta charset="utf-8">
+            <title>Resources</title>
+            <script src="../static/js/echarts.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        </head>
+        <div class="container">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <h2>AERPAW Platform Resources</h2>
+                {% if user.is_resource_manager or user.is_superuser %}
+                    <button class="btn btn-success mr-2">
+                        <a href="{% url 'resource_create' %}" class="unlink">Create New Resource</a>
+                    </button>
+                {% endif %}
+            </div>
+            <!--
+            {% if user.is_operator or user.is_resource_manager or user.is_site_admin %}
+                <div class="container py-4">
+                    <div class="toolbar">
+                        <div class="input-group mb-3 toolbar-dropdown">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="typeSelect">Type</label>
+                            </div>
+                            <select class="custom-select" id="typeSelect" onChange="changeType()">
+                                <option selected value="all">All Types</option>
+                                {% for resourceType in resource_list %}
+                                    <option value="{{ resourceType }}">{{ resourceType }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div id="main" style="width: 1000px;height:400px;" class="mt-4"></div>
+                </div>
+            {% endif %}
+            -->
+            <table class="table table-striped table-bordered mt-4">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Resource Type</th>
+                    <th>Location</th>
+                    <th>Units</th>
+                    {% if user.is_operator or user.is_resource_manager or user.is_site_admin %}
+                        <th>Available Units</th>
+                        <th>UUID</th>
+                        <th>Stage</th>
+                        <th>Admin</th>
+                        <th>Created Date</th>
+                        <th>IP address</th>
+                        <th>hostname</th>
+                    {% endif %}
+                </tr>
+                {% for resource in resources %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}">
+                                {{ resource.name }}
+                            </a>
+                        </td>
+                        <td>{{ resource.description }}</td>
+                        <td>{{ resource.resourceType }}</td>
+                        <td>
+                            {{ resource.location }}
+                            {% if resource_map %}
+                                (<a href="{{ resource_map }}" target="_blank">map</a>)
+                            {% endif %}
+                        </td>
+                        <td>{{ resource.units }}</td>
+                        {% if user.is_operator or user.is_resource_manager or user.is_site_admin %}
+                            <td>{{ resource.availableUnits }}</td>
+                            <td>{{ resource.uuid }}</td>
+                            <td>{{ resource.stage }}</td>
+                            <td>{{ resource.admin }}</td>
+                            <td>{{ resource.created_date }}</td>
+                            <td>{{ resource.ip_address }}</td>
+                            <td>{{ resource.hostname }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+            <input type="hidden" id="hidden-reservations" name="variable" value="{{ reservations_json }}">
+            <input type="hidden" id="hidden-resources" name="variable" value="{{ resources_json }}">
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or not authorized to view this page</p>
+        </div>
+    {% endif %}
+    <script type="text/javascript">
+        // based on prepared DOM, initialize echarts instance
+        let myChart = echarts.init(document.getElementById('main'));
+        let reservations_json = JSON.parse(document.getElementById("hidden-reservations").value);
+        let resources_json = JSON.parse(document.getElementById("hidden-resources").value);
+
+        console.log(resources_json)
+
+        function generateDiagramData(type) {
+            const x_axis_data = [];
+            const legend = [];
+            const series = [];
+
+            // dynamically generate diagram config options.
+            let step = 1;
+
+            for (let key in reservations_json) {
+                let res = resources_json[key]
+                // filter series based on type.
+                if (type === "all" || resources_json[key].resourceType === type) {
+                    let series_obj = {
+                        name: res.name,
+                        type: "line",
+                        step: step,
+                        data: reservations_json[key]
+                    };
+                    step += 1;
+                    legend.push(res.name);
+                    series.push(series_obj);
+                }
+            }
+
+            let n_of_terms = series[0].data.length;
+            let date = new Date();
+            let year = date.getUTCFullYear();
+            // UTC Month, 0 for Jan and 11 for Dec.
+            let month = date.getUTCMonth() + 1;
+            let day = date.getUTCDate();
+            let hour = date.getHours();
+            let utc_hour = (hour + 5) % 24;
+            let full_date = year + "/" + month + "/" + day;
+
+            for (let i = utc_hour; i < n_of_terms + utc_hour; i++) {
+                if (i > 24) {
+                    full_date = year + "/" + month + "/" + (day + 1);
+                }
+                let time = moment(i % 24, 'HH').format('HH:mm') + " " + full_date;
+                x_axis_data.push(time)
+            }
+
+            // specify chart configuration item and data
+            let option = {
+                title: {
+                    text: ''
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: legend
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {}
+                },
+                xAxis: {
+                    type: 'category',
+                    data: x_axis_data,
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                dataZoom: [
+                    {
+                        type: 'slider',
+                        show: true,
+                        xAxisIndex: [0],
+                        start: 0,
+                        end: 100
+                    },
+                ],
+                series: series,
+            };
+
+            return option;
+        }
+
+        // use configuration item and data specified to show chart
+        myChart.setOption(generateDiagramData("all"));
+
+        function changeType() {
+            let type = document.getElementById("typeSelect").value;
+            myChart.setOption(generateDiagramData(type), {notMerge: true, lazyUpdate: true});
+        }
+    </script>
+{% endblock %}

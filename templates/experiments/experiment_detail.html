@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Experiment: {{ experiment.name }}
+{% endblock %}
+
+{% block content %}
+    {% with ua=user.is_authenticated admin=user.is_site_admin operator=user.is_operator %}
+        {% if ua and is_creator or ua and is_pm or ua and is_po or admin or operator %}
+            <div class="container">
+                <h2>{{ experiment.name }}</h2>
+                <table class="table table-striped table-bordered my-4">
+                    <tr>
+                        <td>Description</td>
+                        <td>{{ experiment.description }}</td>
+                        {% if is_creator or is_exp or admin %}
+                            <td>
+                                <button class="btn btn-info mr-2">
+                                    <a href="{% url 'experiment_update' experiment_uuid=experiment.uuid %}"
+                                       class="unlink">Change</a>
+                                </button>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Project</td>
+                        <td>
+                            <a href="{% url 'project_detail' project_uuid=experiment.project.uuid %}">
+                                {{ experiment.project }}
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Experimenters</td>
+                        <td>
+                            {% for member in experimenter %}
+                                {{ member }}<br>
+                            {% endfor %}
+                        </td>
+                        {% if is_creator or is_exp or admin %}
+                            <td>
+                                <button class="btn btn-info mr-2">
+                                    <a href="{% url 'experiment_update_experimenters' experiment_uuid=experiment.uuid %}"
+                                       class="unlink">Update Experimenters</a>
+                                </button>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    <!--
+                    <tr>
+                        <td>Reservations</td>
+                        <td>
+                            {% for reservation in reservations %}
+                                <a href="{% url 'reservation_detail_own' reservation_uuid=reservation.uuid %}">
+                                    {{ reservation.name }}
+                                </a>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <button class="btn btn-info mr-2">
+                                <a href="{% url 'reservation_create' experiment_uuid=experiment.uuid %}" class="unlink">Create a New Reservation</a>
+                            </button>
+                        </td>
+                    </tr>
+                    -->
+                    <tr>
+                        <td>Mode</td>
+                        <td>{{ experiment.stage }}</td>
+                    </tr>
+                    <tr>
+                        <td>Created By</td>
+                        <td>{{ experiment.created_by }}</td>
+                    </tr>
+                    <tr>
+                        <td>Created Date</td>
+                        <td>{{ experiment.created_date }}</td>
+                    </tr>
+                    <tr>
+                        <td>Modified By</td>
+                        <td>{{ experiment.modified_by }}</td>
+                    </tr>
+                    <tr>
+                        <td>Modified Date</td>
+                        <td>{{ experiment.modified_date }}</td>
+                    </tr>
+                    <tr>
+                        <td>Experiment Resource Definition</td>
+                        <td>{{ experiment.profile }}</td>
+                    </tr>
+                    <tr>
+                        <td>Experiment Status</td>
+                        <td>{{ experiment_status }}</td>
+                        {% if is_creator or is_exp or admin or operator %}
+                            <td>
+                                <button class="btn btn-info mr-2">
+                                    <a href="{% url 'experiment_manifest' experiment_uuid=experiment.uuid %}"
+                                       class="unlink">
+                                        Manifest</a>
+                                </button>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Experiment Link</td>
+                        <td><a href="{{ experiment.cloud_link }}" target="_blank">Link To Cloud Storage</a></td>
+                        {% if admin or operator %}
+                            <td>
+                                <button class="btn btn-info mr-2">
+                                    <a href="{% url 'experiment_link_update' experiment_uuid=experiment.uuid %}"
+                                       class="unlink">
+                                        Update</a>
+                                </button>
+                            </td>
+                        {% endif %}
+                    </tr>
+                </table>
+                <button class="btn btn-secondary mr-2">
+                    <a href="{% url 'project_detail' project_uuid=experiment.project.uuid %}" class="unlink">Back: to
+                        Project</a>
+                </button>
+                <button class="btn btn-secondary mr-2">
+                    <a href="{% url 'experiments' %}" class="unlink">Back: to Experiments List</a>
+                </button>
+
+                {% if is_creator or is_exp or admin %}
+                    {% if experiment.can_initiate %}
+                        <button class="btn btn-danger">
+                            <a href="{% url 'experiment_delete' experiment_uuid=experiment.uuid %}" class="unlink">Delete</a>
+                        </button>
+                        &emsp;
+                    {% endif %}
+
+                    {% if experiment.can_initiate %}
+                        <button class="btn btn-success mr-2" name="Initiate">
+                            <a href="{% url 'experiment_initiate' experiment_uuid=experiment.uuid %}" class="unlink">Initiate
+                                Development</a>
+                        </button>
+                    {% endif %}
+                {% endif %}
+                {% if is_creator or is_exp or admin or operator %}
+                    {% if experiment.can_terminate %}
+                        <button class="btn btn-success mr-2" name="Terminate">
+                            <a href="{% url 'experiment_initiate' experiment_uuid=experiment.uuid %}"
+                               class="unlink">Terminate</a>
+                        </button>
+                    {% endif %}
+                {% endif %}
+                {% if experiment.can_snapshot %}
+                    <!--
+                    <button class="btn btn-success mr-2" name="Save">
+                        Save
+                    </button>
+                    -->
+                {% endif %}
+                {% if is_creator or is_exp or admin or operator %}
+                    {% if experiment.can_submit %}
+                        <button class="btn btn-success mr-2">
+                            <a href="{% url 'experiment_submit' experiment_uuid=experiment.uuid %}" class="unlink">Submit</a>
+                        </button>
+                    {% endif %}
+                {% endif %}
+                {% if operator %}
+                    <button class="btn btn-success mr-2">
+                        <a href="{% url 'experiment_update_by_ops' experiment_uuid=experiment.uuid %}" class="unlink">Ops
+                            actions</a>
+                    </button>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="container">
+                <p>You are not currently logged in or not authorized to view this page</p>
+            </div>
+        {% endif %}
+    {% endwith %}
+{% endblock %}

@@ -1,0 +1,74 @@
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  min-height: 100%;
+  padding-bottom: 8em;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+  color: #515252;
+}
+
+.footer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  height: 4rem;
+  margin-top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.container {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+a .btn {
+  color: #fff;
+  text-decoration: none;
+}
+
+p a {
+  color: #8db154;
+  text-decoration: none;
+}
+
+p a:hover {
+  color: green;
+  text-decoration: none;
+}
+
+p {
+  line-height: 1.6;
+}
+
+.homepage p {
+  line-height: 2;
+}
+
+.unlink {
+  color: #fff;
+  text-decoration: none;
+}
+
+.unlink:hover,
+.unlink:focus {
+  color: #fff;
+  text-decoration: none;
+}

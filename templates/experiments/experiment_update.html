@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Update: {{ experiment_name }}
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+            <h2>Update Experiment {{ experiment_name }}</h2>
+            <br>
+            <br>
+            <form id="update-experiment" method="POST" class="form-group">
+                {% csrf_token %}
+                {{ form.as_p }}
+            </form>
+            <button class="btn btn-success mr-2" type="submit" form="update-experiment" value="save">Save</button>
+            <button class="btn btn-secondary mr-2" value="cancel">
+                <a href="{% url 'experiment_detail' experiment_uuid=experiment_uuid %}" class="unlink">Cancel</a>
+            </button>
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or are not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

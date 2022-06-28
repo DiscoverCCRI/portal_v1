@@ -1,0 +1,10 @@
+Django
+django-bootstrap4
+django-crispy-forms
+django-fsm
+mozilla-django-oidc
+psycopg2-binary
+python-dotenv
+python-jenkins
+uWSGI
+-e git+https://github.com/AERPAW-Platform-Control/aerpaw-gateway-client.git#egg=aerpawgw-client

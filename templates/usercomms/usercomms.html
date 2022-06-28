@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    AERPAW Messages
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <h2>Messages</h2>
+            </div>
+            <h3>Received</h3>
+            <table class="table table-striped table-bordered mt-4">
+                <tr>
+                    <th>Date</th>
+                    <th>Subject</th>
+                    <th>Sender</th>
+                    <th>Reference URL</th>
+                    <th>Reference Note</th>
+                </tr>
+                {% for r in received %}
+                    <tr>
+                        <td>{{ r.created_date|date:"m/d/Y, H:i:s" }}</td>
+                        <td>
+                            <a href="{% url 'usercomm_detail' usercomm_uuid=r.uuid %}">
+                                {{ r.subject }}
+                            </a>
+                        </td>
+                        <td>{{ r.sender }}</td>
+                        <td>
+                            {% if r.reference_url %}
+                                <a href="{{ r.reference_url }}">{{ r.reference_url }}</a>
+                            {% else %}
+                                {{ r.reference_url }}
+                            {% endif %}
+                        </td>
+                        <td>{{ r.reference_note }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <h3>Sent</h3>
+            <table class="table table-striped table-bordered mt-4">
+                <tr>
+                    <th>Date</th>
+                    <th>Subject</th>
+                    <th>Receivers</th>
+                    <th>Body</th>
+                </tr>
+                {% for s in sent %}
+                    <tr>
+                        <td>{{ s.created_date|date:"m/d/Y, H:i:s" }}</td>
+                        <td>
+                            <a href="{% url 'usercomm_detail' usercomm_uuid=s.uuid %}">
+                                {{ s.subject }}
+                            </a>
+                        </td>
+                        <td>
+                            {% for rec in s.receivers.all %}
+                            {{ rec.display_name }}, <br>
+                        {% endfor %}
+                        <td>
+                            {{ s.body|truncatechars:50|linebreaks }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,1 @@
+[{"idx": 1, "name": "node1", "hardware_type": "FixedNode", "component_id": "CC1", "uhd_ver": "3.15" }, {"idx":2, "name": "node2", "hardware_type": "FixedNode", "component_id": "CC2", "uhd_ver": "3.15" }, {"idx": 3, "name": "portablenode1", "hardware_type": "PortableNode", "vehicle": "UAV", "uhd_ver": "3.15" }]
