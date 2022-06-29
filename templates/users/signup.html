@@ -8,7 +8,7 @@
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
-            <h2>Aerpaw User Signup</h2>
+            <h2>Discover User Signup</h2>
             <form method="POST" class="post-form">
                 {% csrf_token %}
                 {{ form.as_p }}

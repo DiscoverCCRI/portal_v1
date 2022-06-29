@@ -1,59 +1,27 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Home{% endblock %}
+{% block title %}Discover Home{% endblock %}
 
 {% block content %}
     {% if user.is_authenticated %}
         <head>
             <meta charset="UTF-8">
+            <link rel="icon" type="image/x-icon" href="{% static 'images/logo/favicon-32x32.png' %}">
         </head>
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
         <div class="homepage">
-            <img class="rounded my-4 img-fluid" width="25%" src="{% static 'images/logo/aerpaw-logo.png' %}">
+            <img class="rounded my-4 img-fluid" width="25%" src="{% static 'images/logo/discoverlogo.jpeg' %}">
             <p>
-        <span class="h2"><a href="https://aerpaw.org/" target="_blank">AERPAW</a>
-        </span> <strong>(Aerial Experimentation and Research Platform for Advanced Wireless)</strong> is a $24 million
-                grant, awarded by the
-                <a href="http://advancedwireless.org" target="_blank">PAWR Project Office</a>
-                on behalf of the
-                <a href="http://nsf.gov" target="_blank">National Science Foundation</a>,
-                to develop an advanced wireless research platform, led by
-                <strong>
-                    <a href="http://www.ncsu.edu" target="_blank">
-                        North Carolina State University
-                    </a>
-                </strong>, in partnership with
-                <a href="https://wrc-nc.org/" target="_blank">
-                    Wireless Research Center of North Carolina
-                </a>,
-                <a href="https://www.msstate.edu/" target="_blank">
-                    Mississippi State University
-                </a>
-                and
-                <a href="https://renci.org/" target="_blank">
-                    Renaissance Computing Institute (RENCI)
-                </a>
-                at the University of North Carolina at Chapel Hill;
-                additional partners include
-                <a href="https://www.townofcary.org/" target="_blank">Town of Cary</a>,
-                <a href="https://raleighnc.gov/" target="_blank">City of Raleigh</a>,
-                <a href="http://www.ncdot.gov" target="_blank">North Carolina Department of Transportation</a>,
-                <a href="https://www.purdue.edu/" target="_blank">Purdue University</a>,
-                <a href="http://sc.edu" target="_blank">University of South Carolina</a>,
-                and many other academic, industry and municipal partners.
-                You may learn more about AERPAW in the following article:
-                <a href="https://news.ncsu.edu/2019/12/5g-wireless-network-aerpaw/" target="_blank">
-                    NC State Named a Hotspot for 5G Innovation
-                </a>.
+        <span class="h2"><a href="https://aerpaw.org/" target="_blank" style = "color: #076AE0 !important;">Discover CCRI</a>
+        </span> <strong>(Distributed Sensing & Computing Over Sparse Environments)</strong> is building a network of field sites to allow researchers to study distributed computing and networking in rural and remote areas to empower detection and response to environmental and civil disasters.  The DISCOVER cyberinfrastructure will allow computer scientists and engineers to study how IoT devices and networks can be designed to work in technically challenging rural or remote areas.
+                
             </p>
             <p>
                 <strong>User manuals, tutorials, and other relevant documentation can be found at the following links;
                     please refer to relevant instructions before attempting to use this Portal.</strong><br>
-                - <a href="https://www.aerpaw.org/" target="_blank">AERPAW main website</a> <br>
-                - <a href="https://sites.google.com/ncsu.edu/aerpaw-wiki/" target="_blank">AERPAW wiki</a><br>
-                - <a
-                    href="https://sites.google.com/ncsu.edu/aerpaw-wiki/aerpaw-user-manual/2-experiment-web-portal/acceptable-use-policy-aup"
-                    target="_blank">AERPAW Acceptable Use Policy</a>
+                - <a style = "color: #076AE0 !important;" href="https://www.discoverccri.org/" target="_blank">Discover main website</a> <br>
+                - <a style = "color: #076AE0 !important;" href="https://sites.google.com/ncsu.edu/aerpaw-wiki/" target="_blank">AERPAW wiki</a><br>
+                
             </p>
             {% if user.is_operator %}
                 <hr>
@@ -72,6 +40,6 @@
             {% endif %}
         </div>
     {% else %}
-        <h3 class="text-center mt-4">Please log in to gain full access of AERPAW testbed.</h3>
+        <h3 class="text-center mt-4">Please log in to gain full access of the Discover testbed.</h3>
     {% endif %}
 {% endblock %}

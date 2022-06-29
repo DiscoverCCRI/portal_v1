@@ -40,7 +40,7 @@
                     <td>Roles</td>
                     <td>
                         {% if not user.is_aerpaw_user %}
-                            Request to become an <a href="{% url 'request_roles' %}">AERPAW User</a>
+                            Request to become an <a href="{% url 'request_roles' %}">Discover User</a>
                         {% endif %}
                         {% for group in user.groups.all|sort_by:'name' %}
                             <b>{{ group|role_name }}</b><br>
@@ -106,7 +106,7 @@
     {% else %}
         <p>You are not logged in</p>
         <a href="{% url 'login' %}">
-            <button class="message-btn btn btn-success">Login</button>
+            <button class="message-btn btn btn-success" style="color: white !important;">Login</button>
         </a>
     {% endif %}
 {% endblock %}

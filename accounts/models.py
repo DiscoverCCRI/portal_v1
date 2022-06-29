@@ -26,7 +26,7 @@ class AerpawUserRoleChoice(Enum):  # A subclass of Enum
     project_manager = 'Principal Investigator (PI)'
     resource_manager = 'Resource Manager'
     user_manager = 'User Role Manager'
-    aerpaw_user = 'AERPAW User'
+    aerpaw_user = 'Aerpaw User'
 
     @classmethod
     def choices(cls):

@@ -2,13 +2,13 @@
 {% load static %}
 
 {% block title %}
-    AERPAW: Requst Roles
+    Discover: Request Roles
 {% endblock %}
 
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
-            <h2>AERPAW Role Requests</h2>
+            <h2>Discover Role Requests</h2>
             {% if has_role_options %}
                 <form id="request-role" method="POST" class="post-form">
                     {% csrf_token %}
@@ -18,7 +18,7 @@
                     {{ form.purpose.label }}: {{ form.purpose }}
                     <br><br>
                 </form>
-                <button class="btn btn-success mr-2" type="submit" form="request-role" value="save">Save</button>
+                <button class="btn btn-success mr-2" type="submit" form="request-role" value="save" style = "background-color: #076AE0 !important; ">Save</button>
                 <button class="btn btn-secondary mr-2" value="cancel">
                     <a href="{% url 'profile' %}" class="unlink">Back</a>
                 </button>
@@ -31,7 +31,7 @@
         </div>
         <p>
             <b>New testbed administrators</b>: Please send an email to
-            <a href="mailto:?subject=[AERPAW] Portal - Administrative Role Request">AERPAW Admin</a> and specify which
+            <a href="mailto:?subject=[AERPAW] Portal - Administrative Role Request">Discover Admin</a> and specify which
             level(s) of
             access you require (Administrator, Operator, Resource Manager, User Role Manager)
         </p>

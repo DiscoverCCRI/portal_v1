@@ -4,7 +4,6 @@ from django.conf.urls import include
 from reservations import views
 
 from .views import(
-    experiment_link_update,
     experiments,
     experiment_create,
     experiment_detail,
@@ -29,5 +28,4 @@ urlpatterns = [
     path('<uuid:experiment_uuid>/manifest', experiment_manifest, name='experiment_manifest'),
     path('', include(('reservations.urls', 'reservations'), namespace='reservations')),
     path('<uuid:experiment_uuid>/submit', experiment_submit, name='experiment_submit'),
-    path('<uuid:experiment_uuid>/update_link', experiment_link_update, name='experiment_link_update'),
 ]

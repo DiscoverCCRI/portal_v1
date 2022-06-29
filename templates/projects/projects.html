@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    AERPAW Projects
+    Discover Projects
 {% endblock %}
 
 {% block content %}
@@ -10,7 +10,7 @@
         {% if ua %}
             <div class="container">
                 <div class="d-flex flex-row align-items-center justify-content-between">
-                    <h2>AERPAW Projects</h2>
+                    <h2>Discover Projects</h2>
                     {% if user.is_project_manager or user.is_site_admin %}
                         <button class="btn btn-success mr-2">
                             <a href="{% url 'project_create' %}" class="unlink">Create New Project</a>

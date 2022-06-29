@@ -1,4 +1,4 @@
-# DISCOVER Portal
+# AERPAW Portal
 
 **THIS IS A WORK IN PROGRESS**
 
@@ -13,11 +13,30 @@ Initial development framework for AERPAW Portal
 
 ## Table of Contents
 
+- [How to Contribute](#contrib)
 - [Setting up your Development Environment](#setup)
 - [Running the Development Environment](#run-dev)
 - [Running everything in Docker](#run-in-docker)
 - [Cleaning it all up](#cleanup)
 - [User model](#user-model)
+
+## <a name="contrib"></a>How to Contribute
+
+If you wish to contribute to the AERPAW Portal please follow a few basic guidelines.
+
+1. Ensure you're able to run the existing code in your own [development environment](#setup).
+2. Create a descriptive [GitHub issue](https://github.com/AERPAW-Platform-Control/aerpaw-portal/issues) that outlines what feature you plan to contribute.
+3. Clone the repository, and start from the most recent version of the [develop branch](https://github.com/AERPAW-Platform-Control/aerpaw-portal/tree/develop).
+4. Name your branch using the Github issue number as a prefix along with a brief name that corresponds to your feature (e.g., `8-how-to-contribute`).
+5. Once satisfied with your completed and tested work, submit a [pull request](https://github.com/AERPAW-Platform-Control/aerpaw-portal/pulls) against the **develop** branch so that your code can be reviewed by the team.
+
+Notes:
+
+- Do not create a pull request against the **master** branch. The **master** branch is considered the production branch and must always remain stable. The **master** branch is periodically updated from the contents of the **develop** branch at the conclusion of a development cycle.
+- Do not put any content (css, js, images, etc.) in the main `static` directory, instead create a directory named `static` in your app that can be imported into the main `static` directory using the `manage.py collectstatic` call.
+- Use clear and concise naming conventions for apps, classes, functions, variables, etc. Ideally others will be able to reuse your work, and the more clear and concise your code is, the easier it is to reuse it.
+- Include easy to understand documentation and complete unit/functional tests for each new feature being introduced to the project. ([pytest](https://docs.pytest.org/en/latest/) is the recommended framework to use for testing).
+
 
 ## <a name="setup"></a>Setting up your Development Environment
 

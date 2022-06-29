@@ -101,19 +101,6 @@
                             </td>
                         {% endif %}
                     </tr>
-                    <tr>
-                        <td>Experiment Link</td>
-                        <td><a href="{{ experiment.cloud_link }}" target="_blank">Link To Cloud Storage</a></td>
-                        {% if admin or operator %}
-                            <td>
-                                <button class="btn btn-info mr-2">
-                                    <a href="{% url 'experiment_link_update' experiment_uuid=experiment.uuid %}"
-                                       class="unlink">
-                                        Update</a>
-                                </button>
-                            </td>
-                        {% endif %}
-                    </tr>
                 </table>
                 <button class="btn btn-secondary mr-2">
                     <a href="{% url 'project_detail' project_uuid=experiment.project.uuid %}" class="unlink">Back: to

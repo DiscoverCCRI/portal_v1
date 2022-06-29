@@ -124,8 +124,6 @@ class Experiment(models.Model):
 
     state = FSMIntegerField(default=0, blank=True, null=True, choices=STATE_CHOICES)
 
-    cloud_link = models.URLField(max_length=200)
-
     @transition(field=state, source=STATE_IDLE, target=STATE_PROVISIONING)
     def provision(self):
         logger.warning("[{}] Experiment.state : {} -> {}".format(self.name, self.state, Experiment.STATE_PROVISIONING))

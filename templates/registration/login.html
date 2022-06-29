@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Log In{% endblock %}
+{% block title %}Discover Log In{% endblock %}
 
 {% block content %}
     {% if user.is_authenticated %}
@@ -11,18 +11,18 @@
         </form>
     {% else %}
         <div>
-            <b>AERPAW Portal uses <a href="https://www.cilogon.org" target="_blank">CILogon</a> to authenticate user
-                identity:</b>
+            <b><p style="padding-top: 10rem;">Discover Portal uses <a href="https://www.cilogon.org" target="_blank">CILogon</a> to authenticate user
+                identity:</p></b>
         </div>
         <br>
-        <div style="border: 5px outset #696; cursor:pointer; padding:3px; display:inline-block;"
+        <div style="border: 5px outset #076AE0; cursor:pointer; padding:3px; display:inline-block;"
              onclick="location.href='{% url 'oidc_authentication_init' %}'">
             <a href="{% url 'oidc_authentication_init' %}"
-               style="font-family:Arial,sans-serif; font-style:italic; font-weight:bold; font-size:32px; color:#363;
+               style=" font-size:32px; color:#076AE0;
                text-decoration:none;"><img
                     alt=""
                     src="https://cilogon.org/images/cilogon-logo-48x48.png"
-                    style="vertical-align:middle"/>&nbsp;AERPAW&nbsp;Login&nbsp;</a>
+                    style="vertical-align:middle"/>&nbsp;Discover&nbsp;Login&nbsp;</a>
         </div>
         <br><br>
         <strong>NOTE: If this is your first time signing in an account will automatically be created for you based on
