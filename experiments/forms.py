@@ -313,3 +313,12 @@ class ExperimentAdminForm(forms.ModelForm):
             'stage',
             'profile',
         )
+
+class ExperimentLinkUpdateForm(forms.ModelForm):
+    cloud_link = forms.URLField(required=True)
+
+    class Meta:
+        model = Experiment
+        fields = (
+            'cloud_link',
+        )

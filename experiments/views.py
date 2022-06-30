@@ -13,7 +13,7 @@ from usercomms.usercomms import portal_mail
 from .experiments import get_experiment_list, generate_experiment_session_request, create_new_experiment, \
     get_emulab_manifest, experiment_state_change, query_emulab_instance_status, \
     delete_existing_experiment, is_emulab_stage, initiate_emulab_instance, update_existing_experiment
-from .forms import ExperimentCreateForm, ExperimentUpdateExperimentersForm, ExperimentUpdateForm, ExperimentSubmitForm, \
+from .forms import ExperimentCreateForm, ExperimentLinkUpdateForm, ExperimentUpdateExperimentersForm, ExperimentUpdateForm, ExperimentSubmitForm, \
     ExperimentUpdateByOpsForm
 from .models import Experiment
 
@@ -369,3 +369,30 @@ def experiment_manifest(request, experiment_uuid):
                        'manifest': "",
                        'profile': experiment.profile.profile,
                        'user_manifest': user_manifest})
+
+@login_required()
+def experiment_link_update(request, experiment_uuid):
+    """
+    render manifest information for the experiment
+
+    :param request:
+    :param experiment_uuid:
+    :return:
+    """
+    experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
+
+    if request.method == "POST":
+        form = ExperimentLinkUpdateForm(request.POST)
+
+        if form.is_valid():
+            link = form.cleaned_data.get("cloud_link")
+            experiment.cloud_link = link
+            experiment.save()
+            return redirect('experiment_detail', experiment_uuid=str(experiment.uuid))
+    else:
+        form = ExperimentLinkUpdateForm()
+
+    return render(request, 'experiment_link_update.html',
+                      {'experiment': experiment,
+                       'experiment_uuid': str(experiment_uuid),
+                       'form' : form,})
