@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Request Project
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated and user.is_project_manager or user.is_authenticated and user.is_site_admin %}
+        <div class="container">
+            <h2>Request Project</h2>
+            <form id="create-project" method="POST" class="post-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <p>
+                    NOTE: Projects default to being <b>private</b> unless "Is public" is marked
+                </p>
+            </form>
+            <button class="btn btn-success mr-2" type="submit" form="create-project" value="save">Save</button>
+            <button class="btn btn-secondary mr-2" value="cancel">
+                <a href="{% url 'projects' %}" class="unlink">Back</a>
+            </button>
+        </div>
+    {% else %}
+        <div class="container">
+            <p>You are not currently logged in or are not authorized to view this page</p>
+        </div>
+    {% endif %}
+{% endblock %}

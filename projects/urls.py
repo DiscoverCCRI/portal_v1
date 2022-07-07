@@ -10,7 +10,9 @@ from .views import(
     project_delete,
     project_update_members,
     project_update_owners,
-    project_join
+    project_join,
+    project_requests,
+    request_project,
 )
 
 urlpatterns = [
@@ -23,4 +25,6 @@ urlpatterns = [
     path('<uuid:project_uuid>/update_owners', project_update_owners, name='project_update_owners'),
     path('<uuid:project_uuid>/delete', project_delete, name='project_delete'),
     path('', include(('experiments.urls', 'experiments'), namespace='experiments')),
+    path('project_requests', project_requests, name='project_requests'),
+    path('request', request_project, name='request'),
 ]

@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.utils import timezone
 
-from .models import Project, AerpawUser, ProjectMembershipRequest
+from .models import Project, AerpawUser, ProjectMembershipRequest, ProjectRequest
 
 
 def create_new_project(request, form):
@@ -174,3 +174,19 @@ def create_new_project_membership_request(request, project_uuid, member_type, me
     pm_request.save()
 
     return True
+
+def create_new_project_request(request, form):
+    project_request = ProjectRequest()
+    name = form.data.getlist('name')[0]
+    description = form.data.getlist('description')[0]
+
+    project_request.requested_by = request.user
+    project_request.description = description
+    project_request.created_by = request.user
+    project_request.created_date = timezone.now()
+    project_request.is_public = False
+    project_request.is_approved = False
+    project_request.is_completed = False
+    project_request.save()
+
+    return name

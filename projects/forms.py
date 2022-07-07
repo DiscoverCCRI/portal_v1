@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from accounts.models import AerpawUser
-from .models import Project
+from .models import Project, ProjectRequest
 
 JOIN_CHOICES = (
         ("1", "Project Member"),
@@ -104,3 +104,20 @@ class ProjectUpdateOwnersForm(forms.ModelForm):
         fields = [
             'project_owners'
         ]
+
+class ProjectRequestForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(ProjectRequestForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = "Name"
+        self.fields['description'].label = "Description"
+        self.fields['is_public'].label = "Is Public"
+
+    class Meta:
+        model = ProjectRequest
+        fields = (
+            'name',
+            'description',
+            'is_public'
+        )
