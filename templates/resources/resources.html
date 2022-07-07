@@ -17,7 +17,7 @@
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <h2>Discover Platform Resources</h2>
                 {% if user.is_resource_manager or user.is_superuser %}
-                    <button class="btn btn-success mr-2">
+                    <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;">
                         <a href="{% url 'resource_create' %}" class="unlink">Create New Resource</a>
                     </button>
                 {% endif %}
