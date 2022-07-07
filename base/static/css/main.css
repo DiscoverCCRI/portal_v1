@@ -41,16 +41,17 @@ h1 {
 
 a .btn {
   color: #fff;
+  background-color:#076AE0!important;
   text-decoration: none;
 }
 
 p a {
-  color: #8db154;
+  color: #076AE0;
   text-decoration: none;
 }
 
 p a:hover {
-  color: green;
+  color: #076AE0;
   text-decoration: none;
 }
 

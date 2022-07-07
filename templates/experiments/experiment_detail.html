@@ -16,7 +16,7 @@
                         <td>{{ experiment.description }}</td>
                         {% if is_creator or is_exp or admin %}
                             <td>
-                                <button class="btn btn-info mr-2">
+                                <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
                                     <a href="{% url 'experiment_update' experiment_uuid=experiment.uuid %}"
                                        class="unlink">Change</a>
                                 </button>
@@ -40,7 +40,7 @@
                         </td>
                         {% if is_creator or is_exp or admin %}
                             <td>
-                                <button class="btn btn-info mr-2">
+                                <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
                                     <a href="{% url 'experiment_update_experimenters' experiment_uuid=experiment.uuid %}"
                                        class="unlink">Update Experimenters</a>
                                 </button>
@@ -93,7 +93,7 @@
                         <td>{{ experiment_status }}</td>
                         {% if is_creator or is_exp or admin or operator %}
                             <td>
-                                <button class="btn btn-info mr-2">
+                                <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
                                     <a href="{% url 'experiment_manifest' experiment_uuid=experiment.uuid %}"
                                        class="unlink">
                                         Manifest</a>
@@ -106,7 +106,7 @@
                         <td><a href="{{ experiment.cloud_link }}" target="_blank">Link To Cloud Storage</a></td>
                         {% if admin or operator %}
                             <td>
-                                <button class="btn btn-info mr-2">
+                                <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
                                     <a href="{% url 'experiment_link_update' experiment_uuid=experiment.uuid %}"
                                        class="unlink">
                                         Update</a>
@@ -132,7 +132,7 @@
                     {% endif %}
 
                     {% if experiment.can_initiate %}
-                        <button class="btn btn-success mr-2" name="Initiate">
+                        <button class="btn btn-success mr-2" name="Initiate" style = "background-color:#076AE0!important;">
                             <a href="{% url 'experiment_initiate' experiment_uuid=experiment.uuid %}" class="unlink">Initiate
                                 Development</a>
                         </button>
@@ -155,13 +155,13 @@
                 {% endif %}
                 {% if is_creator or is_exp or admin or operator %}
                     {% if experiment.can_submit %}
-                        <button class="btn btn-success mr-2">
+                        <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;">
                             <a href="{% url 'experiment_submit' experiment_uuid=experiment.uuid %}" class="unlink">Submit</a>
                         </button>
                     {% endif %}
                 {% endif %}
                 {% if operator %}
-                    <button class="btn btn-success mr-2">
+                    <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;">
                         <a href="{% url 'experiment_update_by_ops' experiment_uuid=experiment.uuid %}" class="unlink">Ops
                             actions</a>
                     </button>
