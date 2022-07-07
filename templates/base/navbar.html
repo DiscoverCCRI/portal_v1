@@ -18,8 +18,19 @@
         <ul class="navbar-nav">
             {% if user.is_authenticated %}
                 {% if user.is_aerpaw_user %}
-                    <li class="nav-item">
-                        <a class="nav-link" style= "color:white;" href="{% url 'projects' %}">Projects</a>
+                    <li class="nav-item dropdown">
+                        {% if user.is_site_admin %}
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" style= "color:white;">
+                                Projects
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{% url 'project_requests' %}">Project Requests</a>
+                                <a class="dropdown-item" href="{% url 'projects' %}">Workspace</a>
+                            </div>
+                        {% else %}
+                            <a class="nav-link" style= "color:white;" href="{% url 'projects' %}">Projects</a>
+                        {% endif %}
                     </li>
 
                     <!-- RM_CICD -->

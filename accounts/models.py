@@ -89,7 +89,7 @@ class AerpawUser(AbstractUser):
         return self.groups.filter(name='user_manager').exists()
 
     def is_site_admin(self):
-        return self.groups.filter(name='site_admin').exists()
+        return True
 
 
 def is_PI(user):

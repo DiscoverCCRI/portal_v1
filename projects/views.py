@@ -1,3 +1,4 @@
+import uuid
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import BadHeaderError
@@ -14,10 +15,10 @@ from profiles.models import Profile
 from usercomms.usercomms import portal_mail, ack_mail
 # from cicd.models import Cicd
 from .forms import ProjectCreateForm, ProjectUpdateForm, ProjectUpdateMembersForm, ProjectUpdateOwnersForm, \
-    ProjectJoinForm, JOIN_CHOICES
-from .models import Project, ProjectMembershipRequest
+    ProjectJoinForm, ProjectRequestForm, JOIN_CHOICES
+from .models import Project, ProjectMembershipRequest, ProjectRequest
 from .projects import create_new_project, get_project_list, update_existing_project, delete_existing_project, \
-    create_new_project_membership_request
+    create_new_project_membership_request, create_new_project_request
 
 PI_message = "Please email the admin to become a PI first!"
 
@@ -373,3 +374,137 @@ def project_delete(request, project_uuid):
                   {'project': project, 'project_owners': project_owners, 'project_members': project_members,
                    'profiles': profiles, 'experiments': experiments, 'is_pc': is_pc}
                   )
+
+@login_required()
+@user_passes_test(lambda u: u.is_site_admin())
+def project_requests(request):
+    """
+
+    :param request:
+    :return:
+    """
+    if request.method == "POST":
+        form = ProjectCreateForm(request.POST,
+                                 initial={'project_members': request.user, 'project_owners': request.user})
+        if form.is_valid():
+            project_uuid = create_new_project(request, form)
+            return redirect('project_detail', project_uuid=project_uuid)
+    else:
+        form = ProjectCreateForm()
+    return render(request, 'project_requests.html', {})
+
+@login_required()
+@user_passes_test(lambda u: u.is_project_manager())
+def request_project(request):
+    """
+
+    :param request:
+    :return:
+    """
+    if request.user.is_aerpaw_user() and request.user.is_project_manager():
+        has_role_options = False
+    else:
+        has_role_options = True
+    if request.method == 'GET':
+        form = ProjectRequestForm(user=request.user)
+    else:
+        form = ProjectRequestForm(request.POST, user=request.user)
+        if form.is_valid():
+            project_request = create_new_project_request(request, form)
+            subject = '[AERPAW] User: ' + request.user.display_name + ' has requested project: ' + project_request
+            body_message = form.cleaned_data['description']
+            sender = request.user
+            receivers = []
+            
+            user_managers = AerpawUser.objects.filter(groups__name__in=['site_admin', 'user_manager']).distinct()
+            for um in user_managers:
+                receivers.append(um)
+            
+            reference_note = 'Approve new project: ' + str(project_request)
+            reference_url = 'https://' + str(request.get_host()) + '/projects/project_requests'
+            
+            try:
+                portal_mail(subject=subject, body_message=body_message, sender=sender, receivers=receivers,
+                            reference_note=reference_note, reference_url=reference_url)
+                messages.info(request, 'Success! Request to add project: ' + project_request + ' has been sent')
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect('projects')
+
+    return render(request, 'project_request.html', {'form': form})
+
+@login_required
+@user_passes_test(lambda u: u.is_site_admin())
+def project_requests(request):
+    """
+
+    :param request:
+    :return:
+    """
+    user_manager = AerpawUser.objects.get(id=request.user.id)
+    if request.method == "POST":
+        for key in request.POST.keys():
+            if not key == 'csrfmiddlewaretoken':
+                parse_key = key.rsplit('_', 1)
+                if parse_key[0] != 'description':
+                    project_request = ProjectRequest.objects.get(id=int(parse_key[1]))
+                    if request.POST.get(key) == 'Approve':
+                        is_approved = True
+                    else:
+                        is_approved = False
+        # get project creator and project's name
+        project_creator = AerpawUser.objects.get(id=int(project_request.requested_by_id))
+        project_name = str( project_request.name )
+
+        # check for approved project
+        if str(is_approved) == 'True':
+            # create new project
+            project = Project()
+            project.uuid = uuid.uuid4()
+            project.name = project_request.name
+            project.description = project_request.description
+            project.is_public = project_request.is_public
+
+            project.project_creator = project_request.requested_by
+            project.created_by = project_request.requested_by
+            project.created_date = timezone.now()
+            project.modified_by = project.created_by
+            project.modified_date = project.created_date
+            project.save()
+
+            project_request.is_approved = is_approved
+            project_request.is_completed = True
+        else:
+            project_request.delete()
+        project_request.save()
+
+        # TODO: email
+        if is_approved:
+            subject = '[AERPAW] User: ' + project_creator.display_name + ' requested project: ' + project_name + ' has been APPROVED'
+        else:
+            subject = '[AERPAW] User: ' + project_creator.display_name + ' requested project: ' + project_name + ' has been DENIED'
+        body_message = ''
+        sender = user_manager
+        receivers = [project_creator]
+        user_managers = AerpawUser.objects.filter(groups__name='site_admin')
+        for um in user_managers:
+            receivers.append(um)
+        receivers.remove(sender)
+        reference_note = 'Add project ' + project_name
+        reference_url = None
+        try:
+            portal_mail(subject=subject, body_message=body_message, sender=sender, receivers=receivers,
+                        reference_note=reference_note, reference_url=reference_url)
+            if is_approved:
+                messages.info(request, 'Success! APPROVED: Request to add project: ' + project_name + ' has been sent')
+            else:
+                messages.info(request, 'Success! DENIED: Request to add project: ' + project_name + ' has been sent')
+        except BadHeaderError:
+            return HttpResponse('Invalid header found.')
+
+    # else printing out the opened and closed project requests
+    open_u_reqs = ProjectRequest.objects.filter(is_completed=False).order_by('-created_date')
+    closed_u_reqs = ProjectRequest.objects.filter(is_completed=True).order_by('-created_date')
+    
+    # return the template
+    return render(request, 'project_requests.html', {'ou_reqs': open_u_reqs, 'cu_reqs': closed_u_reqs})

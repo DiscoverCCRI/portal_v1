@@ -78,3 +78,24 @@ class ProjectMembershipRequest(models.Model):
 
     def __str__(self):
         return self.requested_by
+
+
+class ProjectRequest(models.Model):
+    # User = get_user_model()
+    name = models.CharField(max_length=255, blank=False, null=False)
+    uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
+    requested_by = models.ForeignKey(
+        AerpawUser, related_name='project_request_requested_by', on_delete=models.CASCADE, null=True, blank=True
+    )
+    description = models.TextField()
+    is_public = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
+    notes = models.TextField()
+    created_by = models.ForeignKey(
+        AerpawUser, related_name='project_request_created_by', on_delete=models.CASCADE, null=True, blank=True
+    )
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.requested_by
