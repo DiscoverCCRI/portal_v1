@@ -71,7 +71,7 @@ class AerpawUser(AbstractUser):
     publickey = models.TextField(null=True)
 
     def __str__(self):
-        return self.display_name
+        return str(self.display_name)
 
     def is_aerpaw_user(self):
         return self.groups.filter(name='aerpaw_user').exists()
@@ -89,7 +89,7 @@ class AerpawUser(AbstractUser):
         return self.groups.filter(name='user_manager').exists()
 
     def is_site_admin(self):
-        return True
+        return self.groups.filter(name='site_admin').exists()
 
 
 def is_PI(user):

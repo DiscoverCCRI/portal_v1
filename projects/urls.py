@@ -26,5 +26,5 @@ urlpatterns = [
     path('<uuid:project_uuid>/delete', project_delete, name='project_delete'),
     path('', include(('experiments.urls', 'experiments'), namespace='experiments')),
     path('project_requests', project_requests, name='project_requests'),
-    path('request', request_project, name='request'),
+    path('request', request_project, name='project_request'),
 ]

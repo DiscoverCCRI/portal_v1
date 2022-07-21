@@ -376,24 +376,6 @@ def project_delete(request, project_uuid):
                   )
 
 @login_required()
-@user_passes_test(lambda u: u.is_site_admin())
-def project_requests(request):
-    """
-
-    :param request:
-    :return:
-    """
-    if request.method == "POST":
-        form = ProjectCreateForm(request.POST,
-                                 initial={'project_members': request.user, 'project_owners': request.user})
-        if form.is_valid():
-            project_uuid = create_new_project(request, form)
-            return redirect('project_detail', project_uuid=project_uuid)
-    else:
-        form = ProjectCreateForm()
-    return render(request, 'project_requests.html', {})
-
-@login_required()
 @user_passes_test(lambda u: u.is_project_manager())
 def request_project(request):
     """
@@ -401,24 +383,24 @@ def request_project(request):
     :param request:
     :return:
     """
-    if request.user.is_aerpaw_user() and request.user.is_project_manager():
-        has_role_options = False
-    else:
-        has_role_options = True
     if request.method == 'GET':
-        form = ProjectRequestForm(user=request.user)
+        form = ProjectRequestForm()
     else:
-        form = ProjectRequestForm(request.POST, user=request.user)
+        form = ProjectRequestForm(request.POST,
+                            initial={'project_members': request.user, 'project_owners': request.user})
         if form.is_valid():
+            # create new project request
             project_request = create_new_project_request(request, form)
+
+            # initialize email message to admin team members
             subject = '[AERPAW] User: ' + request.user.display_name + ' has requested project: ' + project_request
             body_message = form.cleaned_data['description']
             sender = request.user
             receivers = []
             
-            user_managers = AerpawUser.objects.filter(groups__name__in=['site_admin', 'user_manager']).distinct()
-            for um in user_managers:
-                receivers.append(um)
+            site_admins = AerpawUser.objects.filter(groups__name__in=['site_admin']).distinct()
+            for admin in site_admins:
+                receivers.append(admin)
             
             reference_note = 'Approve new project: ' + str(project_request)
             reference_url = 'https://' + str(request.get_host()) + '/projects/project_requests'
@@ -472,13 +454,12 @@ def project_requests(request):
             project.modified_date = project.created_date
             project.save()
 
-            project_request.is_approved = is_approved
-            project_request.is_completed = True
-        else:
-            project_request.delete()
+        # Save project request after admins actions
+        project_request.is_approved = is_approved
+        project_request.is_completed = True
         project_request.save()
 
-        # TODO: email
+        # Initialize email parts
         if is_approved:
             subject = '[AERPAW] User: ' + project_creator.display_name + ' requested project: ' + project_name + ' has been APPROVED'
         else:

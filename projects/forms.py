@@ -106,14 +106,6 @@ class ProjectUpdateOwnersForm(forms.ModelForm):
         ]
 
 class ProjectRequestForm(forms.ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super(ProjectRequestForm, self).__init__(*args, **kwargs)
-        self.fields['name'].label = "Name"
-        self.fields['description'].label = "Description"
-        self.fields['is_public'].label = "Is Public"
-
     class Meta:
         model = ProjectRequest
         fields = (
