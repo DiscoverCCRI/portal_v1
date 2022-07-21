@@ -27,7 +27,7 @@ Requirements
 - Docker
 - Docker Compose
 
-The AERPAW Portal is a Django based application, and the portal code itself should be run from your local machine for development. Other aspects of the project are expected to run in Docker (Nginx, database, etc.) and the included configuration files may need to be updated to suit your particular setup. My preferred Python virtual environment is [virtualenv](https://virtualenv.pypa.io/en/latest/), so the documentation herein will make use of it.
+The DISCOVER Portal is a Django based application, and the portal code itself should be run from your local machine for development. Other aspects of the project are expected to run in Docker (Nginx, database, etc.) and the included configuration files may need to be updated to suit your particular setup. My preferred Python virtual environment is [virtualenv](https://virtualenv.pypa.io/en/latest/), so the documentation herein will make use of it.
 
 ## <a name="run-dev"></a>Running the Development Environment
 
@@ -100,11 +100,6 @@ Create a virtual environment at the top level of the repository, activate it, an
 virtualenv -p $PATH_TO_PYTHON3 venv
 source venv/bin/activate
 pip install -r requirements.txt
-```
-
-Install Aerpaw Gateway Client
-```console
-pip install git+https://github.com/AERPAW-Platform-Control/aerpaw-gateway-client.git
 ```
 
 Once completed you should be ready to run the script that launches the Django application using uWSGI
