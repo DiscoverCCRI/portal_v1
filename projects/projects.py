@@ -1,3 +1,4 @@
+from sre_constants import SUCCESS
 import uuid
 
 from django.conf import settings
@@ -177,16 +178,26 @@ def create_new_project_membership_request(request, project_uuid, member_type, me
 
 def create_new_project_request(request, form):
     project_request = ProjectRequest()
-    name = form.data.getlist('name')[0]
-    description = form.data.getlist('description')[0]
+    project_request.name = form.data.getlist('name')[0]
+
+    try:
+        project_request.description = form.data.getlist('description')[0]
+    except IndexError as e:
+        print(e)
+        project_request.description = None
+
+    try:
+        if form.data.getlist('is_public')[0]:
+            project_request.is_public = True
+    except IndexError as e:
+        print(e)
+        project_request.is_public = False
 
     project_request.requested_by = request.user
-    project_request.description = description
     project_request.created_by = request.user
     project_request.created_date = timezone.now()
-    project_request.is_public = False
     project_request.is_approved = False
     project_request.is_completed = False
     project_request.save()
 
-    return name
+    return str(project_request.name)

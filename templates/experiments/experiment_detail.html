@@ -104,14 +104,16 @@
                     <tr>
                         <td>Experiment Link</td>
                         <td><a href="{{ experiment.cloud_link }}" target="_blank">Link To Cloud Storage</a></td>
-                        {% if admin or operator %}
-                            <td>
-                                <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
-                                    <a href="{% url 'experiment_link_update' experiment_uuid=experiment.uuid %}"
-                                       class="unlink">
-                                        Update</a>
-                                </button>
-                            </td>
+                        {% if experiment.can_terminate %}
+                            {% if admin or operator %}
+                                <td>
+                                    <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
+                                        <a href="{% url 'experiment_link_update' experiment_uuid=experiment.uuid %}"
+                                        class="unlink">
+                                            Update</a>
+                                    </button>
+                                </td>
+                            {% endif %}
                         {% endif %}
                     </tr>
                 </table>

@@ -13,7 +13,7 @@
                     <h2>Discover Projects</h2>
                     {% if user.is_project_manager or user.is_site_admin %}
                         <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;">
-                            <a href="{% url 'project_create' %}" class="unlink">Create New Project</a>
+                            <a href="{% url 'project_request' %}" class="unlink">Request New Project</a>
                         </button>
                     {% endif %}
                 </div>

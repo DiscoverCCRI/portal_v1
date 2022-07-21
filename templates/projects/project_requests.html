@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    {% if user.is_authenticated and user.is_aerpaw_user and user.is_user_manager or user.is_site_admin %}
+    {% if user.is_authenticated and user.is_project_manager or user.is_authenticated and user.is_site_admin %}
         <div class="container">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <h2>Project Requests</h2>
@@ -21,16 +21,16 @@
                         <th>Public / Private</th>
                         <th>Approve / Deny</th>
                     </tr>
-                    {% for ur in ou_reqs %}
+                    {% for pr in ou_reqs %}
                         <tr>
-                            <td>Name of Project</td>
-                            <td>Description</td>
-                            <td>Public?</td>
+                            <td>{{ pr.name }}</td>
+                            <td>{{ pr.description }}</td>
+                            <td>{{ pr.is_public }}</td>
                             <td style="text-align: center">
                                 <input type="submit" class="btn btn-success mr-2"
-                                       name="{{ ur.name }}_{{ ur.id }}" value='Approve'>
+                                       name="{{ pr.name }}_{{ pr.id }}" value='Approve'>
                                 <input type="submit" class="btn btn-danger mr-2"
-                                       name="{{ ur.name }}_{{ ur.id }}" value='Deny'>
+                                       name="{{ pr.name }}_{{ pr.id }}" value='Deny'>
                             </td>
                         </tr>
                     {% endfor %}
@@ -39,20 +39,19 @@
             <h3>Completed Requests</h3>
             <table class="table table-striped table-bordered mt-4">
                 <tr>
-                    <th>User</th>
-                    <th>Requested Role</th>
-                    <th>Purpose</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Public or Private</th>
                     <th>Approved?</th>
-                    <th>Notes</th>
                 </tr>
-                <!--{% for ur in cu_reqs %}
+                {% for pr in cu_reqs %}
                     <tr>
-                        <td>Name of Project</td>
-                        <td>Description</td>
-                        <td>is Approved</td>
-                        <td>Public?</td>
+                        <td>{{ pr.name }}</td>
+                        <td>{{ pr.description }}</td>
+                        <td>{{ pr.is_public }}</td>
+                        <td>{{ pr.is_approved }}</td>
                     </tr>
-                {% endfor %}-->
+                {% endfor %}
             </table>
         </div>
     {% else %}
