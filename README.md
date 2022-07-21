@@ -2,7 +2,7 @@
 
 **THIS IS A WORK IN PROGRESS**
 
-Initial development framework for AERPAW Portal
+Initial development framework for DISCOVER Portal
 
 - Web framework ([Django](https://docs.djangoproject.com/en/3.1/))
 - Web server gateway interface ([uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/))
