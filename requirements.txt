@@ -6,5 +6,6 @@ mozilla-django-oidc
 psycopg2-binary
 python-dotenv
 python-jenkins
+pytz
 uWSGI
 -e git+https://github.com/AERPAW-Platform-Control/aerpaw-gateway-client.git#egg=aerpawgw-client
