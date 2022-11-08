@@ -58,7 +58,7 @@ class StageChoice(Enum):   # A subclass of Enum
     DEVELOPMENT = 'Development'
     SANDBOX = 'Sandbox'
     EMULATION = 'Emulation'
-    TESTBED = 'Testbed'
+    #TESTBED = 'Testbed'
 
     @classmethod
     def choices(cls):
