@@ -248,9 +248,9 @@ def get_experiment_list(request):
     :return:
     """
     if request.user.is_operator() or request.user.is_site_admin():
-        experiments = Experiment.objects.order_by('name')
+        experiments = Experiment.objects.order_by('created_date')
     else:
-        experiments = Experiment.objects.filter(experimenter__uuid=request.user.uuid).order_by('name').distinct()
+        experiments = Experiment.objects.filter(experimenter__uuid=request.user.uuid).order_by('created_date').distinct()
     return experiments
 
 
