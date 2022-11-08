@@ -20,7 +20,8 @@
                 {% csrf_token %}
                 {{ form.as_p }}
             </form>
-            <button class="btn btn-success mr-2" type="submit" form="create-experiment" value="save">Save Experiment
+            <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;" type="submit" form="create-experiment" value="save">
+                Save Experiment
             </button>
             <button class="btn btn-secondary mr-2" value="cancel">
                 <a href="{% url 'project_detail' project_uuid=project_uuid %}" class="unlink">Cancel</a>
