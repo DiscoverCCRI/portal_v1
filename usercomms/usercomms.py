@@ -57,13 +57,24 @@ def portal_mail(subject, body_message, sender, receivers, reference_note='', ref
     if sender == email_sender:
         sender = AerpawUser.objects.filter(is_superuser=True).first()
     email_uuid = uuid4()
-    email_body = 'FROM: ' + str(sender.display_name) + \
-                 '\r\nREQUEST: ' + str(reference_note) + \
-                 '\r\n\r\nURL: ' + str(reference_url) + \
-                 '\r\n\r\nMESSAGE: ' + body_message
-    body = 'FROM: ' + str(sender.display_name) + \
-           '\r\nREQUEST: ' + str(reference_note) + \
-           '\r\nMESSAGE: ' + str(body_message)
+    
+    if sender != None:
+        email_body = 'FROM: ' + str(sender.display_name) + \
+                    '\r\nREQUEST: ' + str(reference_note) + \
+                    '\r\n\r\nURL: ' + str(reference_url) + \
+                    '\r\n\r\nMESSAGE: ' + body_message
+        body = 'FROM: ' + str(sender.display_name) + \
+            '\r\nREQUEST: ' + str(reference_note) + \
+            '\r\nMESSAGE: ' + str(body_message)
+    else:
+        email_body = 'FROM: [DISCOVER] User' + \
+                    '\r\nREQUEST: ' + str(reference_note) + \
+                    '\r\n\r\nURL: ' + str(reference_url) + \
+                    '\r\n\r\nMESSAGE: ' + body_message
+        body = 'FROM: [DISCOVER] User' + \
+            '\r\nREQUEST: ' + str(reference_note) + \
+            '\r\nMESSAGE: ' + str(body_message)
+
     receivers_email = []
     for rc in receivers:
         receivers_email.append(rc.email)
