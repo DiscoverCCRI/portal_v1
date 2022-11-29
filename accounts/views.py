@@ -57,7 +57,7 @@ def request_roles(request):
         form = AerpawRoleRequestForm(request.POST, user=request.user)
         if form.is_valid():
             role_request = create_new_role_request(request, form)
-            subject = '[AERPAW] User: ' + request.user.display_name + ' has requested role: ' + role_request
+            subject = '[DISCOVER] User: ' + request.user.display_name + ' has requested role: ' + role_request
             body_message = form.cleaned_data['purpose']
             sender = request.user
             receivers = []
