@@ -84,7 +84,7 @@ please refer to relevant instructions before attempting to use this Portal.
 - AERPAW Acceptable Use Policy: https://sites.google.com/ncsu.edu/aerpaw-wiki/aerpaw-user-manual/2-experiment-web-portal/acceptable-use-policy-aup
 """
         reference_note = 'New user signup for: ' + user.display_name
-        subject = '[AERPAW] Welcome ' + user.display_name + ' to the AERPAW portal!'
+        subject = '[DISCOVER] Welcome ' + user.display_name + ' to the AERPAW portal!'
         receivers = [user]
         try:
             portal_mail(subject=subject, body_message=body_message, sender=sender, receivers=receivers,
