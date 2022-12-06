@@ -96,10 +96,10 @@ def project_detail(request, project_uuid):
         proj_mem_request.is_completed = True
         proj_mem_request.save()
         if is_approved:
-            subject = '[AERPAW] User: ' + user_obj.display_name + ' request to join project: ' + project.name + ' has been APPROVED'
+            subject = '[DISCOVER] User: ' + user_obj.display_name + ' request to join project: ' + project.name + ' has been APPROVED'
             reference_url = 'https://' + str(request.get_host()) + '/projects/' + str(project_uuid)
         else:
-            subject = '[AERPAW] User: ' + user_obj.display_name + ' request to join project: ' + project.name + ' has been DENIED'
+            subject = '[DISCOVER] User: ' + user_obj.display_name + ' request to join project: ' + project.name + ' has been DENIED'
             reference_url = None
         body_message = notes
         sender = AerpawUser.objects.get(id=request.user.id)
@@ -163,7 +163,7 @@ def project_join(request, project_uuid):
                 member_type = 'OWNER'
             body_message = form.cleaned_data['message']
             reference_note = 'Join project ' + str(project.name) + ' as ' + member_type
-            subject = '[AERPAW] User: ' + sender.display_name + ' has requested to join project: ' + \
+            subject = '[DISCOVER] User: ' + sender.display_name + ' has requested to join project: ' + \
                       project.name + ' as ' + member_type
             receivers = [project.project_creator]
             project_owners = project.project_owners.order_by('username')
@@ -250,7 +250,7 @@ def project_update_members(request, project_uuid):
             try:
                 if project_members_added:
                     reference_note = 'Added to project ' + str(project.name) + ' as MEMBER'
-                    subject = '[AERPAW] User: ' + sender.display_name + ' has ADDED you to project: ' + \
+                    subject = '[DISCOVER] User: ' + sender.display_name + ' has ADDED you to project: ' + \
                               project.name + ' as MEMBER'
                     body_message = 'A project owner has added you to ' + project.name + \
                                    '. If you believe this to be in error please contact the project owner direclty'
@@ -259,7 +259,7 @@ def project_update_members(request, project_uuid):
                                 reference_note=reference_note, reference_url=reference_url)
                 if project_members_removed:
                     reference_note = 'Removed from project ' + str(project.name) + ' as MEMBER'
-                    subject = '[AERPAW] User: ' + sender.display_name + ' has REMOVED you from project: ' + \
+                    subject = '[DISCOVER] User: ' + sender.display_name + ' has REMOVED you from project: ' + \
                               project.name + ' as MEMBER'
                     body_message = 'A project owner has removed you from ' + project.name + \
                                    '. If you believe this to be in error please contact the project owner directly'
@@ -314,7 +314,7 @@ def project_update_owners(request, project_uuid):
             try:
                 if project_owners_added:
                     reference_note = 'Added to project ' + str(project.name) + ' as OWNER'
-                    subject = '[AERPAW] User: ' + sender.display_name + ' has ADDED you to project: ' + \
+                    subject = '[DISCOVER] User: ' + sender.display_name + ' has ADDED you to project: ' + \
                               project.name + ' as OWNER'
                     body_message = 'A project owner has added you to ' + project.name + \
                                    '. If you believe this to be in error please contact the project owner direclty'
@@ -323,7 +323,7 @@ def project_update_owners(request, project_uuid):
                                 reference_note=reference_note, reference_url=reference_url)
                 if project_owners_removed:
                     reference_note = 'Removed from project ' + str(project.name) + ' as OWNER'
-                    subject = '[AERPAW] User: ' + sender.display_name + ' has REMOVED you from project: ' + \
+                    subject = '[DISCOVER] User: ' + sender.display_name + ' has REMOVED you from project: ' + \
                               project.name + ' as OWNER'
                     body_message = 'A project owner has removed you from ' + project.name + \
                                    '. If you believe this to be in error please contact the project owner directly'
@@ -393,7 +393,7 @@ def request_project(request):
             project_request = create_new_project_request(request, form)
 
             # initialize email message to admin team members
-            subject = '[AERPAW] User: ' + request.user.display_name + ' has requested project: ' + project_request
+            subject = '[DISCOVER] User: ' + request.user.display_name + ' has requested project: ' + project_request
             body_message = form.cleaned_data['description']
             sender = request.user
             receivers = []
@@ -461,9 +461,9 @@ def project_requests(request):
 
         # Initialize email parts
         if is_approved:
-            subject = '[AERPAW] User: ' + project_creator.display_name + ' requested project: ' + project_name + ' has been APPROVED'
+            subject = '[DISCOVER] User: ' + project_creator.display_name + ' requested project: ' + project_name + ' has been APPROVED'
         else:
-            subject = '[AERPAW] User: ' + project_creator.display_name + ' requested project: ' + project_name + ' has been DENIED'
+            subject = '[DISCOVER] User: ' + project_creator.display_name + ' requested project: ' + project_name + ' has been DENIED'
         body_message = ''
         sender = user_manager
         receivers = [project_creator]
