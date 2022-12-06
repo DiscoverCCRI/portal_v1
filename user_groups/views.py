@@ -71,9 +71,9 @@ def user_requests(request):
         role_request.save()
         # TODO: email
         if is_approved:
-            subject = '[AERPAW] User: ' + user_obj.display_name + ' requested role: ' + r_name + ' has been APPROVED'
+            subject = '[DISCOVER] User: ' + user_obj.display_name + ' requested role: ' + r_name + ' has been APPROVED'
         else:
-            subject = '[AERPAW] User: ' + user_obj.display_name + ' requested role: ' + r_name + ' has been DENIED'
+            subject = '[DISCOVER] User: ' + user_obj.display_name + ' requested role: ' + r_name + ' has been DENIED'
         body_message = notes
         sender = user_manager
         receivers = [user_obj]
