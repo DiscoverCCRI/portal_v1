@@ -75,16 +75,15 @@ class MyOIDCAB(OIDCAuthenticationBackend):
         sender = settings.EMAIL_HOST_USER
         reference_url = 'https://' + str(self.request.get_host()) + '/accounts/profile'
         body_message = """
-Welcome to the AERPAW Portal
+Welcome to the DISCOVER Portal
         
 User manuals, tutorials, and other relevant documentation can be found at the following links; 
 please refer to relevant instructions before attempting to use this Portal.
-- AERPAW main website: https://www.aerpaw.org
-- AERPAW wiki: https://sites.google.com/ncsu.edu/aerpaw-wiki
-- AERPAW Acceptable Use Policy: https://sites.google.com/ncsu.edu/aerpaw-wiki/aerpaw-user-manual/2-experiment-web-portal/acceptable-use-policy-aup
+- DISCOVER main website: https://www.discoverccri.org
+- DISCOVER wiki: Coming Soon
 """
         reference_note = 'New user signup for: ' + user.display_name
-        subject = '[AERPAW] Welcome ' + user.display_name + ' to the AERPAW portal!'
+        subject = '[DISCOVER] Welcome ' + user.display_name + ' to the DISCOVER portal!'
         receivers = [user]
         try:
             portal_mail(subject=subject, body_message=body_message, sender=sender, receivers=receivers,
