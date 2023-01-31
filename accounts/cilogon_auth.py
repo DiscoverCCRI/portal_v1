@@ -80,7 +80,7 @@ Welcome to the DISCOVER Portal
 User manuals, tutorials, and other relevant documentation can be found at the following links; 
 please refer to relevant instructions before attempting to use this Portal.
 - DISCOVER main website: https://www.discoverccri.org
-- DISCOVER wiki: Coming Soon
+- DISCOVER wiki: https://sites.google.com/view/discover-user-manual/welcome
 """
         reference_note = 'New user signup for: ' + user.display_name
         subject = 'Welcome ' + user.display_name + ' to the DISCOVER portal!'
