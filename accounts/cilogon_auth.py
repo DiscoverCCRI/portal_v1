@@ -83,7 +83,7 @@ please refer to relevant instructions before attempting to use this Portal.
 - DISCOVER wiki: Coming Soon
 """
         reference_note = 'New user signup for: ' + user.display_name
-        subject = '[DISCOVER] Welcome ' + user.display_name + ' to the DISCOVER portal!'
+        subject = 'Welcome ' + user.display_name + ' to the DISCOVER portal!'
         receivers = [user]
         try:
             portal_mail(subject=subject, body_message=body_message, sender=sender, receivers=receivers,
