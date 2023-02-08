@@ -14,7 +14,7 @@
             <form method="POST" class="form-group">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <input class="btn btn-success mr-2" type="submit" value="Submit"/>
+                <input class="btn btn-success mr-2" style="background-color:#076AE0!important;" type="submit" value="Submit"/>
                 <button class="btn btn-secondary mr-2">
                     <a href="{% url 'projects' %}" class="unlink">Cancel</a>
                 </button>
