@@ -9,6 +9,9 @@
     {% if user.is_authenticated %}
         <div class="container">
             <h2>Discover Role Requests</h2>
+            <p>
+                Welcome to the DiscoverCCRI Role Requests page. Here you can request for a specific role in the portal.
+            </p>
             {% if has_role_options %}
                 <form id="request-role" method="POST" class="post-form">
                     {% csrf_token %}
