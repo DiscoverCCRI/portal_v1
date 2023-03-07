@@ -53,25 +53,24 @@ def ack_mail(template: str, user_name: str, user_email: str, **kwargs) -> None:
 def portal_mail(subject, body_message, sender, receivers, reference_note='', reference_url=''):
     if receivers is None:
         receivers = []
+    
     email_sender = settings.EMAIL_HOST_USER
+    
     if sender == email_sender:
         sender = AerpawUser.objects.filter(is_superuser=True).first()
+    
     email_uuid = uuid4()
     
     if sender != None:
-        email_body = 'FROM: ' + str(sender.display_name) + \
-                    '\r\nREQUEST: ' + str(reference_note) + \
-                    '\r\n\r\nURL: ' + str(reference_url) + \
-                    '\r\n\r\nMESSAGE: ' + body_message
-        body = 'FROM: ' + str(sender.display_name) + \
-            '\r\nREQUEST: ' + str(reference_note) + \
-            '\r\nMESSAGE: ' + str(body_message)
+        display_name_from = "[DISCOVER] User"
     else:
-        email_body = 'FROM: [DISCOVER] User' + \
+        display_name_from = str(sender.display_name)
+        
+    email_body = 'FROM: ' + display_name_from + \
                     '\r\nREQUEST: ' + str(reference_note) + \
                     '\r\n\r\nURL: ' + str(reference_url) + \
                     '\r\n\r\nMESSAGE: ' + body_message
-        body = 'FROM: [DISCOVER] User' + \
+    body = 'FROM: ' + display_name_from + \
             '\r\nREQUEST: ' + str(reference_note) + \
             '\r\nMESSAGE: ' + str(body_message)
 

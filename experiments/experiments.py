@@ -186,8 +186,12 @@ def send_request_to_testbed(request, experiment):
         if action == 'SUBMIT':
             message += "Testbed Experiment Description: {}\n\n".format(experiment.submit_notes)
         if action == 'START' or action == 'SUBMIT':
-            session_req = generate_experiment_session_request(request, experiment)
-            message += "Experiment {} Session Request:\n{}\n".format(experiment.stage, session_req)
+            try:
+                session_req = generate_experiment_session_request(request, experiment)
+                session_req_json=json.dumps(session_req) #dict to json str
+            except TypeError:
+                session_req_json=json.dumps({"experiment_resource_definition":"Unable to serialize the object"})
+            message += "Experiment {} Session Request:\n{}\n".format(experiment.stage, session_req_json)
 
         receivers = []
         operators = list(AerpawUser.objects.filter(groups__name='operator'))
