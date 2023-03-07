@@ -108,15 +108,15 @@ Navigate to [https://127.0.0.1:8443/](https://127.0.0.1:8443/) in your browser (
 
 Once on the main page you should observe the following:
 
-![](docs/images/landing_page.png)
+![](docs/images/landing_page.PNG)
 
 Follow the [Log In]() link to the `login.html` page, and proceed to CILogon
 
-![](docs/images/cilogon_page.png)
+![](docs/images/cilogon_page.PNG)
 
 Choose your identity provider from the dropdown and authenticate. Upon successful authentication you should see a page populated with your CILogon Claims as provided by your identity provider.
 
-![](docs/images/user_page.png)
+![](docs/images/user_page.PNG)
 
 ## <a name="run-in-docker"></a>Running everything in Docker
 
