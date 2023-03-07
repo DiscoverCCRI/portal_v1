@@ -2,21 +2,13 @@
 
 **THIS IS A WORK IN PROGRESS**
 
-Initial development framework for DISCOVER Portal
-
-- Web framework ([Django](https://docs.djangoproject.com/en/3.1/))
-- Web server gateway interface ([uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/))
-- Web server / reverse proxy ([Nginx](https://hub.docker.com/_/nginx/))
-- Database ([PostgreSQL](https://www.postgresql.org/docs/12/index.html))
-- OIDC Authentication ([CILogon](https://www.cilogon.org/oidc))
-- OpenSSL development certificates ([OpenSSL](https://www.openssl.org))
-
 ## Table of Contents
 
 - [Setting up your Development Environment](#setup)
 - [Running the Development Environment](#run-dev)
 - [Running everything in Docker](#run-in-docker)
 - [Cleaning it all up](#cleanup)
+- [Technologies](#technologies)
 - [User model](#user-model)
 
 ## <a name="setup"></a>Setting up your Development Environment
@@ -116,15 +108,15 @@ Navigate to [https://127.0.0.1:8443/](https://127.0.0.1:8443/) in your browser (
 
 Once on the main page you should observe the following:
 
-![](docs/images/home.png)
+![](docs/images/landing_page.png)
 
 Follow the [Log In]() link to the `login.html` page, and proceed to CILogon
 
-![](docs/images/cilogon.png)
+![](docs/images/cilogon_page.png)
 
 Choose your identity provider from the dropdown and authenticate. Upon successful authentication you should see a page populated with your CILogon Claims as provided by your identity provider.
 
-![](docs/images/authenticated.png)
+![](docs/images/user_page.png)
 
 ## <a name="run-in-docker"></a>Running everything in Docker
 
@@ -187,7 +179,7 @@ aerpaw-portal | spawned uWSGI worker 1 (pid: 670, cores: 1)
 
 Navigate to [https://127.0.0.1:8443/](https://127.0.0.1:8443/) in your browser (may encounter a security warning due to using a self signed certificate) and you should observe the following:
 
-![](docs/images/home.png)
+![](docs/images/landing_page.png)
 
 ## <a name="cleanup"></a>Cleaning it all up
 
@@ -232,6 +224,15 @@ Some directories are created and populated during the running of the application
 - `accounts/migrations/` - generated database migrations that map the Python objects to the database tables (as more Django apps are added, more migrations directories will begin to appear)
 - `static/` and `media/` - the contents of these directories depend on the css, js, and additional static artifacts required to run the site and are expected to evolve over time
 
+## <a name="technologies"></a>Initial development framework for DISCOVER Portal
+
+- Web framework ([Django](https://docs.djangoproject.com/en/3.1/))
+- Web server gateway interface ([uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/))
+- Web server / reverse proxy ([Nginx](https://hub.docker.com/_/nginx/))
+- Database ([PostgreSQL](https://www.postgresql.org/docs/12/index.html))
+- OIDC Authentication ([CILogon](https://www.cilogon.org/oidc))
+- OpenSSL development certificates ([OpenSSL](https://www.openssl.org))
+
 ## <a name="user-model"></a>User model
 
 The `AerpawUser` custom user model extends the base user model with OIDC Claims discovered on login. 
@@ -250,9 +251,6 @@ Base User objects have the following fields:
 - **is\_superuser** - Boolean. Designates that this user has all permissions without explicitly assigning them
 - **last\_login** - A datetime of the user’s last login
 - **date\_joined** - A datetime designating when the account was created
-
-#Create super user
-$python manage.py createsuperuser
 
 
 Ref: [https://docs.djangoproject.com/en/3.1/ref/contrib/auth/](https://docs.djangoproject.com/en/3.1/ref/contrib/auth/)
