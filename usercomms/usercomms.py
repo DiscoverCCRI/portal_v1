@@ -61,7 +61,7 @@ def portal_mail(subject, body_message, sender, receivers, reference_note='', ref
     
     email_uuid = uuid4()
     
-    if sender.display_name == None:
+    if sender == None:
         display_name_from = "[DISCOVER] User"
     else:
         display_name_from = str(sender.display_name)
