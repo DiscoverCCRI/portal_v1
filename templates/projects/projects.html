@@ -16,7 +16,7 @@
                         Welcome to the DiscoverCCRI Project Portal page. This page reveals what projects you currently have access to as well as all ongoing public Discover projects. If you would like to participate in a public project please click the “Join” button under the Public Project section.
                     </p>
                     {% if user.is_project_manager or user.is_site_admin %}
-                        <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;">
+                        <button class="btn btn-success mr-2" style = "background-color:#076AE0!important; margin-left: 3rem;">
                             <a href="{% url 'project_request' %}" class="unlink">Request New Project</a>
                         </button>
                     {% endif %}
