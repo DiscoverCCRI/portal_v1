@@ -30,10 +30,10 @@ class ResourceTypeChoice(Enum):   # A subclass of Enum
         return [(key.value, key.name) for key in cls]
 
 class ResourceLocationChoice(Enum):   # A subclass of Enum
-    DCS = 'DCS'
-    LAKEWHEELER = 'LakeWheeler'
-    CENTENNIAL = 'Centennial'
-    CARY = 'Cary'
+    NAUCORE = "NAU Core"
+    HATRANCH = "Hat Ranch"
+    NAVAJO_TECH = "Navajo Tech"
+    CLEMSON = "Clemson"
     RENCIEMULAB = 'RENCIEmulab'   # need correspondent entry in .env for the urn
     OTHERS = 'Others'
     @classmethod

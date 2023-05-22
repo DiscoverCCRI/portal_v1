@@ -235,7 +235,7 @@ Some directories are created and populated during the running of the application
 
 ## <a name="user-model"></a>User model
 
-The `AerpawUser` custom user model extends the base user model with OIDC Claims discovered on login. 
+The `DiscoverUser` custom user model extends the base user model with OIDC Claims discovered on login. 
 
 Base User objects have the following fields:
 

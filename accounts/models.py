@@ -1,11 +1,12 @@
 # accounts/models.py
 
-import uuid
+# import files
 from enum import Enum
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
+
+import uuid
 
 
 # class AerpawUserRoleChoice(Enum):  # A subclass of Enum
@@ -19,8 +20,9 @@ from django.utils import timezone
 #     def choices(cls):
 #         return [(key.value, key.name) for key in cls]
 
-
+# DISCOVER User Roles
 class AerpawUserRoleChoice(Enum):  # A subclass of Enum
+    # Roles
     site_admin = 'Administrator'
     operator = 'Operator'
     project_manager = 'Principal Investigator (PI)'
@@ -103,8 +105,10 @@ def is_project_member(user, project_group):
     print(user.groups.all())
     return user.groups.filter(name=project_group).exists()
 
-
+# DISCOVER User Signup (CILogon)
+# Model stores user information from CILogon
 class AerpawUserSignup(models.Model):
+    # Attributes
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(AerpawUser, on_delete=models.CASCADE, primary_key=True)
     name = models.CharField(max_length=255)
@@ -117,10 +121,12 @@ class AerpawUserSignup(models.Model):
     )
     publickey = models.TextField(null=True)
 
+    # class method
     def __str__(self):
         return self.user.oidc_claim_email
 
-
+# DISCOVER Role Request
+# 
 class AerpawRoleRequest(models.Model):
     # User = get_user_model()
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
