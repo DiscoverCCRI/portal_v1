@@ -23,6 +23,7 @@ User = get_user_model()
 
 class Project(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
+    github_link = models.CharField( max_length=255, blank=False, null=False )
     description = models.TextField()
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     is_public = models.BooleanField(default=False)
@@ -87,6 +88,7 @@ class ProjectRequest(models.Model):
     requested_by = models.ForeignKey(
         AerpawUser, related_name='project_request_requested_by', on_delete=models.CASCADE, null=True, blank=True
     )
+    github_link = models.CharField( max_length=255, blank=False, null=False )
     description = models.TextField()
     is_public = models.BooleanField(default=False)
     is_approved = models.BooleanField(default=False)

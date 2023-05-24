@@ -16,6 +16,7 @@ class ProjectCreateForm(forms.ModelForm):
         fields = [
             'name',
             'description',
+            'github_link',
             'is_public'
         ]
 
@@ -26,6 +27,7 @@ class ProjectUpdateForm(forms.ModelForm):
         fields = (
             'name',
             'description',
+            'github_link',
             'is_public'
         )
 
@@ -111,5 +113,6 @@ class ProjectRequestForm(forms.ModelForm):
         fields = (
             'name',
             'description',
+            'github_link',
             'is_public'
         )

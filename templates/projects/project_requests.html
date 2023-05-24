@@ -18,6 +18,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
+                        <th>Github link</th>
                         <th>Public / Private</th>
                         <th>Approve / Deny</th>
                     </tr>
@@ -25,6 +26,7 @@
                         <tr>
                             <td>{{ pr.name }}</td>
                             <td>{{ pr.description }}</td>
+                            <td><a href="{{pr.github_link}}">{{ pr.github_link }}</a></td>
                             <td>{{ pr.is_public }}</td>
                             <td style="text-align: center">
                                 <input type="submit" class="btn btn-success mr-2"
@@ -41,6 +43,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
+                    <td>Github Link</td>
                     <th>Public or Private</th>
                     <th>Approved?</th>
                 </tr>
@@ -48,6 +51,7 @@
                     <tr>
                         <td>{{ pr.name }}</td>
                         <td>{{ pr.description }}</td>
+                        <td><a href="{{pr.github_link}}">{{ pr.github_link }}</a></td>
                         <td>{{ pr.is_public }}</td>
                         <td>{{ pr.is_approved }}</td>
                     </tr>

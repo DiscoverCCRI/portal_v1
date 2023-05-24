@@ -179,6 +179,7 @@ def create_new_project_membership_request(request, project_uuid, member_type, me
 def create_new_project_request(request, form):
     project_request = ProjectRequest()
     project_request.name = form.data.getlist('name')[0]
+    project_request.github_link = form.data.getlist('github_link')[0]
 
     try:
         project_request.description = form.data.getlist('description')[0]
