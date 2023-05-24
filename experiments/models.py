@@ -94,6 +94,7 @@ class Experiment(models.Model):
     )
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
+    github_link = models.CharField( max_length=255, blank=False, null=False, default="" )
     description = models.TextField()
     experimenter = models.ManyToManyField(
         AerpawUser, related_name='experiment_of_experimenter'

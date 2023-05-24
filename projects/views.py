@@ -445,7 +445,6 @@ def project_requests(request):
             project.uuid = uuid.uuid4()
             project.name = project_request.name
             project.description = project_request.description
-            project.github_link = project_request.github_link
             project.is_public = project_request.is_public
 
             project.project_creator = project_request.requested_by

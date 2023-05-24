@@ -42,6 +42,7 @@ class ExperimentCreateForm(forms.ModelForm):
         fields = [
             'name',
             'description',
+            'github_link',
             'profile'
         ]
 
@@ -205,6 +206,7 @@ class ExperimentUpdateForm(forms.ModelForm):
         fields = (
             'name',
             'description',
+            'github_link'
         )
 
 
@@ -307,6 +309,7 @@ class ExperimentAdminForm(forms.ModelForm):
         fields = (
             'name',
             'description',
+            'github_link',
             'experimenter',
             'modified_by',
             'modified_date',

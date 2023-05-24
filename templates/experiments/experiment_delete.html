@@ -16,6 +16,10 @@
                         <td>{{ experiment.description }}</td>
                     </tr>
                     <tr>
+                        <td>Github Link</td>
+                        <td><a href="{{experiment.github_link}}">{{ experiment.github_link }}</a></td>
+                    </tr>
+                    <tr>
                         <td>Project</td>
                         <td>
                             {% for member in project %}

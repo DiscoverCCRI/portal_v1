@@ -14,6 +14,8 @@
                     <tr>
                         <td>Description</td>
                         <td>{{ experiment.description }}</td>
+                        <td>Github Link</td>
+                        <td><a href="{{experiment.github_link}}">{{ experiment.github_link }}</a></td>
                         {% if is_creator or is_exp or admin %}
                             <td>
                                 <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
