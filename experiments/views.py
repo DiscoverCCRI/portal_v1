@@ -199,7 +199,7 @@ def experiment_update_by_ops(request, experiment_uuid):
             experiment_uuid = update_existing_experiment(request, experiment, form, prev_stage,
                                                          prev_state)
             if experiment.message is not None and experiment.message != "":
-                subject = 'Aerpaw Experiment Notification: {}'.format(experiment.uuid)
+                subject = 'DISCOVER Experiment Notification: {}'.format(experiment.uuid)
                 email_message = "[{}]\n\n".format(subject) \
                                 + "Experiment Name: {}\n".format(str(experiment)) \
                                 + "Project: {}\n\n".format(experiment.project) \
