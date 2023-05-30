@@ -60,7 +60,18 @@ class ResourceCreateForm(forms.ModelForm):
 
     class Meta:
         model = Resource
-        fields = '__all__'
+        fields = [
+            'name',
+            'description',
+            'resourceType',
+            'units',
+            'availableUnits',
+            'location',
+            'stage',
+            'created_date',
+            'ip_address',
+            'hostname'
+        ]
 
 
 class ResourceChangeForm(forms.ModelForm):

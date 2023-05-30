@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from enum import Enum
-import uuid
+import uuid, os
 
 from accounts.models import AerpawUser
 
@@ -34,7 +34,7 @@ class ResourceLocationChoice(Enum):   # A subclass of Enum
     HATRANCH = "Hat Ranch"
     NAVAJO_TECH = "Navajo Tech"
     CLEMSON = "Clemson"
-    RENCIEMULAB = 'RENCIEmulab'   # need correspondent entry in .env for the urn
+    #RENCIEMULAB = 'RENCIEmulab'   # need correspondent entry in .env for the urn
     OTHERS = 'Others'
     @classmethod
     def choices(cls):
@@ -58,6 +58,7 @@ class Resource(models.Model):
       max_length=64,
       choices=ResourceLocationChoice.choices(),
     )
+    locationURL = models.URLField(max_length = 300, default="https://www.google.com/maps/d/u/0/viewer?mid=1kgubHXowj8c08ZAUqjlIMpbmugo&hl=en&ll=35.18135920444196%2C-111.64538796598629&z=16")
 
     stage=models.CharField(
       max_length=64,
@@ -90,3 +91,16 @@ class Resource(models.Model):
 
     def get_resource_stage(self):
       return self.stage
+    
+    def save( self, *args, **kwargs ):
+      resource_map = {
+        "NAU Core" : os.getenv('DISCOVER_NAU_CORE_MAP'),
+        "Hat Ranch" : os.getenv('DISCOVER_HAT_RANCH_MAP'),
+        "Navajo Tech" : os.getenv('DISCOVER_NAVAJO_TECH_MAP'),
+        "Clemson" : os.getenv('DISCOVER_CLEMSON_MAP'),
+        "Others" : os.getenv('DISCOVER_OTHERS_MAP'),
+      }
+
+      self.locationURL = resource_map[ self.location ]
+      
+      super().save(*args, **kwargs )

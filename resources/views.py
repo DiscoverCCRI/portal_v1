@@ -60,7 +60,13 @@ def resources(request):
     resources_json = get_resources_json(resources)
     reserved_resource = get_all_reserved_units(24, 2)
     reservations_json = get_reservations_json(reserved_resource)
-    resource_map = os.getenv('AERPAW_MAP_URL')
+    resource_map = {
+        "NAU Core" : os.getenv('DISCOVER_NAU_CORE_MAP'),
+        "Hat Ranch" : os.getenv('DISCOVER_HAT_RANCH_MAP'),
+        "Navajo Tech" : os.getenv('DISCOVER_NAVAJO_TECH_MAP'),
+        "Clemson" : os.getenv('DISCOVER_CLEMSON_MAP'),
+        "Others" : os.getenv('DISCOVER_OTHERS_MAP'),
+    }
 
     # resource type list
     resource_list = []
