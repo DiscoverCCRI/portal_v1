@@ -58,7 +58,7 @@ class Resource(models.Model):
       max_length=64,
       choices=ResourceLocationChoice.choices(),
     )
-    locationURL = models.URLField(max_length = 200, default="https://www.google.com/maps/d/u/0/viewer?mid=1kgubHXowj8c08ZAUqjlIMpbmugo&hl=en&ll=35.18135920444196%2C-111.64538796598629&z=16")
+    locationURL = models.URLField(max_length = 300, default="https://www.google.com/maps/d/u/0/viewer?mid=1kgubHXowj8c08ZAUqjlIMpbmugo&hl=en&ll=35.18135920444196%2C-111.64538796598629&z=16")
 
     stage=models.CharField(
       max_length=64,
