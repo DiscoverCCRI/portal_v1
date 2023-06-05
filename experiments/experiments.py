@@ -35,6 +35,7 @@ def create_new_experiment(request, form, project_id):
     # request.session['experiment_uuid'] = experiment.uuid
     experiment.name = form.data.getlist('name')[0]
     experiment.github_link = form.data.getlist('github_link')[0]
+    experiment.cloudstorage_link = form.data.getlist('cloudstorage_link')[0]
     try:
         experiment.description = form.data.getlist('description')[0]
         profile = Profile.objects.get(id=int(form.data.getlist('profile')[0]))

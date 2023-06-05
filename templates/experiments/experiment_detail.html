@@ -14,8 +14,6 @@
                     <tr>
                         <td>Description</td>
                         <td>{{ experiment.description }}</td>
-                        <td>Github Link</td>
-                        <td><a href="{{experiment.github_link}}">{{ experiment.github_link }}</a></td>
                         {% if is_creator or is_exp or admin %}
                             <td>
                                 <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
@@ -67,6 +65,14 @@
                     </tr>
                     -->
                     <tr>
+                        <td>Github Link</td>
+                        <td><a href="{{experiment.github_link}}">{{ experiment.github_link }}</a></td>                  
+                    </tr>
+                    <tr>
+                        <td>Cloud Storage Link</td>
+                        <td><a href="{{experiment.cloudstorage_link}}">{{ experiment.cloudstorage_link }}</a></td>
+                    </tr>
+                    <tr>
                         <td>Mode</td>
                         <td>{{ experiment.stage }}</td>
                     </tr>
@@ -104,8 +110,6 @@
                         {% endif %}
                     </tr>
                     <tr>
-                        <td>Experiment Link</td>
-                        <td><a href="{{ experiment.cloud_link }}" target="_blank">Link To Cloud Storage</a></td>
                         {% if experiment.can_terminate %}
                             {% if admin or operator %}
                                 <td>
