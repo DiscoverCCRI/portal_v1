@@ -15,6 +15,8 @@
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
+                    <th>Github Link</th>
+                    <th>Cloud Storage Link</th>
                     <th>Project</th>
                     <th>Created By</th>
                     <th>Created Date</th>
@@ -28,6 +30,8 @@
                             </a>
                         </td>
                         <td>{{ experiment.description }}</td>
+                        <td><a href="{{experiment.github_link}}">{{ experiment.github_link }}</a></td>
+                        <td><a href="{{experiment.cloudstorage_link}}">{{ experiment.cloudstorage_link }}</a></td>
                         <td>{{ experiment.project }}</td>
                         <td>{{ experiment.created_by }}</td>
                         <td>{{ experiment.created_date }}</td>
