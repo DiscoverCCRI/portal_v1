@@ -32,7 +32,7 @@ class ExperimentCreateForm(forms.ModelForm):
                                                Q(is_template=True)).order_by('name').distinct()
         self.fields['profile'] = ExperimentModelChoiceField(
             queryset=self.profiles,
-            required=True,
+            required=False,
             widget=forms.Select(),
             label='Experiment Resource Definition',
         )

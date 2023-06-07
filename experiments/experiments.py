@@ -343,7 +343,8 @@ def generate_experiment_session_request(request, experiment):
         session_req['ap_msg_type'] = 'experiment_{}_session_request'.format(
             experiment.stage).lower()
 
-    resources = parse_profile(request, experiment.profile.profile)
+    #resources = parse_profile(request, experiment.profile.profile)
+    resources = None
     if resources is None:
         return None
     resource_def = {'experiment_uuid': str(experiment.uuid), 'experiment_idx': experiment.id,
