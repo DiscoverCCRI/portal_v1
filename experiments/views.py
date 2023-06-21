@@ -203,7 +203,7 @@ def experiment_update_by_ops(request, experiment_uuid):
                 email_message = "Experiment {} has been updated to new stage\n\n".format(str(experiment)) \
                                 + "Experiment ID: {}\n".format(experiment.uuid) \
                                 + "Project: {}\n\n".format(experiment.project) \
-                                + "Notification/Message:\n{}\n".format(experiment.message)
+                                + "Operator Comments:\n{}\n".format(experiment.message)
                 receivers = [experimenter]
                 reference_url = 'https://' + str(request.get_host()) \
                             + '/experiments/{}'.format(experiment.uuid)

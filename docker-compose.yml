@@ -3,7 +3,7 @@ services:
 
   database:
     image: postgres:14
-    container_name: aerpaw-db
+    container_name: discover-db
     restart: unless-stopped
     ports:
       - ${POSTGRES_PORT}:5432
@@ -18,7 +18,7 @@ services:
 
   nginx:
     image: nginx:1
-    container_name: aerpaw-nginx
+    container_name: discover-nginx
     restart: unless-stopped
     ports:
       - ${NGINX_HTTP_PORT}:80
