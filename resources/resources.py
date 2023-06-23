@@ -93,6 +93,27 @@ def update_existing_resource(request, resource, form):
     resource.save()
     return str(resource.uuid)
 
+def get_filtered_resource( request ):
+    """
+    param - request: A map with filtering information
+    request fields: type( String ) and capabilities( Array of strings )
+
+    return - Resources matching the filtered request
+    """
+    resource_type = request['type']
+
+    resource_capabilities = request['capabilities']
+
+    resources = Resource.objects.filter( resourceType=resource_type )
+
+    if len( resource_capabilities ) > 0:
+        for resource in resources:
+            if resource.capabilities == resource_capabilities:
+                return resource
+        return None
+    else:
+        return resources
+
 
 def delete_existing_resource(request, resource):
     """

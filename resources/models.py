@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 from enum import Enum
 import uuid, os
@@ -20,10 +21,11 @@ class ResourceStageChoice(Enum):   # A subclass of Enum
         return [(key.value, key.name) for key in cls]
 
 class ResourceTypeChoice(Enum):   # A subclass of Enum
-    CLOUD= 'Cloud'
+    CLOUD = 'Cloud'
     SANDBOX = 'Sandbox'
-    FIXEDNODE = 'FixedNode'
-    PORTABLENODE = 'PortableNode'
+    DRONE = 'Drone'
+    ROVER = 'Rover'
+    STATIONARY = 'Stationary'
     OTHERS = 'Others'
     @classmethod
     def choices(cls):
@@ -44,6 +46,9 @@ class ResourceLocationChoice(Enum):   # A subclass of Enum
 class Resource(models.Model):
     admin=models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
+
+    capabilities = ArrayField( models.CharField( max_length = 50, blank = True ),
+                                                 size = 10, default = list )
 
     name=models.CharField(max_length=32)
     description = models.TextField()
