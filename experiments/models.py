@@ -94,6 +94,8 @@ class Experiment(models.Model):
     )
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
+    github_link = models.CharField( max_length=255, blank=False, null=False, default="" )
+    cloudstorage_link = models.CharField( max_length=255, blank=False, null=False, default="" )
     description = models.TextField()
     experimenter = models.ManyToManyField(
         AerpawUser, related_name='experiment_of_experimenter'
@@ -123,8 +125,6 @@ class Experiment(models.Model):
     is_snapshotted = models.BooleanField(default=False, blank=True, null=True)
 
     state = FSMIntegerField(default=0, blank=True, null=True, choices=STATE_CHOICES)
-
-    cloud_link = models.URLField(max_length=200)
 
     @transition(field=state, source=STATE_IDLE, target=STATE_PROVISIONING)
     def provision(self):

@@ -199,20 +199,18 @@ def experiment_update_by_ops(request, experiment_uuid):
             experiment_uuid = update_existing_experiment(request, experiment, form, prev_stage,
                                                          prev_state)
             if experiment.message is not None and experiment.message != "":
-                subject = 'DISCOVER Experiment Notification: {}'.format(str(experiment))
-                email_message = "Experiment {} has been updated to new stage\n\n".format(str(experiment)) \
-                                + "Experiment ID: {}\n".format(experiment.uuid) \
+                subject = 'DISCOVER Experiment Notification: {}'.format(experiment.uuid)
+                email_message = "[{}]\n\n".format(subject) \
+                                + "Experiment Name: {}\n".format(str(experiment)) \
                                 + "Project: {}\n\n".format(experiment.project) \
                                 + "Operator Comments:\n{}\n".format(experiment.message)
                 receivers = [experimenter]
-                reference_url = 'https://' + str(request.get_host()) \
-                            + '/experiments/{}'.format(experiment.uuid)
                 logger.warning("send_email:\n" + subject)
                 logger.warning(email_message)
                 logger.warning("receivers = {}\n".format(receivers))
                 portal_mail(subject=subject, body_message=email_message, sender=request.user,
                             receivers=receivers,
-                            reference_note=None, reference_url=reference_url)
+                            reference_note=None, reference_url=None)
 
             return redirect('experiment_detail', experiment_uuid=str(experiment.uuid))
 

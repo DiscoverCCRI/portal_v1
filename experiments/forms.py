@@ -42,6 +42,8 @@ class ExperimentCreateForm(forms.ModelForm):
         fields = [
             'name',
             'description',
+            'github_link',
+            'cloudstorage_link',
             'profile'
         ]
 
@@ -205,6 +207,8 @@ class ExperimentUpdateForm(forms.ModelForm):
         fields = (
             'name',
             'description',
+            'github_link',
+            'cloudstorage_link'
         )
 
 
@@ -307,6 +311,8 @@ class ExperimentAdminForm(forms.ModelForm):
         fields = (
             'name',
             'description',
+            'github_link',
+            'cloudstorage_link',
             'experimenter',
             'modified_by',
             'modified_date',
@@ -320,5 +326,5 @@ class ExperimentLinkUpdateForm(forms.ModelForm):
     class Meta:
         model = Experiment
         fields = (
-            'cloud_link',
+            'cloudstorage_link',
         )
