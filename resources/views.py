@@ -14,6 +14,25 @@ from urllib3.exceptions import MaxRetryError
 from .forms import ResourceCreateForm, ResourceChangeForm
 from .resources import *
 
+capabilityMap = {
+        'gimbal': 'Gimbal and RGB/IR Camera',
+        'lidar': 'LIDAR',
+        'jetson': 'Jetson Nano',
+        'sdr': 'Software Defined Radio',
+        '5g': '5G module(s)',
+        'camera': 'Camera',
+        'gps': 'GPS',
+        't12': 'TEROS-12',
+        't21': 'TEROS-21',
+        'tts': 'Thermistor Temperature Sensor',
+        'tsl259': 'TSL25911FN',
+        'bme': 'BME280',
+        'icm': 'ICM20948',
+        'ltr': 'LTR390-UV-1',
+        'sgp': 'SGP40',
+        'cws': 'Compact Weather Sensor'
+    }
+
 
 def get_resources_json(resources):
     refactored_rescources_dict = {}
@@ -101,6 +120,7 @@ def resource_create(request):
             return redirect('resource_detail', resource_uuid=resource_uuid)
     else:
         form = ResourceCreateForm()
+
     return render(request, 'resource_create.html', {'form': form})
 
 
@@ -116,7 +136,7 @@ def resource_detail(request, resource_uuid):
     resource_reservations = resource.reservation_of_resource
     resource_map = os.getenv('AERPAW_MAP_URL')
     return render(request, 'resource_detail.html',
-                  {'resource': resource, 'reservations': resource_reservations.all(), 'resource_map': resource_map})
+                  {'resource': resource, 'reservations': resource_reservations.all(), 'resource_map': resource_map, 'capabilityMap': capabilityMap })
 
 
 @login_required()
@@ -157,4 +177,4 @@ def resource_delete(request, resource_uuid):
         is_removed = delete_existing_resource(request, resource)
         if is_removed:
             return redirect('resources')
-    return render(request, 'resource_delete.html', {'resource': resource})
+    return render(request, 'resource_delete.html', {'resource': resource, 'capabilityMap': capabilityMap})
