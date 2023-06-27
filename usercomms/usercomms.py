@@ -69,7 +69,7 @@ def portal_mail(subject, body_message, sender, receivers, reference_note='', ref
     if reference_note != None:
         email_body = 'FROM: ' + display_name_from + \
                         '\r\nREQUEST: ' + str(reference_note) + \
-                        '\r\n\r\n<strong>MESSAGE:</strong> ' + body_message + \
+                        '\r\n\r\nMESSAGE: ' + body_message + \
                         '\r\n\rURL: ' + str(reference_url)
         body = 'FROM: ' + display_name_from + \
                 '\r\nREQUEST: ' + str(reference_note) + \
