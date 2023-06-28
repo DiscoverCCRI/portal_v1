@@ -321,7 +321,8 @@ class ExperimentAdminForm(forms.ModelForm):
         )
 
 class ExperimentLinkUpdateForm(forms.ModelForm):
-    cloud_link = forms.URLField(required=True)
+
+    cloudstorage_link = forms.CharField( required=True )
 
     class Meta:
         model = Experiment

@@ -8,17 +8,20 @@
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
-            <h2>Cloud of Experiment "{{ experiment.name }}"</h2>
+            <h3>Update Cloud Link - Experiment "{{ experiment.name }}"</h3>
             <div class="container">
-                <h2>Update Cloud Link</h2>
+                <div style="margin-bottom: 20px;">
+                    Cloud Storage Link (now): <a href="{{experiment.cloudstorage_link}}" target="_blank">{{ experiment.cloudstorage_link }}</a></td>
+                </div>
                 <form method="POST" class="form-group">
                     {% csrf_token %}
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <button type="submit" name="cloud_link" value="cloud_link" class="btn btn-success">Save Link</button>
+                            <button type="submit" name="cloudstorage_link" value="cloudstorage_link" class="btn btn-success">Update Link</button>
                         </div>
-                        <input type="text" name="cloud_link">
+                        <input type="text" name="cloudstorage_link" placeholder="New Cloud Storage Link">
                     </div>
+                    
                     <button class="btn btn-secondary mr-2">
                         <a href="{% url 'experiment_detail' experiment_uuid=experiment_uuid %}" class="unlink">Cancel</a>
                     </button>

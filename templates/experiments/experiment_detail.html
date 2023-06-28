@@ -71,6 +71,17 @@
                     <tr>
                         <td>Cloud Storage Link</td>
                         <td><a href="{{experiment.cloudstorage_link}}">{{ experiment.cloudstorage_link }}</a></td>
+                        {% if experiment.can_terminate and is_not_testbed %}
+                            {% if is_creator or is_exp or admin or operator %}
+                                <td>
+                                    <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
+                                        <a href="{% url 'experiment_link_update' experiment_uuid=experiment.uuid %}"
+                                        class="unlink">
+                                            Update</a>
+                                    </button>
+                                </td>
+                            {% endif %}
+                        {% endif %}
                     </tr>
                     <tr>
                         <td>Mode</td>
@@ -107,19 +118,6 @@
                                         Manifest</a>
                                 </button>
                             </td>
-                        {% endif %}
-                    </tr>
-                    <tr>
-                        {% if experiment.can_terminate %}
-                            {% if admin or operator %}
-                                <td>
-                                    <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
-                                        <a href="{% url 'experiment_link_update' experiment_uuid=experiment.uuid %}"
-                                        class="unlink">
-                                            Update</a>
-                                    </button>
-                                </td>
-                            {% endif %}
                         {% endif %}
                     </tr>
                 </table>
