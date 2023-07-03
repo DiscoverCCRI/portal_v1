@@ -12,10 +12,11 @@ from projects.models import Project
 from usercomms.usercomms import portal_mail
 from .experiments import get_experiment_list, generate_experiment_session_request, create_new_experiment, \
     get_emulab_manifest, experiment_state_change, query_emulab_instance_status, \
-    delete_existing_experiment, is_emulab_stage, initiate_emulab_instance, update_existing_experiment
+    delete_existing_experiment, is_emulab_stage, initiate_emulab_instance, update_existing_experiment, get_filtered_resource
 from .forms import ExperimentCreateForm, ExperimentLinkUpdateForm, ExperimentUpdateExperimentersForm, ExperimentUpdateForm, ExperimentSubmitForm, \
     ExperimentUpdateByOpsForm
 from .models import Experiment
+
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,7 @@ def experiment_create(request):
     if request.method == "POST":
         form = ExperimentCreateForm(request.POST, project_id=project_id)
         if form.is_valid():
-            experiment_uuid = create_new_experiment(request, form, project_id)
+            experiment_uuid = create_new_experiment(request, form, project_id )
             return redirect('experiment_detail', experiment_uuid=experiment_uuid)
     elif request.user.is_anonymous:
         form = None

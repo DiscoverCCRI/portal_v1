@@ -47,6 +47,16 @@
                             </td>
                         {% endif %}
                     </tr>
+                    <tr>
+                        <td>Resources</td>
+                        <td>
+                            {% for resource in experiment.resources.all %}
+                                <li>
+                                    <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}">{{ resource.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </td>
+                    </tr>
                     <!--
                     <tr>
                         <td>Reservations</td>

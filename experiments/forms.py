@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.forms import ModelChoiceField
-
+from django.contrib.postgres.fields import ArrayField
 from accounts.models import AerpawUser
 from profiles.models import Profile
 from projects.models import Project
@@ -22,12 +22,14 @@ class ExperimentModelChoiceField(ModelChoiceField):
 
 
 class ExperimentCreateForm(forms.ModelForm):
+
     def __init__(self, *args, **kwargs):
         self.project_id = kwargs.pop('project_id', None)
         super(ExperimentCreateForm, self).__init__(*args, **kwargs)
         # self.public_projects = list(Project.objects.filter(is_public=True).values_list('id', flat=True))
         # if self.project_id not in self.public_projects:
         #     self.public_projects.append(self.project_id)
+        '''
         self.profiles = Profile.objects.filter(Q(project_id=int(self.project_id)) |
                                                Q(is_template=True)).order_by('name').distinct()
         self.fields['profile'] = ExperimentModelChoiceField(
@@ -36,6 +38,25 @@ class ExperimentCreateForm(forms.ModelForm):
             widget=forms.Select(),
             label='Experiment Resource Definition',
         )
+        '''
+
+    capabilities = [ ('gimbal','Gimbal and RGB/IR Camera'), ('lidar','LIDAR'), 
+                 ('jetson', 'Jetson Nano'), ('sdr', 'Software Defined Radio'), 
+                 ('5g', '5G module(s)'),
+                 ('camera','Camera'), ('gps','GPS'),
+                 ('t12','TEROS-12' ), ('t21','TEROS-21'), 
+                 ('tts', 'Thermistor Temperature Sensor'), 
+                 ('tsl259','TSL25911FN'),('bme', 'BME280'), 
+                 ('icm', 'ICM20948'), ('ltr', 'LTR390-UV-1' ),
+                 ('sgp', 'SGP40' ), ('cws', 'Compact Weather Sensor') ]
+    
+    capabilities = forms.MultipleChoiceField(
+        required = False,
+        widget = forms.CheckboxSelectMultiple(),
+        choices = capabilities,
+    )
+
+
 
     class Meta:
         model = Experiment
@@ -44,8 +65,9 @@ class ExperimentCreateForm(forms.ModelForm):
             'description',
             'github_link',
             'cloudstorage_link',
-            'profile'
+            'capabilities'
         ]
+    
 
 
 class ExperimentUpdateExperimentersForm(forms.ModelForm):

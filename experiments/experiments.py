@@ -36,29 +36,21 @@ def create_new_experiment(request, form, project_id):
     experiment.name = form.data.getlist('name')[0]
     experiment.github_link = form.data.getlist('github_link')[0]
     experiment.cloudstorage_link = form.data.getlist('cloudstorage_link')[0]
+
     try:
         experiment.description = form.data.getlist('description')[0]
-        profile = Profile.objects.get(id=int(form.data.getlist('profile')[0]))
-        if profile.is_template:
-            profile.pk = None
-            profile.id = None
-            profile.save()
-            profile.uuid = uuid.uuid4()
-            profile.is_template = False
-            profile.name = profile.name + ' (copy)'
-            profile.created_by = request.user
-            profile.modified_by = request.user
-            profile.created_date = timezone.now()
-            profile.modified_date = timezone.now()
-            profile.project = Project.objects.get(id=str(project_id))
-            profile.save()
-        experiment.profile = profile
     except ValueError as e:
         print(e)
-        experiment.profile = None
+    experiment.profile = None
     experiment.created_by = request.user
     experiment.created_date = timezone.now()
     experiment.save()
+
+    resources = get_filtered_resource( 
+                            form.data.getlist('capabilities') ) 
+    
+    experiment.resources.set( resources )
+    print( experiment.resources.all() )
 
     experiment.project = Project.objects.get(id=str(project_id))
     experiment.experimenter.add(request.user)
@@ -91,6 +83,28 @@ def create_new_experiment(request, form, project_id):
     # experiment.save()
 
     return str(experiment.uuid)
+
+def get_filtered_resource( capabilities ):
+    """
+    param - capabilities: An array with filtering information
+
+    return - Resources matching the filtered request
+    """
+    matchedResources = []
+
+    resources = Resource.objects.all()
+
+    if len( capabilities ) > 0:
+        for resource in resources:
+            resourceMatch = True 
+            for cap in capabilities:
+                if cap not in resource.capabilities:
+                    resourceMatch = False
+            if resourceMatch:
+                matchedResources.append( resource )
+        return matchedResources
+    else:
+        return resources
 
 
 def update_experimenter(experiment, experimenter_id_list):
@@ -245,6 +259,36 @@ def delete_existing_experiment(request, experiment):
     except Exception as e:
         print(e)
     return False
+
+def produce_experiment_yaml_file( request ):
+    """
+    param request - Map of strings
+    fields- type: string
+            capabilities: Array of strings
+            dependencies: Array of strings
+    return- None
+    """
+        
+    resource_type = request['type']
+    resource_cap = request['capabilities']
+    resource_dep = request['dependencies']
+
+    file_pointer = open("experiment.yaml", "x")
+
+    file_pointer.write("device:\n")
+    file_pointer.write(f"    - type: { resource_type }\n")
+    file_pointer.write(f"    - capabilities:\n")
+
+    for cap in resource_cap:
+        file_pointer.write(f"       - { cap }\n")
+
+    file_pointer.write("code:\n")
+    file_pointer.write("    - dependencies:\n")
+
+    for dep in resource_dep:
+        file_pointer.write(f"       - { dep }\n")
+
+    file_pointer.close()
 
 
 def get_experiment_list(request):

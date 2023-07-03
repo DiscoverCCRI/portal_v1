@@ -5,10 +5,11 @@ from enum import Enum
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django_fsm import transition, FSMIntegerField
+from django.contrib.postgres.fields import ArrayField
 
 from accounts.models import AerpawUser
 from projects.models import Project
-from resources.models import ResourceStageChoice
+from resources.models import ResourceStageChoice, Resource
 from profiles.models import Profile
 import logging
 
@@ -93,6 +94,7 @@ class Experiment(models.Model):
         (STATE_SUBMIT, 'submitted')
     )
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
+    resources = models.ManyToManyField( Resource ) 
     name = models.CharField(max_length=255)
     github_link = models.CharField( max_length=255, blank=False, null=False, default="" )
     cloudstorage_link = models.CharField( max_length=255, blank=False, null=False, default="" )

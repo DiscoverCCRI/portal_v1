@@ -14,6 +14,7 @@ from urllib3.exceptions import MaxRetryError
 from .forms import ResourceCreateForm, ResourceChangeForm
 from .resources import *
 
+#Turns array values into displayable strings
 capabilityMap = {
         'gimbal': 'Gimbal and RGB/IR Camera',
         'lidar': 'LIDAR',
@@ -135,8 +136,12 @@ def resource_detail(request, resource_uuid):
     resource = get_object_or_404(Resource, uuid=UUID(str(resource_uuid)))
     resource_reservations = resource.reservation_of_resource
     resource_map = os.getenv('AERPAW_MAP_URL')
+    resource_capabilities = translate_cap_list( resource )
     return render(request, 'resource_detail.html',
-                  {'resource': resource, 'reservations': resource_reservations.all(), 'resource_map': resource_map, 'capabilityMap': capabilityMap })
+                  { 'resource': resource, 
+                    'reservations': resource_reservations.all(), 
+                    'resource_map': resource_map,
+                    'capabilityMap': resource_capabilities })
 
 
 @login_required()
@@ -159,7 +164,8 @@ def resource_update(request, resource_uuid):
         form = ResourceChangeForm(instance=resource)
     return render(request, 'resource_update.html',
                   {
-                      'form': form, 'resource_uuid': str(resource_uuid), 'resource_name': resource.name}
+                      'form': form, 'resource_uuid': str(resource_uuid),
+                                                'resource_name': resource.name}
                   )
 
 
@@ -173,8 +179,22 @@ def resource_delete(request, resource_uuid):
     :return:
     """
     resource = get_object_or_404(Resource, uuid=UUID(str(resource_uuid)))
+    resource_capabilities = translate_cap_list( resource )
     if request.method == "POST":
         is_removed = delete_existing_resource(request, resource)
         if is_removed:
             return redirect('resources')
-    return render(request, 'resource_delete.html', {'resource': resource, 'capabilityMap': capabilityMap})
+    return render(request, 'resource_delete.html', {'resource': resource, 
+                                        'capabilityMap': resource_capabilities})
+
+
+def translate_cap_list( resource ):
+    """
+    param: resource
+    return: List of capabilities to be displayed
+    """
+    resource_capabilities = []
+    for cap in resource.capabilities:
+        resource_capabilities.append( capabilityMap[ cap ] )
+
+    return resource_capabilities

@@ -19,6 +19,9 @@
             <form id="create-experiment" method="POST" class="post-form">
                 {% csrf_token %}
                 {{ form.as_p }}
+                <h2>Resources</h2>
+                {% csrf_token %}
+                {{ resources.as_p }}
             </form>
             <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;" type="submit" form="create-experiment" value="save">
                 Save Experiment
