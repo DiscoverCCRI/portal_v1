@@ -83,6 +83,14 @@
                         <td><a href="{{experiment.cloudstorage_link}}">{{ experiment.cloudstorage_link }}</a></td>
                     </tr>
                     <tr>
+                        <td>Experiment Dependencies</td>
+                        <td>
+                            {% for dep in experiment.dependencies %}
+                                <li>{{ dep }}</li>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Mode</td>
                         <td>{{ experiment.stage }}</td>
                     </tr>

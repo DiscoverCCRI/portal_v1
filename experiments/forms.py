@@ -39,7 +39,6 @@ class ExperimentCreateForm(forms.ModelForm):
             label='Experiment Resource Definition',
         )
         '''
-
     capabilities = [ ('gimbal','Gimbal and RGB/IR Camera'), ('lidar','LIDAR'), 
                  ('jetson', 'Jetson Nano'), ('sdr', 'Software Defined Radio'), 
                  ('5g', '5G module(s)'),
@@ -50,13 +49,17 @@ class ExperimentCreateForm(forms.ModelForm):
                  ('icm', 'ICM20948'), ('ltr', 'LTR390-UV-1' ),
                  ('sgp', 'SGP40' ), ('cws', 'Compact Weather Sensor') ]
     
+    dependencies = forms.CharField(
+        widget=forms.Textarea( attrs={'rows': 6, 'cols': 60} ),
+        required=False,
+        label='Dependencies',
+    )
+    
     capabilities = forms.MultipleChoiceField(
         required = False,
         widget = forms.CheckboxSelectMultiple(),
         choices = capabilities,
     )
-
-
 
     class Meta:
         model = Experiment

@@ -37,6 +37,8 @@ def create_new_experiment(request, form, project_id):
     experiment.github_link = form.data.getlist('github_link')[0]
     experiment.cloudstorage_link = form.data.getlist('cloudstorage_link')[0]
 
+    experiment.dependencies = parse_string( form.data.getlist('dependencies')[0])
+
     try:
         experiment.description = form.data.getlist('description')[0]
     except ValueError as e:
@@ -50,7 +52,6 @@ def create_new_experiment(request, form, project_id):
                             form.data.getlist('capabilities') ) 
     
     experiment.resources.set( resources )
-    print( experiment.resources.all() )
 
     experiment.project = Project.objects.get(id=str(project_id))
     experiment.experimenter.add(request.user)
@@ -105,7 +106,20 @@ def get_filtered_resource( capabilities ):
         return matchedResources
     else:
         return resources
-
+    
+def parse_string( rawInput ):
+    depList = []
+    currentString = ""
+    for item in rawInput:
+        if item == '\r':
+            depList.append( currentString )
+            currentString = ""
+        elif item != '\n':
+            currentString += item
+    #Last item doesn't have terminating chars
+    depList.append( currentString )
+    
+    return depList
 
 def update_experimenter(experiment, experimenter_id_list):
     """

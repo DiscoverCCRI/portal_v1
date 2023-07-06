@@ -94,7 +94,9 @@ class Experiment(models.Model):
         (STATE_SUBMIT, 'submitted')
     )
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
-    resources = models.ManyToManyField( Resource ) 
+    resources = models.ManyToManyField( Resource )
+    dependencies = ArrayField( models.CharField( max_length = 100, blank = True ),
+                                                size = 20, default = list )
     name = models.CharField(max_length=255)
     github_link = models.CharField( max_length=255, blank=False, null=False, default="" )
     cloudstorage_link = models.CharField( max_length=255, blank=False, null=False, default="" )
