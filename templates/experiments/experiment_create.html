@@ -19,9 +19,16 @@
             <form id="create-experiment" method="POST" class="post-form">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <h2>Resources</h2>
-                {% csrf_token %}
-                {{ resources.as_p }}
+                {% for resource in resources.all %}
+                    <option value="{{ resource.uuid }}">
+                        <div>
+                            <h2>{{ resource.name }}</h2>
+                            <p>Hardware Type: {{ resource.resourceType }}</p>
+                            <p>Description: {{ resource.description }}</p>
+                            <p>Location: {{ resource.location }}</p>
+                        </div>
+                    </option>
+                {% endfor %}
             </form>
             <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;" type="submit" form="create-experiment" value="save">
                 Save Experiment

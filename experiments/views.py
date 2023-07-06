@@ -51,7 +51,8 @@ def experiment_create(request):
     else:
         form = ExperimentCreateForm(project_id=project_id)
     return render(request, 'experiment_create.html',
-                  {'form': form, 'project_uuid': str(project.uuid), 'project_id': str(project.id)})
+                  {'form': form, 'project_uuid': str(project.uuid),
+                   'project_id': str(project.id) })
 
 
 @login_required()

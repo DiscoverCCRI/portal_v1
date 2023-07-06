@@ -9,14 +9,14 @@ class ResourceCreateForm(forms.ModelForm):
 
     capabilities = [ ('gimbal','Gimbal and RGB/IR Camera'), ('lidar','LIDAR'), 
                  ('jetson', 'Jetson Nano'), ('sdr', 'Software Defined Radio'), 
-                 ('5g', '5G module(s)'),
-                 ('camera','Camera'), ('gps','GPS'),
+                 ('5g', '5G module(s)'), ('rasPi', 'Raspberry Pi'),
+                 ('camera','Camera'), ('gps','GPS'), ('modem','Modem'),
                  ('t12','TEROS-12' ), ('t21','TEROS-21'), 
                  ('tts', 'Thermistor Temperature Sensor'), 
                  ('tsl259','TSL25911FN'),('bme', 'BME280'), 
                  ('icm', 'ICM20948'), ('ltr', 'LTR390-UV-1' ),
                  ('sgp', 'SGP40' ), ('cws', 'Compact Weather Sensor') ]
- 
+
     name = forms.CharField(
         widget=forms.TextInput(attrs={'size': 60}),
         required=True,
