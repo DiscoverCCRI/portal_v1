@@ -37,7 +37,8 @@ def create_new_experiment(request, form, project_id):
     experiment.github_link = form.data.getlist('github_link')[0]
     experiment.cloudstorage_link = form.data.getlist('cloudstorage_link')[0]
 
-    experiment.dependencies = parse_string( form.data.getlist('dependencies')[0])
+    experiment.dependencies = parse_string( 
+                                        form.data.getlist('dependencies')[0] )
 
     try:
         experiment.description = form.data.getlist('description')[0]
@@ -48,11 +49,13 @@ def create_new_experiment(request, form, project_id):
     experiment.created_date = timezone.now()
     experiment.save()
 
+    '''
     resources = get_filtered_resource( 
                             form.data.getlist('capabilities') ) 
     
     experiment.resources.set( resources )
-
+    '''
+    
     experiment.project = Project.objects.get(id=str(project_id))
     experiment.experimenter.add(request.user)
     experiment.modified_by = experiment.created_by

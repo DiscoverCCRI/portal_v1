@@ -1,13 +1,13 @@
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.forms import ModelChoiceField
-from django.contrib.postgres.fields import ArrayField
 from accounts.models import AerpawUser
 from profiles.models import Profile
 from projects.models import Project
 from reservations.models import Reservation
 from .models import Experiment, UserStageChoice, StageChoice
 from django.db.models import Q
+from resources.models import ResourceTypeChoice
 
 
 class ExperimentModelChoiceField(ModelChoiceField):
@@ -39,7 +39,8 @@ class ExperimentCreateForm(forms.ModelForm):
             label='Experiment Resource Definition',
         )
         '''
-    capabilities = [ ('gimbal','Gimbal and RGB/IR Camera'), ('lidar','LIDAR'), 
+
+    capabilities_list = [ ('gimbal','Gimbal and RGB/IR Camera'), ('lidar','LIDAR'), 
                  ('jetson', 'Jetson Nano'), ('sdr', 'Software Defined Radio'), 
                  ('5g', '5G module(s)'),
                  ('camera','Camera'), ('gps','GPS'),
@@ -48,17 +49,25 @@ class ExperimentCreateForm(forms.ModelForm):
                  ('tsl259','TSL25911FN'),('bme', 'BME280'), 
                  ('icm', 'ICM20948'), ('ltr', 'LTR390-UV-1' ),
                  ('sgp', 'SGP40' ), ('cws', 'Compact Weather Sensor') ]
-    
+
+
     dependencies = forms.CharField(
-        widget=forms.Textarea( attrs={'rows': 6, 'cols': 60} ),
+        widget=forms.Textarea( attrs={'rows': 6, 'cols': 60, 'placeholder': 'List each dependency followed by a new line. Ex:\nmozilla-django-oidc\npsycopg2-binary\npython-dotenv'} ),
         required=False,
         label='Dependencies',
     )
+
+    resourceType = forms.ChoiceField(
+        choices=ResourceTypeChoice.choices(),
+        widget=forms.Select(),
+        required=False,
+        label='Resource Type',
+    )
     
-    capabilities = forms.MultipleChoiceField(
+    capability_filter = forms.MultipleChoiceField(
         required = False,
         widget = forms.CheckboxSelectMultiple(),
-        choices = capabilities,
+        choices = capabilities_list,
     )
 
     class Meta:
@@ -68,7 +77,6 @@ class ExperimentCreateForm(forms.ModelForm):
             'description',
             'github_link',
             'cloudstorage_link',
-            'capabilities'
         ]
     
 

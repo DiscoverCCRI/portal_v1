@@ -19,17 +19,133 @@
             <form id="create-experiment" method="POST" class="post-form">
                 {% csrf_token %}
                 {{ form.as_p }}
-                {% for resource in resources.all %}
-                    <option value="{{ resource.uuid }}">
-                        <div>
-                            <h2>{{ resource.name }}</h2>
-                            <p>Hardware Type: {{ resource.resourceType }}</p>
-                            <p>Description: {{ resource.description }}</p>
-                            <p>Location: {{ resource.location }}</p>
-                        </div>
-                    </option>
-                {% endfor %}
             </form>
+            <h2>
+                Available Resources
+            </h2>
+            <div id="resources">
+                {% for resource in resources.all %}
+                 <div>
+                    <option value="{{ resource.uuid }}">
+                        <h2>Name: {{ resource.name }}</h2><br/>
+                        <p>Description: {{ resource.description }}</p><br/>
+                        <p>Capabilities:</p><br/>
+                        {% for cap in resource.capabilities %}
+                            <li>{{ cap }}</li><br/>
+                        {% endfor %}
+                        <p>Location: {{ resource.location }}</p>
+                    </option>
+                 </div>
+                {% endfor %}
+            </div>
+            <script>
+                const statCap = {
+                    't12': 'TEROS-12',
+                    't21': 'TEROS-21',
+                    'tts': 'Thermistor Temperature Sensor',
+                    'tsl259': 'TSL25911FN',
+                    'bme': 'BME280',
+                    'icm': 'ICM20948',
+                    'ltr': 'LTR390-UV-1',
+                    'sgp': 'SGP40', 
+                    'jetson': 'Jetson Nano',
+                    'cws': 'Compact Weather Sensor'
+                }
+
+                const roverCap = {
+                    'rasPi': 'Raspberry Pi',
+                    'camera': 'Camera',
+                    'modem': 'Modem',
+                    'lidar': 'LIDAR',
+                    'gps': 'GPS'
+                }
+
+                const droneCap = {
+                    'gimbal': 'Gimbal and RGB/IR Camera',
+                    'lidar': 'LIDAR',
+                    'jetson': 'Jetson Nano',
+                    'sdr': 'Software Defined Radio',
+                    '5g': '5G module(s)'
+                }
+
+                const labelStyle = "display:inline-block;margin-bottom:0.5rem;"
+
+                function deleteExistingChildNodes( instance )
+                {
+                    while( instance.firstChild )
+                    {
+                        instance.removeChild( instance.firstChild );
+                    }
+                }
+
+                function capabilityFields( choice )
+                {
+                    let cap = {};
+                    switch( choice )
+                    {
+                            case "Stationary":
+                                cap = statCap;
+                                break;
+                            case "Rover":
+                                cap = roverCap;
+                                break;
+                            case "Drone":
+                                cap = droneCap;
+                                break;
+                    }
+
+                    return cap;
+                }
+
+                function generateFields( capabilities, choice )
+                {
+                    let cap = capabilityFields( choice );
+
+                    deleteExistingChildNodes( capabilities );
+
+                    let index = 0
+                    Object.entries( cap ).forEach( ( [ key, value ] ) => 
+                    {
+                        let newDiv = document.createElement("div");
+                        let id = "id_capabilities_" + index;
+
+                        let newLabel = document.createElement("label");
+
+                        newLabel.htmlFor = id;
+                        newLabel.textContent = value;
+
+                        let newInput = document.createElement("input");
+
+                        newInput.id = id;
+                        newInput.type = "checkbox";
+                        newInput.name = "capabilities";
+                        newInput.value = key;
+
+                        newLabel.appendChild( newInput );
+
+                        newDiv.appendChild( newLabel );
+
+                        capabilities.appendChild( newDiv );
+
+                        index++;
+                    })
+                }
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    var capabilities = document.getElementById(
+                                                            "id_capability_filter");
+
+                    //delete preset django choice nodes
+                    deleteExistingChildNodes( capabilities );
+
+                    var resourceType = document.getElementById(
+                                                            "id_resourceType");
+
+                    resourceType.addEventListener("change", function(){
+                        generateFields( capabilities, resourceType.value );
+                    });
+                });
+            </script>
             <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;" type="submit" form="create-experiment" value="save">
                 Save Experiment
             </button>

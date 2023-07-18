@@ -35,6 +35,16 @@
                     'gps': 'GPS'
                 }
 
+                const droneCap = {
+                    'gimbal': 'Gimbal and RGB/IR Camera',
+                    'lidar': 'LIDAR',
+                    'jetson': 'Jetson Nano',
+                    'sdr': 'Software Defined Radio',
+                    '5g': '5G module(s)'
+                }
+
+                const labelStyle = "display:inline-block;margin-bottom:0.5rem;"
+
                 function deleteExistingChildNodes( instance )
                 {
                     while( instance.firstChild )
@@ -45,6 +55,7 @@
 
                 function capabilityFields( choice )
                 {
+                    let cap = {};
                     switch( choice )
                     {
                             case "Stationary":
@@ -54,10 +65,7 @@
                                 cap = roverCap;
                                 break;
                             case "Drone":
-                                cap = {};
-                                break;
-                            default:
-                                cap = {};
+                                cap = droneCap;
                                 break;
                     }
 
@@ -66,13 +74,12 @@
 
                 function generateFields( capabilities, choice )
                 {
-                    cap = capabilityFields( choice );
+                    let cap = capabilityFields( choice );
 
                     deleteExistingChildNodes( capabilities );
 
-                    index = 0
-                    Object.entries( cap ).forEach(
-                                                        ( [ key, value ] ) => 
+                    let index = 0
+                    Object.entries( cap ).forEach( ( [ key, value ] ) => 
                     {
                         let newDiv = document.createElement("div");
                         let id = "id_capabilities_" + index;

@@ -7,7 +7,7 @@ from .models import Resource,ResourceStageChoice,ResourceTypeChoice,ResourceLoca
 
 class ResourceCreateForm(forms.ModelForm):
 
-    capabilities = [ ('gimbal','Gimbal and RGB/IR Camera'), ('lidar','LIDAR'), 
+    capabilities_choices = [ ('gimbal','Gimbal and RGB/IR Camera'), ('lidar','LIDAR'), 
                  ('jetson', 'Jetson Nano'), ('sdr', 'Software Defined Radio'), 
                  ('5g', '5G module(s)'), ('rasPi', 'Raspberry Pi'),
                  ('camera','Camera'), ('gps','GPS'), ('modem','Modem'),
@@ -39,7 +39,7 @@ class ResourceCreateForm(forms.ModelForm):
     capabilities = forms.MultipleChoiceField(
         required = False,
         widget = forms.CheckboxSelectMultiple(),
-        choices = capabilities,
+        choices = capabilities_choices,
     )
 
     units = forms.IntegerField(
