@@ -34,13 +34,6 @@
                         {% endif %}
                     </li>
 
-                    <!-- RM_CICD -->
-                    {#                {% if user.is_resource_manager or user.is_site_admin %}#}
-                    {#                    <li class="nav-item">#}
-                    {#                        <a class="nav-link" style="color:black; font-family: bold;" href="{% url 'cicd' %}">CI/CD</a>#}
-                    {#                    </li>#}
-                    {#                {% endif %}#}
-                    <!-- RM_CICD -->
                     <li class="nav-item">
                         <a class="nav-link" style= "color:black; font-family: bold;" href="{% url 'resources' %}">Resources</a>
                     </li>
@@ -76,8 +69,6 @@
                         <a class="dropdown-item" style="color:black; font-family: bold;" href="{% url 'profile' %}">User Profile</a>
                         <a class="dropdown-item" style="color:black; font-family: bold;" href="{% url 'usercomms' %}">Messages</a>
                         <a class="dropdown-item" style="color:black; font-family: bold;" href="{% url 'request_roles' %}">Request Roles</a>
-                        {#                        <a class="dropdown-item" href="{% url 'signup' %}">User Signup</a>#}
-                        <a class="dropdown-item" style="color:black; font-family: bold;" href="{% url 'credential' %}">Credential</a>
                     </div>
                 </li>
                 <li class="nav-item">
