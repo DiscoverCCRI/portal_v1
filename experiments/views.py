@@ -205,7 +205,7 @@ def experiment_update_by_ops(request, experiment_uuid):
                 email_message = "[{}]\n\n".format(subject) \
                                 + "Experiment Name: {}\n".format(str(experiment)) \
                                 + "Project: {}\n\n".format(experiment.project) \
-                                + "Notification/Message:\n{}\n".format(experiment.message)
+                                + "Operator Comments:\n{}\n".format(experiment.message)
                 receivers = [experimenter]
                 logger.warning("send_email:\n" + subject)
                 logger.warning(email_message)
