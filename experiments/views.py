@@ -125,6 +125,7 @@ def experiment_detail(request, experiment_uuid):
     is_exp = (request.user in experiment.experimenter.all())
     is_po = (request.user in experiment.project.project_owners.all())
     is_pm = (request.user in experiment.project.project_members.all())
+    is_not_testbed = (experiment.stage != 'Testbed')
     experiment_reservations = experiment.reservation_of_experiment
     request.session['experiment_id'] = experiment.id
 
@@ -149,7 +150,8 @@ def experiment_detail(request, experiment_uuid):
                    'experiment_status': Experiment.STATE_CHOICES[experiment.state][1],
                    'reservations': experiment_reservations.all(),
                    'is_creator': is_creator, 'is_exp': is_exp,
-                   'is_po': is_po, 'is_pm': is_pm}
+                   'is_po': is_po, 'is_pm': is_pm,
+                   'is_not_testbed': is_not_testbed,}
                   )
 
 
@@ -382,16 +384,15 @@ def experiment_link_update(request, experiment_uuid):
     experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
 
     if request.method == "POST":
-        form = ExperimentLinkUpdateForm(request.POST)
+        form = ExperimentLinkUpdateForm(request.POST, instance=experiment)
 
         if form.is_valid():
-            link = form.cleaned_data.get("cloud_link")
-            experiment.cloud_link = link
+            link = form.cleaned_data.get("cloudstorage_link")
+            experiment.cloudstorage_link = link
             experiment.save()
             return redirect('experiment_detail', experiment_uuid=str(experiment.uuid))
-    else:
-        form = ExperimentLinkUpdateForm()
-
+    
+    form = ExperimentLinkUpdateForm(instance=experiment)
     return render(request, 'experiment_link_update.html',
                       {'experiment': experiment,
                        'experiment_uuid': str(experiment_uuid),

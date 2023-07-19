@@ -207,8 +207,6 @@ class ExperimentUpdateForm(forms.ModelForm):
         fields = (
             'name',
             'description',
-            'github_link',
-            'cloudstorage_link'
         )
 
 
@@ -321,7 +319,11 @@ class ExperimentAdminForm(forms.ModelForm):
         )
 
 class ExperimentLinkUpdateForm(forms.ModelForm):
-    cloud_link = forms.URLField(required=True)
+
+    cloudstorage_link = forms.CharField( 
+                            widget=forms.TextInput(attrs={'size': 60}),
+                            required=True
+                        )
 
     class Meta:
         model = Experiment
