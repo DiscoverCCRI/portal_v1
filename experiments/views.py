@@ -125,7 +125,7 @@ def experiment_detail(request, experiment_uuid):
     is_exp = (request.user in experiment.experimenter.all())
     is_po = (request.user in experiment.project.project_owners.all())
     is_pm = (request.user in experiment.project.project_members.all())
-    is_not_testbed = (experiment.stage != 'Testbed')
+    is_idle_stage = (experiment.stage == 'Idle')
     experiment_reservations = experiment.reservation_of_experiment
     request.session['experiment_id'] = experiment.id
 
@@ -151,7 +151,7 @@ def experiment_detail(request, experiment_uuid):
                    'reservations': experiment_reservations.all(),
                    'is_creator': is_creator, 'is_exp': is_exp,
                    'is_po': is_po, 'is_pm': is_pm,
-                   'is_not_testbed': is_not_testbed,}
+                   'is_idle_stage': is_idle_stage,}
                   )
 
 
