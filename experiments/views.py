@@ -299,13 +299,6 @@ def experiment_initiate(request, experiment_uuid):
 
         if not is_emulab_stage(experiment.stage):
             # should check reservation
-            # ...
-            if experiment.created_by.publickey is None:
-                return render(request, 'experiment_initiate.html', {'experiment': experiment,
-                                                                    'experimenter': experiment.experimenter.all(),
-                                                                    'experiment_reservations': experiment_reservations,
-                                                                    'msg': '* Please check if you have ssh publickey uploaded (under Credential Menu).'})
-
             session_req = generate_experiment_session_request(request, experiment)
             if session_req is None:
                 return render(request, 'experiment_initiate.html', {'experiment': experiment,
