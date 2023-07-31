@@ -2,15 +2,18 @@ from uuid import UUID
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-
 from projects.models import Project
-from .cicd import get_cicd_list, get_cicd_host_info_list, create_new_cicd, create_new_cicd_host_info, \
-    update_existing_cicd_host_info
-from .forms import CicdCreateForm, CicdCreateHostInfoForm, CicdUpdateHostInfoForm
-from .jenkins_api import deploy_cicd_environment
-from .jenkins_api import start_cicd_environment, stop_cicd_environment, purge_cicd_environment, info_cicd_environment
+
+from .cicd import (create_new_cicd, create_new_cicd_host_info,
+                   get_cicd_host_info_list, get_cicd_list,
+                   update_existing_cicd_host_info)
+from .forms import (CicdCreateForm, CicdCreateHostInfoForm,
+                    CicdUpdateHostInfoForm)
+from .jenkins_api import (deploy_cicd_environment, info_cicd_environment,
+                          purge_cicd_environment, start_cicd_environment,
+                          stop_cicd_environment)
 from .models import Cicd, CicdHostInfo
 
 

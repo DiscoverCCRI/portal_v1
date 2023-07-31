@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    AERPAW CI/CD
-{% endblock %}
-
+{% block title %}AERPAW CI/CD{% endblock %}
 {% block content %}
     {% if user.is_authenticated and user.is_resource_manager or user.is_site_admin %}
         <div class="container">
@@ -71,18 +67,22 @@
         <div>
             <form action="#" method="get">
                 <button class="btn btn-primary mr-2">
-                    <a href="{% url 'cicd_host_info_update' cicd_host_info_uuid=cicd_hi.uuid %}" class="unlink">Update
-                        Config</a>
+                    <a href="{% url 'cicd_host_info_update' cicd_host_info_uuid=cicd_hi.uuid %}"
+                       class="unlink">Update
+                    Config</a>
                 </button>
-
-                <input type="submit" class="btn btn-danger mr-2" value="Delete/Purge" name="purge_cicd"
+                <input type="submit"
+                       class="btn btn-danger mr-2"
+                       value="Delete/Purge"
+                       name="purge_cicd"
                        onclick="return confirm('Are you sure you want to DELETE: {{ cicd_hi.name }}?')"
                        {% if cicd_hi.is_allocated %}disabled{% endif %}>
                 <button class="btn btn-secondary mr-2">
                     <a href="{% url 'cicd_host_info' %}" class="unlink">Back</a>
                 </button>
             </form>
-            <br><br>
+            <br>
+            <br>
         </div>
     {% else %}
         <div class="container">

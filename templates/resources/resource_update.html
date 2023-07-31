@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Update: {{ resource_name }}
-{% endblock %}
-
+{% block title %}Update: {{ resource_name }}{% endblock %}
 {% block content %}
     {% if user.is_authenticated and user.is_resource_manager %}
         <div class="container">
@@ -13,9 +9,13 @@
                 {% csrf_token %}
                 {{ form.as_p }}
             </form>
-            <button class="btn btn-success mr-2" type="submit" form="update-resource" value="save">Save</button>
+            <button class="btn btn-success mr-2"
+                    type="submit"
+                    form="update-resource"
+                    value="save">Save</button>
             <button class="btn btn-secondary mr-2" value="cancel">
-                <a href="{% url 'resource_detail' resource_uuid=resource_uuid %}" class="unlink">Cancel</a>
+                <a href="{% url 'resource_detail' resource_uuid=resource_uuid %}"
+                   class="unlink">Cancel</a>
             </button>
         </div>
     {% else %}

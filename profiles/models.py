@@ -1,9 +1,8 @@
 import uuid
 
+from accounts.models import AerpawUser
 from django.db import models
 from django.utils import timezone
-
-from accounts.models import AerpawUser
 from projects.models import Project
 from resources.models import ResourceStageChoice
 
@@ -15,18 +14,28 @@ class Profile(models.Model):
     is_template = models.BooleanField(default=False)
 
     project = models.ForeignKey(
-        Project, related_name='profile_of_project', default=None, null=True, on_delete=models.SET_NULL
+        Project,
+        related_name="profile_of_project",
+        default=None,
+        null=True,
+        on_delete=models.SET_NULL,
     )
 
     profile = models.TextField()
 
     created_by = models.ForeignKey(
-        AerpawUser, related_name='profile_created_by', null=True, on_delete=models.SET_NULL
+        AerpawUser,
+        related_name="profile_created_by",
+        null=True,
+        on_delete=models.SET_NULL,
     )
     created_date = models.DateTimeField(default=timezone.now)
 
     modified_by = models.ForeignKey(
-        AerpawUser, related_name='profile_modified_by', null=True, on_delete=models.SET_NULL
+        AerpawUser,
+        related_name="profile_modified_by",
+        null=True,
+        on_delete=models.SET_NULL,
     )
     modified_date = models.DateTimeField(blank=True, null=True)
 
@@ -40,7 +49,7 @@ class Profile(models.Model):
     )
 
     class Meta:
-        verbose_name = 'AERPAW Profile'
+        verbose_name = "AERPAW Profile"
 
     def __str__(self):
         return self.name

@@ -1,15 +1,9 @@
-from django.urls import path
 from django.conf.urls import include
+from django.urls import path
 
-from .views import(
-    cicd,
-    cicd_host_info,
-    cicd_create,
-    cicd_host_info_create,
-    cicd_detail,
-    cicd_host_info_detail,
-    cicd_host_info_update
-)
+from .views import (cicd, cicd_create, cicd_detail, cicd_host_info,
+                    cicd_host_info_create, cicd_host_info_detail,
+                    cicd_host_info_update)
 
 urlpatterns = [
     path('', cicd, name='cicd'),
