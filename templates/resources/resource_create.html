@@ -43,8 +43,6 @@
                     '5g': '5G module(s)'
                 }
 
-                const labelStyle = "display:inline-block;margin-bottom:0.5rem;"
-
                 function deleteExistingChildNodes( instance )
                 {
                     while( instance.firstChild )
@@ -78,10 +76,11 @@
 
                     deleteExistingChildNodes( capabilities );
 
+                    let newDiv = document.createElement("div");
+                    
                     let index = 0
                     Object.entries( cap ).forEach( ( [ key, value ] ) => 
                     {
-                        let newDiv = document.createElement("div");
                         let id = "id_capabilities_" + index;
 
                         let newLabel = document.createElement("label");
@@ -95,15 +94,23 @@
                         newInput.type = "checkbox";
                         newInput.name = "capabilities";
                         newInput.value = key;
+                        newInput.style = "margin-right: 10px; margin-left: 3px;";
 
                         newLabel.appendChild( newInput );
 
-                        newDiv.appendChild( newLabel );
+                        if( index != 0 && index % 3 == 0 )
+                        {
+                            let newBreak = document.createElement("br");
 
-                        capabilities.appendChild( newDiv );
+                            newDiv.appendChild( newBreak );
+                        }
+
+                        newDiv.appendChild( newLabel );
 
                         index++;
                     })
+
+                    capabilities.appendChild( newDiv );
                 }
 
                 document.addEventListener('DOMContentLoaded', function() {

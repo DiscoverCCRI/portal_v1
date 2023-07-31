@@ -20,22 +20,18 @@
                 {% csrf_token %}
                 {{ form.as_p }}
             </form>
+            <p id="no_capabilities">No capabilities for secleted resource type.</p>
             <h2>
                 Available Resources
             </h2>
             <div id="resources">
                 {% for resource in resources.all %}
-                 <div>
-                    <option value="{{ resource.uuid }}">
-                        <h2>Name: {{ resource.name }}</h2><br/>
-                        <p>Description: {{ resource.description }}</p><br/>
-                        <p>Capabilities:</p><br/>
-                        {% for cap in resource.capabilities %}
-                            <li>{{ cap }}</li><br/>
-                        {% endfor %}
-                        <p>Location: {{ resource.location }}</p>
-                    </option>
-                 </div>
+                    <input style="margin-left: 10px;" type="checkbox" value="{{ resource.uuid }}">
+                        <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}" target="_blank">{{ resource.name }}({{ resource.resourceType }})</a>
+                        {% if forloop.counter|divisibleby:3 %}
+                            <br/>
+                        {% endif %}
+                 </input>
                 {% endfor %}
             </div>
             <script>
@@ -67,8 +63,6 @@
                     'sdr': 'Software Defined Radio',
                     '5g': '5G module(s)'
                 }
-
-                const labelStyle = "display:inline-block;margin-bottom:0.5rem;"
 
                 function deleteExistingChildNodes( instance )
                 {
@@ -103,32 +97,51 @@
 
                     deleteExistingChildNodes( capabilities );
 
+                    let newDiv = document.createElement("div");
+
+                    let noCapabilities = document.getElementById("no_capabilities");
+                    
                     let index = 0
-                    Object.entries( cap ).forEach( ( [ key, value ] ) => 
+                    if( cap == statCap || cap == roverCap || cap == droneCap )
                     {
-                        let newDiv = document.createElement("div");
-                        let id = "id_capabilities_" + index;
+                        noCapabilities.style.visibility = "hidden";
+                        Object.entries( cap ).forEach( ( [ key, value ] ) => 
+                        {
+                            let id = "id_capabilities_" + index;
 
-                        let newLabel = document.createElement("label");
+                            let newLabel = document.createElement("label");
 
-                        newLabel.htmlFor = id;
-                        newLabel.textContent = value;
+                            newLabel.htmlFor = id;
+                            newLabel.textContent = value;
 
-                        let newInput = document.createElement("input");
+                            let newInput = document.createElement("input");
 
-                        newInput.id = id;
-                        newInput.type = "checkbox";
-                        newInput.name = "capabilities";
-                        newInput.value = key;
+                            newInput.id = id;
+                            newInput.type = "checkbox";
+                            newInput.name = "capabilities";
+                            newInput.value = key;
+                            newInput.style = "margin-right: 10px; margin-left: 3px;";
 
-                        newLabel.appendChild( newInput );
+                            newLabel.appendChild( newInput );
 
-                        newDiv.appendChild( newLabel );
+                            if( index != 0 && index % 3 == 0 )
+                            {
+                                let newBreak = document.createElement("br");
 
-                        capabilities.appendChild( newDiv );
+                                newDiv.appendChild( newBreak );
+                            }
 
-                        index++;
-                    })
+                            newDiv.appendChild( newLabel );
+
+                            index++;
+                        })
+                    }
+                    else
+                    {
+                        noCapabilities.style.visibility = "visible";
+                    }
+
+                    capabilities.appendChild( newDiv );
                 }
 
                 document.addEventListener('DOMContentLoaded', function() {

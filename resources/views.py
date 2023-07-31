@@ -19,6 +19,7 @@ capabilityMap = {
         'gimbal': 'Gimbal and RGB/IR Camera',
         'lidar': 'LIDAR',
         'jetson': 'Jetson Nano',
+        'rasPi': 'Raspberry Pi',
         'sdr': 'Software Defined Radio',
         '5g': '5G module(s)',
         'camera': 'Camera',
@@ -31,7 +32,8 @@ capabilityMap = {
         'icm': 'ICM20948',
         'ltr': 'LTR390-UV-1',
         'sgp': 'SGP40',
-        'cws': 'Compact Weather Sensor'
+        'cws': 'Compact Weather Sensor',
+        'modem': 'Modem',
     }
 
 
@@ -80,6 +82,7 @@ def resources(request):
     resources_json = get_resources_json(resources)
     reserved_resource = get_all_reserved_units(24, 2)
     reservations_json = get_reservations_json(reserved_resource)
+
     resource_map = {
         "NAU Core" : os.getenv('DISCOVER_NAU_CORE_MAP'),
         "Hat Ranch" : os.getenv('DISCOVER_HAT_RANCH_MAP'),
