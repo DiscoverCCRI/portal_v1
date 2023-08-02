@@ -140,11 +140,11 @@ def experiment_detail(request, experiment_uuid):
     :return:
     """
     experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
-    is_creator = experiment.created_by == request.user
-    is_exp = request.user in experiment.experimenter.all()
-    is_po = request.user in experiment.project.project_owners.all()
-    is_pm = request.user in experiment.project.project_members.all()
-    is_not_testbed = experiment.stage != "Testbed"
+    is_creator = (experiment.created_by == request.user)
+    is_exp = (request.user in experiment.experimenter.all())
+    is_po = (request.user in experiment.project.project_owners.all())
+    is_pm = (request.user in experiment.project.project_members.all())
+    is_not_testbed = (experiment.stage != 'Testbed')
     experiment_reservations = experiment.reservation_of_experiment
     request.session["experiment_id"] = experiment.id
 
@@ -163,21 +163,15 @@ def experiment_detail(request, experiment_uuid):
     else:
         status = "idle"  # temporary, might want to change it
 
-    return render(
-        request,
-        "experiment_detail.html",
-        {
-            "experiment": experiment,
-            "experimenter": experiment.experimenter.all(),
-            "experiment_status": Experiment.STATE_CHOICES[experiment.state][1],
-            "reservations": experiment_reservations.all(),
-            "is_creator": is_creator,
-            "is_exp": is_exp,
-            "is_po": is_po,
-            "is_pm": is_pm,
-            "is_not_testbed": is_not_testbed,
-        },
-    )
+    return render(request, 'experiment_detail.html',
+                  {'experiment': experiment,
+                   'experimenter': experiment.experimenter.all(),
+                   'experiment_status': Experiment.STATE_CHOICES[experiment.state][1],
+                   'reservations': experiment_reservations.all(),
+                   'is_creator': is_creator, 'is_exp': is_exp,
+                   'is_po': is_po, 'is_pm': is_pm,
+                   'is_not_testbed': is_not_testbed,}
+                  )
 
 
 @login_required()

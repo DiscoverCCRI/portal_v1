@@ -14,7 +14,7 @@
                             <td>
                                 <button class="btn btn-info mr-2" style="background-color:#076AE0!important">
                                     <a href="{% url 'experiment_update' experiment_uuid=experiment.uuid %}"
-                                       class="unlink">Change</a>
+                                       class="unlink">Update</a>
                                 </button>
                             </td>
                         {% endif %}
@@ -42,23 +42,6 @@
                             </td>
                         {% endif %}
                     </tr>
-                    <!--
-                    <tr>
-                        <td>Reservations</td>
-                        <td>
-                            {% for reservation in reservations %}
-                                <a href="{% url 'reservation_detail_own' reservation_uuid=reservation.uuid %}">
-                                    {{ reservation.name }}
-                                </a>
-                            {% endfor %}
-                        </td>
-                        <td>
-                            <button class="btn btn-info mr-2">
-                                <a href="{% url 'reservation_create' experiment_uuid=experiment.uuid %}" class="unlink">Create a New Reservation</a>
-                            </button>
-                        </td>
-                    </tr>
-                    -->
                     <tr>
                         <td>Github Link</td>
                         <td>
@@ -67,9 +50,7 @@
                     </tr>
                     <tr>
                         <td>Cloud Storage Link</td>
-                        <td>
-                            <a href="{{ experiment.cloudstorage_link }}">{{ experiment.cloudstorage_link }}</a>
-                        </td>
+                        <td><a href="{{experiment.cloudstorage_link}}">{{ experiment.cloudstorage_link }}</a></td>
                         {% if experiment.can_terminate and is_not_testbed %}
                             {% if is_creator or is_exp or admin or operator %}
                                 <td>
@@ -151,13 +132,6 @@
                                class="unlink">Terminate</a>
                         </button>
                     {% endif %}
-                {% endif %}
-                {% if experiment.can_snapshot %}
-                    <!--
-                    <button class="btn btn-success mr-2" name="Save">
-                        Save
-                    </button>
-                    -->
                 {% endif %}
                 {% if is_creator or is_exp or admin or operator %}
                     {% if experiment.can_submit %}
