@@ -40,7 +40,7 @@ def experiment_create(request):
     :param request:
     :return:
     """
-    print( request )
+
     project_id = request.session.get('project_id', '')
     project = get_object_or_404(Project, id=int(project_id))
     resources = Resource.objects.all()

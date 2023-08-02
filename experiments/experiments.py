@@ -49,6 +49,20 @@ def create_new_experiment(request, form, project_id):
     experiment.created_date = timezone.now()
     experiment.save()
 
+    resources_uuid = parseUuidString( form.data.getlist('resources')[0] )
+
+    resources = Resource.objects.all()
+
+    resourceArray = []
+
+    for resource_uuid in resources_uuid:
+        uuid_obj = uuid.UUID( resource_uuid )
+        for resource in resources:
+            if resource.uuid == uuid_obj:
+                resourceArray.append( resource ) 
+
+    experiment.resources.set( resourceArray )
+
     '''
     resources = get_filtered_resource( 
                             form.data.getlist('capabilities') ) 
@@ -87,6 +101,26 @@ def create_new_experiment(request, form, project_id):
     # experiment.save()
 
     return str(experiment.uuid)
+
+def parseUuidString( string ):
+    parsed = ""
+    parsedArray = []
+
+    index = 0
+    length = len( string )
+
+    while index < length:
+        if string[ index ] != ',':
+            parsed += string[ index ]
+        else:
+            parsedArray.append( parsed )
+            parsed = ""
+        index += 1
+    
+    parsedArray.append( parsed )
+
+    return parsedArray
+
 
 def get_filtered_resource( capabilities ):
     """

@@ -19,22 +19,25 @@
             <form id="create-experiment" method="POST" class="post-form">
                 {% csrf_token %}
                 {{ form.as_p }}
+                <p id="no_capabilities">No capabilities for secleted resource type.</p>
+                <h2>
+                    Available Resources
+                </h2>
+                <div id="resources">
+                    {% for resource in resources.all %}
+                        <input id="resource_{{ forloop.counter }}" value="{{ resource.uuid }}" onclick="addResource( this )" style="margin-left: 10px;" type="checkbox">
+                            <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}" target="_blank">{{ resource.name }}({{ resource.resourceType }})</a>
+                            {% if forloop.counter|divisibleby:3 %}
+                                <br/>
+                            {% endif %}
+                        </input>
+                    {% endfor %}
+                </div>
             </form>
-            <p id="no_capabilities">No capabilities for secleted resource type.</p>
-            <h2>
-                Available Resources
-            </h2>
-            <div id="resources">
-                {% for resource in resources.all %}
-                    <input style="margin-left: 10px;" type="checkbox" value="{{ resource.uuid }}">
-                        <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}" target="_blank">{{ resource.name }}({{ resource.resourceType }})</a>
-                        {% if forloop.counter|divisibleby:3 %}
-                            <br/>
-                        {% endif %}
-                 </input>
-                {% endfor %}
-            </div>
             <script>
+
+                var resources = []
+
                 const statCap = {
                     't12': 'TEROS-12',
                     't21': 'TEROS-21',
@@ -62,6 +65,47 @@
                     'jetson': 'Jetson Nano',
                     'sdr': 'Software Defined Radio',
                     '5g': '5G module(s)'
+                }
+
+                function addResource( obj )
+                {
+                    let uuid = obj.value;
+                    let push = true;
+
+                    if( obj.checked && !checkForInArray( uuid ) )
+                    {
+                        resources.push( uuid );
+                    }
+
+                    //Pop value from array when not checked if in array
+
+                    addResourceToForm();
+
+                    let resource_form = document.getElementById("id_resources");
+
+                    console.log( resource_form.value );
+                }
+
+                function addResourceToForm()
+                {
+                    let resource_form = document.getElementById("id_resources");
+
+                    resource_form.value = resources;
+                }
+
+                function checkForInArray( uuid )
+                {
+                    let check = false;
+
+                    for( resource in resources )
+                    {
+                        if( uuid == resource )
+                        {
+                            check = true;
+                        }
+                    }
+
+                    return check;
                 }
 
                 function deleteExistingChildNodes( instance )
@@ -153,6 +197,10 @@
 
                     var resourceType = document.getElementById(
                                                             "id_resourceType");
+
+                    let resource_form = document.getElementById("id_resources");
+
+                    resource_form.style.display = "none";
 
                     resourceType.addEventListener("change", function(){
                         generateFields( capabilities, resourceType.value );

@@ -70,6 +70,12 @@ class ExperimentCreateForm(forms.ModelForm):
         choices = capabilities_list,
     )
 
+    resources = forms.CharField(
+        widget=forms.Textarea(),
+        required=False,
+        label='',
+    )
+
     class Meta:
         model = Experiment
         fields = [

@@ -52,7 +52,7 @@
                         <td>
                             {% for resource in experiment.resources.all %}
                                 <li>
-                                    <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}">{{ resource.name }}</a>
+                                    <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}" target="_blank">{{ resource.name }}</a>
                                 </li>
                             {% endfor %}
                         </td>
