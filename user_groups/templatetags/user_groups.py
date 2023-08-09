@@ -1,6 +1,6 @@
+from accounts.models import AerpawUser, AerpawUserRoleChoice
 from django import template
 from django.template.defaultfilters import stringfilter
-from accounts.models import AerpawUser, AerpawUserRoleChoice
 
 register = template.Library()
 

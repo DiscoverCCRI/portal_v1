@@ -1,20 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Project: {{ project.name }}
-{% endblock %}
-
+{% block title %}Project: {{ project.name }}{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
             <h2>Request to Join: {{ project.name }}</h2>
             <p>{{ project.description }}</p>
-
             <form method="POST" class="form-group">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <input class="btn btn-success mr-2" style="background-color:#076AE0!important;" type="submit" value="Submit"/>
+                <input class="btn btn-success mr-2"
+                       style="background-color:#076AE0!important"
+                       type="submit"
+                       value="Submit" />
                 <button class="btn btn-secondary mr-2">
                     <a href="{% url 'projects' %}" class="unlink">Cancel</a>
                 </button>
@@ -24,6 +22,5 @@
         <div class="container">
             <p>You are not currently logged in or not authorized to view this page</p>
         </div>
-
     {% endif %}
 {% endblock %}

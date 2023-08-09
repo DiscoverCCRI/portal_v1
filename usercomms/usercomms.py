@@ -1,12 +1,11 @@
 from uuid import uuid4
 
+from accounts.models import AerpawUser
 from django.conf import settings
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import BadHeaderError, send_mail
 from django.http import HttpResponse
 from django.utils import timezone
-
 from usercomms.models import Usercomms
-from accounts.models import AerpawUser
 
 
 def ack_mail(template: str, user_name: str, user_email: str, **kwargs) -> None:

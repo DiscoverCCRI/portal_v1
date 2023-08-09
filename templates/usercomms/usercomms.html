@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Discover Messages
-{% endblock %}
-
+{% block title %}Discover Messages{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -24,9 +20,7 @@
                     <tr>
                         <td>{{ r.created_date|date:"m/d/Y, H:i:s" }}</td>
                         <td>
-                            <a href="{% url 'usercomm_detail' usercomm_uuid=r.uuid %}">
-                                {{ r.subject }}
-                            </a>
+                            <a href="{% url 'usercomm_detail' usercomm_uuid=r.uuid %}">{{ r.subject }}</a>
                         </td>
                         <td>{{ r.sender }}</td>
                         <td>
@@ -52,24 +46,21 @@
                     <tr>
                         <td>{{ s.created_date|date:"m/d/Y, H:i:s" }}</td>
                         <td>
-                            <a href="{% url 'usercomm_detail' usercomm_uuid=s.uuid %}">
-                                {{ s.subject }}
-                            </a>
+                            <a href="{% url 'usercomm_detail' usercomm_uuid=s.uuid %}">{{ s.subject }}</a>
                         </td>
                         <td>
                             {% for rec in s.receivers.all %}
-                            {{ rec.display_name }}, <br>
-                        {% endfor %}
-                        <td>
-                            {{ s.body|truncatechars:50|linebreaks }}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-    {% else %}
-        <div class="container">
-            <p>You are not currently logged in or not authorized to view this page</p>
-        </div>
-    {% endif %}
-{% endblock %}
+                                {{ rec.display_name }},
+                                <br>
+                            {% endfor %}
+                            <td>{{ s.body|truncatechars:50|linebreaks }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% else %}
+            <div class="container">
+                <p>You are not currently logged in or not authorized to view this page</p>
+            </div>
+        {% endif %}
+    {% endblock %}

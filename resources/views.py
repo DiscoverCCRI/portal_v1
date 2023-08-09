@@ -8,10 +8,10 @@ from uuid import UUID
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms.models import model_to_dict
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from urllib3.exceptions import MaxRetryError
 
-from .forms import ResourceCreateForm, ResourceChangeForm
+from .forms import ResourceChangeForm, ResourceCreateForm
 from .resources import *
 
 
@@ -54,36 +54,39 @@ def resources(request):
     try:
         import_cloud_resources(request)
     except MaxRetryError as err:
-        messages.info(request, 'ERROR: ' + str(err))
+        messages.info(request, "ERROR: " + str(err))
 
     resources = get_resource_list(request)
     resources_json = get_resources_json(resources)
     reserved_resource = get_all_reserved_units(24, 2)
     reservations_json = get_reservations_json(reserved_resource)
     resource_map = {
-        "NAU Core" : os.getenv('DISCOVER_NAU_CORE_MAP'),
-        "Hat Ranch" : os.getenv('DISCOVER_HAT_RANCH_MAP'),
-        "Navajo Tech" : os.getenv('DISCOVER_NAVAJO_TECH_MAP'),
-        "Clemson" : os.getenv('DISCOVER_CLEMSON_MAP'),
-        "Others" : os.getenv('DISCOVER_OTHERS_MAP'),
+        "NAU Core": os.getenv("DISCOVER_NAU_CORE_MAP"),
+        "Hat Ranch": os.getenv("DISCOVER_HAT_RANCH_MAP"),
+        "Navajo Tech": os.getenv("DISCOVER_NAVAJO_TECH_MAP"),
+        "Clemson": os.getenv("DISCOVER_CLEMSON_MAP"),
+        "Others": os.getenv("DISCOVER_OTHERS_MAP"),
     }
 
     # resource type list
     resource_list = []
     for res in resources.values():
-        type = res.get('resourceType')
+        type = res.get("resourceType")
         if type not in resource_list:
             resource_list.append(type)
 
-    return render(request, 'resources.html',
-                  {
-                      'resources': resources,
-                      'resources_json': resources_json,
-                      'reservations': reserved_resource,
-                      'reservations_json': reservations_json,
-                      'resource_list': resource_list,
-                      'resource_map': resource_map,
-                  })
+    return render(
+        request,
+        "resources.html",
+        {
+            "resources": resources,
+            "resources_json": resources_json,
+            "reservations": reserved_resource,
+            "reservations_json": reservations_json,
+            "resource_list": resource_list,
+            "resource_map": resource_map,
+        },
+    )
 
 
 @login_required()
@@ -98,10 +101,10 @@ def resource_create(request):
         form = ResourceCreateForm(request.POST)
         if form.is_valid():
             resource_uuid = create_new_resource(request, form)
-            return redirect('resource_detail', resource_uuid=resource_uuid)
+            return redirect("resource_detail", resource_uuid=resource_uuid)
     else:
         form = ResourceCreateForm()
-    return render(request, 'resource_create.html', {'form': form})
+    return render(request, "resource_create.html", {"form": form})
 
 
 @login_required()
@@ -114,9 +117,16 @@ def resource_detail(request, resource_uuid):
     """
     resource = get_object_or_404(Resource, uuid=UUID(str(resource_uuid)))
     resource_reservations = resource.reservation_of_resource
-    resource_map = os.getenv('AERPAW_MAP_URL')
-    return render(request, 'resource_detail.html',
-                  {'resource': resource, 'reservations': resource_reservations.all(), 'resource_map': resource_map})
+    resource_map = os.getenv("AERPAW_MAP_URL")
+    return render(
+        request,
+        "resource_detail.html",
+        {
+            "resource": resource,
+            "reservations": resource_reservations.all(),
+            "resource_map": resource_map,
+        },
+    )
 
 
 @login_required()
@@ -134,13 +144,18 @@ def resource_update(request, resource_uuid):
         if form.is_valid():
             resource = form.save(commit=False)
             resource_uuid = update_existing_resource(request, resource, form)
-            return redirect('resource_detail', resource_uuid=str(resource.uuid))
+            return redirect("resource_detail", resource_uuid=str(resource.uuid))
     else:
         form = ResourceChangeForm(instance=resource)
-    return render(request, 'resource_update.html',
-                  {
-                      'form': form, 'resource_uuid': str(resource_uuid), 'resource_name': resource.name}
-                  )
+    return render(
+        request,
+        "resource_update.html",
+        {
+            "form": form,
+            "resource_uuid": str(resource_uuid),
+            "resource_name": resource.name,
+        },
+    )
 
 
 @login_required()
@@ -156,5 +171,5 @@ def resource_delete(request, resource_uuid):
     if request.method == "POST":
         is_removed = delete_existing_resource(request, resource)
         if is_removed:
-            return redirect('resources')
-    return render(request, 'resource_delete.html', {'resource': resource})
+            return redirect("resources")
+    return render(request, "resource_delete.html", {"resource": resource})

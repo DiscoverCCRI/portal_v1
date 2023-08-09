@@ -1,7 +1,7 @@
-import jenkins
 import os
 from pathlib import Path
 
+import jenkins
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

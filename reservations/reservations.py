@@ -1,18 +1,18 @@
-from uuid import UUID
+import logging
 import uuid
+from datetime import datetime
+from uuid import UUID
 
-from django.utils import timezone
+import aerpawgw_client
+from accounts.models import AerpawUser
+from aerpawgw_client.rest import ApiException
 from django.shortcuts import get_object_or_404
-
+from django.utils import timezone
 from experiments.models import Experiment
 from resources.models import Resource
 from resources.resources import remove_units, update_units
-from .models import Reservation,ReservationStatusChoice
-from accounts.models import AerpawUser
-import aerpawgw_client
-from aerpawgw_client.rest import ApiException
-from datetime import datetime
-import logging
+
+from .models import Reservation, ReservationStatusChoice
 
 logger = logging.getLogger(__name__)
 
@@ -26,22 +26,29 @@ def create_new_reservation(request, form, experiment_uuid):
     """
     reservation = Reservation()
     reservation.uuid = uuid.uuid4()
-    reservation.name = form.cleaned_data.get('name')
+    reservation.name = form.cleaned_data.get("name")
     try:
-        reservation.description = form.cleaned_data.get('description')
+        reservation.description = form.cleaned_data.get("description")
     except ValueError as e:
         print(e)
         reservation.description = None
 
-    reservation.experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
+    reservation.experiment = get_object_or_404(
+        Experiment, uuid=UUID(str(experiment_uuid))
+    )
 
-    reservation.resource = form.cleaned_data.get('resource')
-    reservation.units = form.cleaned_data.get('units')
+    reservation.resource = form.cleaned_data.get("resource")
+    reservation.units = form.cleaned_data.get("units")
 
-    reservation.start_date = form.cleaned_data.get('start_date')
-    reservation.end_date = form.cleaned_data.get('end_date')
+    reservation.start_date = form.cleaned_data.get("start_date")
+    reservation.end_date = form.cleaned_data.get("end_date")
 
-    is_available = remove_units(reservation.resource,int(reservation.units),reservation.start_date,reservation.end_date)
+    is_available = remove_units(
+        reservation.resource,
+        int(reservation.units),
+        reservation.start_date,
+        reservation.end_date,
+    )
     if not is_available:
         reservation.state = ReservationStatusChoice.FAILURE.value
         print("The resource is not available at this time")
@@ -63,9 +70,15 @@ def update_existing_reservation(request, original_units, reservation, form):
     :param form:
     :return:
     """
-    reservation.start_date = form.cleaned_data.get('start_date')
-    reservation.end_date = form.cleaned_data.get('end_date')
-    is_available = update_units(reservation.resource,int(reservation.units),original_units,reservation.start_date,reservation.end_date)
+    reservation.start_date = form.cleaned_data.get("start_date")
+    reservation.end_date = form.cleaned_data.get("end_date")
+    is_available = update_units(
+        reservation.resource,
+        int(reservation.units),
+        original_units,
+        reservation.start_date,
+        reservation.end_date,
+    )
 
     if not is_available:
         reservation.state = ReservationStatusChoice.FAILURE.value
@@ -88,12 +101,18 @@ def delete_existing_reservation(request, reservation):
     :return:
     """
     try:
-        update_units(reservation.resource, 0, int(reservation.units), reservation.start_date, reservation.end_date)
+        update_units(
+            reservation.resource,
+            0,
+            int(reservation.units),
+            reservation.start_date,
+            reservation.end_date,
+        )
         reservation.delete()
         return True
     except Exception as e:
         print(e)
-        raise RuntimeError('Failed in update_units') from e
+        raise RuntimeError("Failed in update_units") from e
     return False
 
 
@@ -104,11 +123,11 @@ def get_reservation_list(request):
     :return:
     """
     if request.user.is_superuser:
-        reservations = Reservation.objects.order_by('name')
+        reservations = Reservation.objects.order_by("name")
     else:
-        experiment_id = request.session['experiment_id']
+        experiment_id = request.session["experiment_id"]
         ex = Experiment.objects.get(id=experiment_id)
-        reservations = Reservation.objects.filter(experiment=ex).order_by('name')
+        reservations = Reservation.objects.filter(experiment=ex).order_by("name")
     return reservations
 
 
@@ -122,13 +141,17 @@ def create_new_emulab_reservation(request, reservation):
     """
     # create on emulab
     api_instance = aerpawgw_client.ReservationApi()
-    start_timestamp = str(int(datetime.fromisoformat(reservation.start_date).timestamp()))
+    start_timestamp = str(
+        int(datetime.fromisoformat(reservation.start_date).timestamp())
+    )
     end_timestamp = str(int(datetime.fromisoformat(reservation.end_date).timestamp()))
-    body = aerpawgw_client.Reservation(type=reservation.resource.name,
-                                nodes=int(reservation.units),
-                                experiment=reservation.experiment.name,
-                                start=start_timestamp,
-                                end=end_timestamp)
+    body = aerpawgw_client.Reservation(
+        type=reservation.resource.name,
+        nodes=int(reservation.units),
+        experiment=reservation.experiment.name,
+        start=start_timestamp,
+        end=end_timestamp,
+    )
     logger.warning(body)
     try:
         api_response = api_instance.create_reservation(body)
@@ -138,10 +161,9 @@ def create_new_emulab_reservation(request, reservation):
 
     # verify created reservation on emulab by querying it
     try:
-        reservation_cloud_uuid = query_emulab_reservation(request,
-                                                          reservation.experiment.name,
-                                                          reservation.resource.name
-                                                          )
+        reservation_cloud_uuid = query_emulab_reservation(
+            request, reservation.experiment.name, reservation.resource.name
+        )
         if reservation_cloud_uuid is None:
             raise Exception("failed to query the created emulab reservation")
     except Exception as e:
@@ -162,7 +184,10 @@ def query_emulab_reservation(request, experiment, resourcetype):
         # check if there is reserveration matches the experiment and resourcetype
         emulab_reservations = api_instance.get_reservation()
         for reservation in emulab_reservations:
-            if reservation.experiment == experiment and reservation.type == resourcetype:
+            if (
+                reservation.experiment == experiment
+                and reservation.type == resourcetype
+            ):
                 return reservation.uuid
     except ApiException as e:
         print("Exception when calling ProfileApi->query_profile: %s\n" % e)
@@ -182,7 +207,9 @@ def delete_emulab_reservation(request, experiment, resourcetype):
     """
     # find the reservation and get the uuid
     try:
-        reservation_cloud_uuid = query_emulab_reservation(request, experiment, resourcetype)
+        reservation_cloud_uuid = query_emulab_reservation(
+            request, experiment, resourcetype
+        )
         if reservation_cloud_uuid is None:
             return
     except Exception as e:

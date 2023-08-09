@@ -6,17 +6,17 @@ import uuid
 from datetime import datetime
 
 import aerpawgw_client
+from accounts.models import AerpawUser
 from aerpawgw_client.rest import ApiException
 from django.utils import timezone
-
-from accounts.models import AerpawUser
 from profiles.models import Profile
 from profiles.profiles import is_emulab_stage, parse_profile
 from projects.models import Project
 from reservations.models import Reservation
 from resources.models import Resource
 from resources.resources import emulab_location_to_urn
-from usercomms.usercomms import portal_mail, ack_mail
+from usercomms.usercomms import ack_mail, portal_mail
+
 from .jenkins_api import deploy_experiment, info_deployment
 from .models import Experiment
 
@@ -33,19 +33,19 @@ def create_new_experiment(request, form, project_id):
     experiment = Experiment()
     experiment.uuid = uuid.uuid4()
     # request.session['experiment_uuid'] = experiment.uuid
-    experiment.name = form.data.getlist('name')[0]
-    experiment.github_link = form.data.getlist('github_link')[0]
-    experiment.cloudstorage_link = form.data.getlist('cloudstorage_link')[0]
+    experiment.name = form.data.getlist("name")[0]
+    experiment.github_link = form.data.getlist("github_link")[0]
+    experiment.cloudstorage_link = form.data.getlist("cloudstorage_link")[0]
     try:
-        experiment.description = form.data.getlist('description')[0]
-        profile = Profile.objects.get(id=int(form.data.getlist('profile')[0]))
+        experiment.description = form.data.getlist("description")[0]
+        profile = Profile.objects.get(id=int(form.data.getlist("profile")[0]))
         if profile.is_template:
             profile.pk = None
             profile.id = None
             profile.save()
             profile.uuid = uuid.uuid4()
             profile.is_template = False
-            profile.name = profile.name + ' (copy)'
+            profile.name = profile.name + " (copy)"
             profile.created_by = request.user
             profile.modified_by = request.user
             profile.created_date = timezone.now()
@@ -64,7 +64,7 @@ def create_new_experiment(request, form, project_id):
     experiment.experimenter.add(request.user)
     experiment.modified_by = experiment.created_by
     experiment.modified_date = experiment.created_date
-    experiment.stage = 'Idle'
+    experiment.stage = "Idle"
     experiment.save()
 
     # experimenter_id_list = form.data.getlist('experimenter')
@@ -124,17 +124,19 @@ def update_existing_experiment(request, experiment, form, prev_stage, prev_state
         experiment.save()
 
         if prev_stage != experiment.stage:
-            if experiment.stage == 'Testbed':
+            if experiment.stage == "Testbed":
                 # User click submit button in 2 scenarios:
                 # - Development -> Testbed
                 # - Idle -> Testbed
-                if experiment.state == Experiment.STATE_DEPLOYED \
-                        and prev_stage == 'Development':
+                if (
+                    experiment.state == Experiment.STATE_DEPLOYED
+                    and prev_stage == "Development"
+                ):
                     # do some trick, roll back to previous stage temporarily to
                     # exit with save first (request msg send inside the experiment_state_change())
                     current_new_stage = experiment.stage
                     experiment.stage = prev_stage
-                    experiment_state_change(request, experiment, 'terminating')
+                    experiment_state_change(request, experiment, "terminating")
                     experiment.stage = current_new_stage
                     experiment.save()
 
@@ -145,17 +147,22 @@ def update_existing_experiment(request, experiment, form, prev_stage, prev_state
                 experiment.submit()
                 experiment.save()
                 send_request_to_testbed(request, experiment)
-                kwargs = {'experiment_name': str(experiment)}
+                kwargs = {"experiment_name": str(experiment)}
                 ack_mail(
-                    template='experiment_submit', user_name=request.user.display_name,
-                    user_email=request.user.email, **kwargs
+                    template="experiment_submit",
+                    user_name=request.user.display_name,
+                    user_email=request.user.email,
+                    **kwargs
                 )
-            elif experiment.stage == 'Idle':
+            elif experiment.stage == "Idle":
                 # Operator finished testbed testing, change the experiment back to Idle
                 experiment.idle()
                 experiment.save()
 
-            if not request.user.is_operator() and experiment.state != Experiment.STATE_SUBMIT:
+            if (
+                not request.user.is_operator()
+                and experiment.state != Experiment.STATE_SUBMIT
+            ):
                 # temporary, currently not handling anything besides TESTBED
                 logger.warning("Currently not handling anything besides TESTBED!")
                 experiment.stage = prev_stage
@@ -171,45 +178,65 @@ def send_request_to_testbed(request, experiment):
     if is_emulab_stage(experiment.stage):
         return  # do nothing, this function is not for emulab
     if experiment.state == Experiment.STATE_DEPLOYING:
-        action = 'START'
+        action = "START"
     elif experiment.state == Experiment.STATE_IDLE:
-        action = 'SAVE and EXIT'
+        action = "SAVE and EXIT"
     elif experiment.state == Experiment.STATE_SUBMIT:
-        action = 'SUBMIT'
+        action = "SUBMIT"
 
     if action:
-        subject = 'Discover Experiment Action Session Request: {} {}:{}'.format(action,
-                                                                              str(experiment.uuid),
-                                                                              experiment.stage)
-        message = "[{}]\n\n".format(subject) \
-                  + "Experiment Name: {}\n".format(str(experiment)) \
-                  + "Project: {}\n".format(experiment.project) \
-                  + "User: {}\n\n".format(request.user.username)
-        if action == 'SUBMIT':
-            message += "Testbed Experiment Description: {}\n\n".format(experiment.submit_notes)
-        if action == 'START' or action == 'SUBMIT':
+        subject = "Discover Experiment Action Session Request: {} {}:{}".format(
+            action, str(experiment.uuid), experiment.stage
+        )
+        message = (
+            "[{}]\n\n".format(subject)
+            + "Experiment Name: {}\n".format(str(experiment))
+            + "Project: {}\n".format(experiment.project)
+            + "User: {}\n\n".format(request.user.username)
+        )
+        if action == "SUBMIT":
+            message += "Testbed Experiment Description: {}\n\n".format(
+                experiment.submit_notes
+            )
+        if action == "START" or action == "SUBMIT":
             try:
                 session_req = generate_experiment_session_request(request, experiment)
-                session_req_json=json.dumps(session_req) #dict to json str
+                session_req_json = json.dumps(session_req)  # dict to json str
             except TypeError:
-                session_req_json=json.dumps({"experiment_resource_definition":"Unable to serialize the object"})
-            message += "Experiment {} Session Request:\n{}\n".format(experiment.stage, session_req_json)
+                session_req_json = json.dumps(
+                    {"experiment_resource_definition": "Unable to serialize the object"}
+                )
+            message += "Experiment {} Session Request:\n{}\n".format(
+                experiment.stage, session_req_json
+            )
 
-        reference_url = 'https://' + str(request.get_host()) + '/experiments/' + str(experiment.uuid)
+        reference_url = (
+            "https://"
+            + str(request.get_host())
+            + "/experiments/"
+            + str(experiment.uuid)
+        )
         receivers = []
-        operators = list(AerpawUser.objects.filter(groups__name='operator'))
+        operators = list(AerpawUser.objects.filter(groups__name="operator"))
         for operator in operators:
             receivers.append(operator)
         logger.warning("send_email:\n" + subject)
         logger.warning(message)
-        portal_mail(subject=subject, body_message=message, sender=request.user,
-                    receivers=receivers,
-                    reference_note=None, reference_url=reference_url)
-        if action == 'START':
-            kwargs = {'experiment_name': str(experiment)}
+        portal_mail(
+            subject=subject,
+            body_message=message,
+            sender=request.user,
+            receivers=receivers,
+            reference_note=None,
+            reference_url=reference_url,
+        )
+        if action == "START":
+            kwargs = {"experiment_name": str(experiment)}
             ack_mail(
-                template='experiment_init', user_name=request.user.display_name,
-                user_email=request.user.email, **kwargs
+                template="experiment_init",
+                user_name=request.user.display_name,
+                user_email=request.user.email,
+                **kwargs
             )
 
 
@@ -255,9 +282,13 @@ def get_experiment_list(request):
     :return:
     """
     if request.user.is_operator() or request.user.is_site_admin():
-        experiments = Experiment.objects.order_by('created_date')
+        experiments = Experiment.objects.order_by("created_date")
     else:
-        experiments = Experiment.objects.filter(experimenter__uuid=request.user.uuid).order_by('created_date').distinct()
+        experiments = (
+            Experiment.objects.filter(experimenter__uuid=request.user.uuid)
+            .order_by("created_date")
+            .distinct()
+        )
     return experiments
 
 
@@ -265,13 +296,15 @@ def experiment_state_change(request, experiment, backend_status):
     automated = False
 
     logger.warning(
-        '[{}] current state={}, backend_status={}'.format(experiment.name, experiment.state,
-                                                          backend_status))
+        "[{}] current state={}, backend_status={}".format(
+            experiment.name, experiment.state, backend_status
+        )
+    )
 
-    if backend_status == 'unknown':
+    if backend_status == "unknown":
         return
 
-    elif backend_status == 'not_started' or backend_status == 'terminating':
+    elif backend_status == "not_started" or backend_status == "terminating":
         # the emulab is not doing anything or soon be idle
         if experiment.state != Experiment.STATE_IDLE:
             if experiment.can_snapshot():
@@ -281,7 +314,7 @@ def experiment_state_change(request, experiment, backend_status):
             send_request_to_testbed(request, experiment)
         return
 
-    elif backend_status != 'ready':
+    elif backend_status != "ready":
         # possible status: created, provisioning, provisioned ...
         # the emulab is provisioning the node or booting
         if experiment.state < Experiment.STATE_PROVISIONING:
@@ -289,7 +322,7 @@ def experiment_state_change(request, experiment, backend_status):
             experiment.save()
         return
 
-    elif backend_status == 'ready':
+    elif backend_status == "ready":
         if experiment.state < Experiment.STATE_DEPLOYING:
             prev_state = experiment.state
             experiment.deploy()  # change state first so get_emulab_manifest can function properly
@@ -307,26 +340,37 @@ def experiment_state_change(request, experiment, backend_status):
                 experiment.message = ""
                 experiment.save()
             else:
-                logger.error('!! Error - Manifest is not available')
+                logger.error("!! Error - Manifest is not available")
                 experiment.state = prev_state  # revert state
                 experiment.save()
                 return
 
             if automated and is_emulab_stage(experiment.stage):
                 # currently just test for emulab development node
-                hostname = manifest['nodes'][0]['hostname']
-                logger.warning('[{}] deployment host: {}'.format(experiment.name, hostname))
-                jenkins_bn = deploy_experiment(experiment, hostname)  # for testing jenkins_bn = 19
+                hostname = manifest["nodes"][0]["hostname"]
                 logger.warning(
-                    '[{}] deployment build number: {}'.format(experiment.name, jenkins_bn))
+                    "[{}] deployment host: {}".format(experiment.name, hostname)
+                )
+                jenkins_bn = deploy_experiment(
+                    experiment, hostname
+                )  # for testing jenkins_bn = 19
+                logger.warning(
+                    "[{}] deployment build number: {}".format(
+                        experiment.name, jenkins_bn
+                    )
+                )
                 experiment.deployment_bn = jenkins_bn
             return
 
         if experiment.state == Experiment.STATE_DEPLOYING:
             if automated:
                 console_output = info_deployment(experiment)
-                output_ending = console_output[len(console_output) - 40:]  # last 40 chars
-                logger.warning("[{}] deployment output: {}".format(experiment.name, output_ending))
+                output_ending = console_output[
+                    len(console_output) - 40 :
+                ]  # last 40 chars
+                logger.warning(
+                    "[{}] deployment output: {}".format(experiment.name, output_ending)
+                )
                 # check "Finished: SUCCESS"
                 if "Finished: SUCCESS" in output_ending:
                     experiment.ready()
@@ -343,17 +387,21 @@ def generate_experiment_session_request(request, experiment):
     """
     session_req = {}
     if experiment.stage != "Idle":
-        session_req['ap_msg_type'] = 'experiment_{}_session_request'.format(
-            experiment.stage).lower()
+        session_req["ap_msg_type"] = "experiment_{}_session_request".format(
+            experiment.stage
+        ).lower()
 
     resources = parse_profile(request, experiment.profile.profile)
-    
-    resource_def = {'experiment_uuid': str(experiment.uuid), 'experiment_idx': experiment.id,
-                    'nodes': resources}
-    session_req['experiment_resource_definition'] = resource_def
 
-    user = {'username': experiment.created_by.username.split('@')[0]}
-    session_req['user'] = user
+    resource_def = {
+        "experiment_uuid": str(experiment.uuid),
+        "experiment_idx": experiment.id,
+        "nodes": resources,
+    }
+    session_req["experiment_resource_definition"] = resource_def
+
+    user = {"username": experiment.created_by.username.split("@")[0]}
+    session_req["user"] = user
 
     return session_req
 
@@ -370,16 +418,17 @@ def initiate_emulab_instance(request, experiment):
     """
     status = query_emulab_instance_status(request, experiment)
 
-    if status == '':
-        logger.error('Do nothing since we cannot get the status from emulab')
+    if status == "":
+        logger.error("Do nothing since we cannot get the status from emulab")
         return False
-    elif status != 'not_started':
-        logger.warning('emulab experiment already started')
+    elif status != "not_started":
+        logger.warning("emulab experiment already started")
         logger.error(
-            '[testing code] Stopping emulab instance now, but we might want to move this stop to another button')
+            "[testing code] Stopping emulab instance now, but we might want to move this stop to another button"
+        )
         return terminate_emulab_instance(request, experiment)
 
-    '''
+    """
     # user doesn't care about emulab profile.
     # changing design to always use the default 1 node profie in emulab
     # the status is 'not_started': create an instance of the API class
@@ -388,24 +437,29 @@ def initiate_emulab_instance(request, experiment):
                                                   experiment.profile.name)
     if query_emulab_profile(request, emulab_profile_name) is None:
         create_new_emulab_profile(request, experiment.profile)
-    '''
+    """
 
     api_instance = aerpawgw_client.ExperimentApi()
-    location = 'RENCIEmulab'
+    location = "RENCIEmulab"
     # location = experiment.reservation.location
     logger.error(
-        '[IMPORTANT] We should check if Reservation exists, and use that Reservation.location')
-    logger.error('[IMPORTANT] now just hard-coded default: {}'.format(location))
-    experiment_body = aerpawgw_client.Experiment(name=experiment.name,
-                                                 profile='aerpaw-default',
-                                                 # profile=emulab_profile_name,
-                                                 cluster=emulab_location_to_urn(location))
+        "[IMPORTANT] We should check if Reservation exists, and use that Reservation.location"
+    )
+    logger.error("[IMPORTANT] now just hard-coded default: {}".format(location))
+    experiment_body = aerpawgw_client.Experiment(
+        name=experiment.name,
+        profile="aerpaw-default",
+        # profile=emulab_profile_name,
+        cluster=emulab_location_to_urn(location),
+    )
     experiment.save()
     try:
         # create a experiment
         api_response = api_instance.create_experiment(experiment_body)
     except ApiException as e:
-        logger.error("Exception when calling ExperimentApi->create_experiment: %s\n" % e)
+        logger.error(
+            "Exception when calling ExperimentApi->create_experiment: %s\n" % e
+        )
         return False
 
     return True
@@ -414,10 +468,13 @@ def initiate_emulab_instance(request, experiment):
 def bg_deploy_emulab(request, experiment):
     while True:
         time.sleep(10)
-        logger.warning('{} bg_deploy_emulab()'.format(datetime.now()))
+        logger.warning("{} bg_deploy_emulab()".format(datetime.now()))
         query_emulab_instance_status(request, experiment)
         # if experiment.state >= Experiment.STATE_DEPLOYED or experiment.state == Experiment.STATE_IDLE:
-        if experiment.state >= Experiment.STATE_DEPLOYING or experiment.state == Experiment.STATE_IDLE:
+        if (
+            experiment.state >= Experiment.STATE_DEPLOYING
+            or experiment.state == Experiment.STATE_IDLE
+        ):
             break
 
 
@@ -430,15 +487,17 @@ def query_emulab_instance_status(request, experiment):
     :return status of emulab experiment: str, including 'not_started', 'provisioning',
                                              'provisioned', 'ready', 'failed'
     """
-    if not os.getenv('AERPAWGW_HOST') \
-            or not os.getenv('AERPAWGW_PORT') \
-            or not os.getenv('AERPAWGW_VERSION'):
-        return ''
+    if (
+        not os.getenv("AERPAWGW_HOST")
+        or not os.getenv("AERPAWGW_PORT")
+        or not os.getenv("AERPAWGW_VERSION")
+    ):
+        return ""
     if not is_emulab_stage(experiment.stage):
-        return ''
+        return ""
 
     api_instance = aerpawgw_client.ExperimentApi()
-    backend_status = 'not_started'
+    backend_status = "not_started"
     try:
         # get status of specific experiment
         emulab_exp = api_instance.query_experiment(experiment.name)
@@ -449,13 +508,17 @@ def query_emulab_instance_status(request, experiment):
         logger.warning("Exception e: {}".format(e.body))
         if e.status == 404:
             # no such experiment, means that the experiment is idle.
-            logger.warning("backend_status is 'not_started' since e.status = {}".format(e.status))
+            logger.warning(
+                "backend_status is 'not_started' since e.status = {}".format(e.status)
+            )
         elif e.status == 500:
-            if 'No available physical nodes' in e.body:
-                backend_status = 'terminating'
-                logger.warning("backend_status is 'not_started' because no available resource(s)")
+            if "No available physical nodes" in e.body:
+                backend_status = "terminating"
+                logger.warning(
+                    "backend_status is 'not_started' because no available resource(s)"
+                )
             else:
-                backend_status = 'unknown'
+                backend_status = "unknown"
 
     # call function to change state accordingly
     experiment_state_change(request, experiment, backend_status)
@@ -473,13 +536,13 @@ def terminate_emulab_instance(request, experiment):
     """
     status = query_emulab_instance_status(request, experiment)
 
-    if status == '':
-        logger.error('Do nothing since we cannot get the status from emulab')
+    if status == "":
+        logger.error("Do nothing since we cannot get the status from emulab")
         return False
-    elif status == 'not_started':
+    elif status == "not_started":
         return True
-    elif status != 'ready' and status != 'failed':
-        logger.error('The instance operation is in progress. Please try later.')
+    elif status != "ready" and status != "failed":
+        logger.error("The instance operation is in progress. Please try later.")
         return False
     api_instance = aerpawgw_client.ExperimentApi()
     try:
@@ -487,7 +550,9 @@ def terminate_emulab_instance(request, experiment):
         api_instance.delete_experiment(experiment.name)
         experiment.save()
     except ApiException as e:
-        logger.error("Exception when calling ExperimentApi->delete_experiment: %s\n" % e)
+        logger.error(
+            "Exception when calling ExperimentApi->delete_experiment: %s\n" % e
+        )
     return True
 
 
@@ -502,35 +567,44 @@ def generate_emulab_manifest(request, experiment, emulab_resource):
     if experiment.profile is None:
         return None
     json_profile = experiment.profile.profile
-    if not json_profile.startswith('[{'):
-        logger.error('profile should be json consists of nodes')
+    if not json_profile.startswith("[{"):
+        logger.error("profile should be json consists of nodes")
         logger.error(json_profile)
         return None
     logger.info(json_profile)
     nodes = json.loads(json_profile)
 
     if emulab_resource is not None:
-        logger.warning("emulab resource hostname:{}, ip:{}".format(
-            emulab_resource.vnodes[0].hostname, emulab_resource.vnodes[0].ipv4))
+        logger.warning(
+            "emulab resource hostname:{}, ip:{}".format(
+                emulab_resource.vnodes[0].hostname, emulab_resource.vnodes[0].ipv4
+            )
+        )
     for reqnode in nodes:
         try:
-            if 'idx' not in reqnode.keys() \
-                    or 'name' not in reqnode.keys() \
-                    or 'hardware_type' not in reqnode.keys() \
-                    or 'component_id' not in reqnode.keys():
+            if (
+                "idx" not in reqnode.keys()
+                or "name" not in reqnode.keys()
+                or "hardware_type" not in reqnode.keys()
+                or "component_id" not in reqnode.keys()
+            ):
                 logger.error("Json is not valid")
                 raise Exception
             if emulab_resource is None:
-                resource = Resource.objects.get(resourceType=reqnode['hardware_type'],
-                                                name=reqnode['component_id'])
-                reqnode['ipv4'] = resource.ip_address
-                reqnode['hostname'] = resource.hostname
+                resource = Resource.objects.get(
+                    resourceType=reqnode["hardware_type"], name=reqnode["component_id"]
+                )
+                reqnode["ipv4"] = resource.ip_address
+                reqnode["hostname"] = resource.hostname
             else:
-                reqnode['ipv4'] = emulab_resource.vnodes[0].ipv4
-                reqnode['hostname'] = emulab_resource.vnodes[0].hostname
+                reqnode["ipv4"] = emulab_resource.vnodes[0].ipv4
+                reqnode["hostname"] = emulab_resource.vnodes[0].hostname
         except Resource.DoesNotExist:
-            logger.error("we are not able to find {}/{}".format(reqnode['hardware_type'],
-                                                                reqnode['component_id']))
+            logger.error(
+                "we are not able to find {}/{}".format(
+                    reqnode["hardware_type"], reqnode["component_id"]
+                )
+            )
             return None
         except:
             logger.error("json format is not expected")
@@ -541,14 +615,14 @@ def generate_emulab_manifest(request, experiment, emulab_resource):
     else:
         logger.warning(nodes)
         manifest = {}
-        manifest['experiment_id'] = str(experiment.uuid)
-        manifest['idx'] = experiment.id
-        manifest['mode'] = experiment.stage
-        manifest['nodes'] = nodes
+        manifest["experiment_id"] = str(experiment.uuid)
+        manifest["idx"] = experiment.id
+        manifest["mode"] = experiment.stage
+        manifest["nodes"] = nodes
         user = {}
-        user['username'] = request.user.username.split('@')[0]
-        user['publickey'] = request.user.publickey
-        manifest['user'] = user
+        user["username"] = request.user.username.split("@")[0]
+        user["publickey"] = request.user.publickey
+        manifest["user"] = user
         return manifest
 
 
@@ -593,7 +667,7 @@ def insert_user_to_emulab(request, user, pubkey, experiment):
         logger.error("Exception when calling UserApi->adduser: %s\n" % e)
 
 
-'''
+"""
 def get_emulab_instances(request):
     api_instance = aerpawgw_client.ExperimentApi()
 
@@ -622,4 +696,4 @@ def get_emulab_instances(request):
         emulab_experiments.append(e)
 
     return emulab_experiments
-'''
+"""

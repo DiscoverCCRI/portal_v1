@@ -1,12 +1,12 @@
+from accounts.models import AerpawRoleRequest, AerpawUser
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group
 from django.core.mail import BadHeaderError
 from django.http import HttpResponse
 from django.shortcuts import render
-
-from accounts.models import AerpawUser, AerpawRoleRequest
 from usercomms.usercomms import portal_mail
+
 from .templatetags.user_groups import role_name
 
 

@@ -5,10 +5,10 @@ Log into your PC and poke around. You have root access via `sudo`. Any work you 
 
 # Import the Portal object.
 import geni.portal as portal
-# Import the ProtoGENI library.
-import geni.rspec.pg as pg
 # Import the Emulab specific extensions.
 import geni.rspec.emulab as emulab
+# Import the ProtoGENI library.
+import geni.rspec.pg as pg
 
 # Create a portal object,
 pc = portal.Context()

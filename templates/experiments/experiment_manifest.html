@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Manifest: {{ experiment.name }}
-{% endblock %}
-
+{% block title %}Manifest: {{ experiment.name }}{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -15,20 +11,21 @@
                     <td>{{ profile }}</td>
                 </tr>
                 {% if user.is_operator %}
-                <tr>
-                    <td>Session Request</td>
-                    <td style="word-break: break-all">{{ manifest }}</td>
-                </tr>
+                    <tr>
+                        <td>Session Request</td>
+                        <td style="word-break: break-all">{{ manifest }}</td>
+                    </tr>
                 {% endif %}
                 {% if experiment.can_submit %}
-                <tr>
-                    <td>User Notification</td>
-                    <td style="word-break: break-all">{{ user_manifest }}</td>
-                </tr>
+                    <tr>
+                        <td>User Notification</td>
+                        <td style="word-break: break-all">{{ user_manifest }}</td>
+                    </tr>
                 {% endif %}
             </table>
             <button class="btn btn-secondary mr-2">
-                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}" class="unlink">Back</a>
+                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}"
+                   class="unlink">Back</a>
             </button>
         </div>
     {% else %}

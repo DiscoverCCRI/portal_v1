@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Create Resource
-{% endblock %}
-
+{% block title %}Create Resource{% endblock %}
 {% block content %}
     {% if user.is_authenticated and user.is_resource_manager %}
         <div class="container">
@@ -13,7 +9,11 @@
                 {% csrf_token %}
                 {{ form.as_p }}
             </form>
-            <button class="btn btn-success mr-2" type="submit" form="create-resource" value="save" style = "background-color:#076AE0!important;">Save</button>
+            <button class="btn btn-success mr-2"
+                    type="submit"
+                    form="create-resource"
+                    value="save"
+                    style="background-color:#076AE0!important">Save</button>
             <button class="btn btn-secondary mr-2" value="cancel">
                 <a href="{% url 'resources' %}" class="unlink">Back</a>
             </button>
