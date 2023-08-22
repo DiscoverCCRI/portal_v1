@@ -13,7 +13,7 @@ from resources.models import Resource
 from usercomms.usercomms import portal_mail
 from .experiments import get_experiment_list, generate_experiment_session_request, create_new_experiment, \
     get_emulab_manifest, experiment_state_change, query_emulab_instance_status, \
-    delete_existing_experiment, is_emulab_stage, initiate_emulab_instance, update_existing_experiment, get_filtered_resource
+    delete_existing_experiment, is_emulab_stage, initiate_emulab_instance, update_existing_experiment
 from .forms import ExperimentCreateForm, ExperimentLinkUpdateForm, ExperimentUpdateExperimentersForm, ExperimentUpdateForm, ExperimentSubmitForm, \
     ExperimentUpdateByOpsForm
 from .models import Experiment
@@ -116,6 +116,35 @@ def experiment_update_experimenters(request, experiment_uuid):
 #         return redirect('experiment_detail', experiment_uuid=experiment_uuid)
 #
 #     return render(request, 'experiment_create.html', {'form': form})
+
+def get_filtered_resource( self, **kwargs ):
+    """
+    param - capabilities: An array with filtering information
+
+    return - Resources matching the filtered request
+    """
+
+    resource_type = self.request.Get.get("resourceType")
+
+    capabilities = self.request.GET.get("capabilities")
+
+    matchedResources = []
+
+    allResources = Resource.objects.all()
+
+    resources = allResources.filter( resourceType=resource_type )
+
+    if len( capabilities ) > 0:
+        for resource in resources:
+            resourceMatch = True 
+            for cap in capabilities:
+                if cap not in resource.capabilities:
+                    resourceMatch = False
+            if resourceMatch:
+                matchedResources.append( resource )
+        return { 'matchedResources' : matchedResources }
+    else:
+        return { 'matchedResources' : resources }
 
 @login_required()
 def experiment_detail(request, experiment_uuid):

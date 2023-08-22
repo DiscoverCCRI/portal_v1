@@ -27,6 +27,7 @@
                     {% for resource in resources.all %}
                         <input id="resource_{{ forloop.counter }}" value="{{ resource.uuid }}" onclick="addResource( this )" style="margin-left: 10px;" type="checkbox">
                             <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}" target="_blank">{{ resource.name }}({{ resource.resourceType }})</a>
+                            <p style="display: none;">{{ resource.capabilities }}</p>
                             {% if forloop.counter|divisibleby:3 %}
                                 <br/>
                             {% endif %}
@@ -36,7 +37,10 @@
             </form>
             <script>
 
-                var resources = []
+                var resources = [];
+                var allResources = [];
+                var displayedResources = [];
+                var filterCapabilities = [];
 
                 const statCap = {
                     't12': 'TEROS-12',
@@ -49,7 +53,7 @@
                     'sgp': 'SGP40', 
                     'jetson': 'Jetson Nano',
                     'cws': 'Compact Weather Sensor'
-                }
+                };
 
                 const roverCap = {
                     'rasPi': 'Raspberry Pi',
@@ -57,7 +61,7 @@
                     'modem': 'Modem',
                     'lidar': 'LIDAR',
                     'gps': 'GPS'
-                }
+                };
 
                 const droneCap = {
                     'gimbal': 'Gimbal and RGB/IR Camera',
@@ -65,7 +69,7 @@
                     'jetson': 'Jetson Nano',
                     'sdr': 'Software Defined Radio',
                     '5g': '5G module(s)'
-                }
+                };
 
                 function addResource( obj )
                 {
@@ -77,13 +81,165 @@
                         resources.push( uuid );
                     }
 
-                    //Pop value from array when not checked if in array
-
                     addResourceToForm();
+                }
 
-                    let resource_form = document.getElementById("id_resources");
+                function capabilityChange( capability )
+                {
+                    if( capability.checked && 
+                                         !checkForInArray( capability.value ) )
+                    {
+                        filterCapabilities.push( capability.value );
+                    }
 
-                    console.log( resource_form.value );
+                    filterResources( filterCapabilities );
+                }
+
+                function parseResourceType( string )
+                {
+                    let nameString = "";
+                    let type = "";
+                    let index = 0;
+
+                    while( index < string.length && string[ index ] != '(' )
+                    {
+                        nameString += string[ index ];
+
+                        index++;
+                    }
+
+                    index++;
+
+                    while( index < string.length && string[ index ] != ')' )
+                    {
+                        type += string[ index ];
+                        index++;
+                    }
+
+                    return { 'name': nameString, 'type': type };
+                }
+
+                function getResources()
+                {
+                    let resourceDiv = document.getElementById("resources");
+
+                    let children = resourceDiv.children;
+
+                    for( let index = 0; index < children.length; index++ )
+                    {
+                        if( children[ index ].id != "" )
+                        {
+                            //Each input has <a> child that contains name and type
+                            let nameData = parseResourceType(
+                                             children[ index + 1 ].innerText );
+
+                            let newResource = {
+                                'name': nameData['name'],
+                                'type': nameData['type'],
+                                'href': children[ index + 1 ].href,
+                                "uuid": children[ index ].value,
+                                "id": children[ index ].id,
+                                "capabilities": children[ index + 2 ].innerText
+                            }
+
+                            allResources.push( newResource );
+                        }
+                    }
+                }
+
+                //Refresh the resource on type and cap change
+                function refreshResourcesFromFilter( type, capabilities )
+                {
+                    let resources = document.getElementById("resources");
+
+                    //delete the existing resource nodes
+                    deleteExistingChildNodes( resources );
+
+                    let filteredResources = filterResources( type, capabilities );
+
+                    if( filteredResources.length > 0 )
+                    {
+                        for( let index = 0; index < filteredResources.length; index++ )
+                        {
+                            let input = document.createElement("input");
+
+                            input.type = 'checkbox';
+                            input.id = filteredResources[ index ]['id'];
+                            input.value = filteredResources[ index ]['uuid'];
+                            input.style = "margin-left: 10px;";
+                            input.onclick = addResource( input );
+
+                            let link = document.createElement("a");
+                            link.href = filteredResources[ index ]['href'];
+                            link.target = "_blank";
+                            link.textContent = `${ filteredResources[ index ]['name'] }(${ filteredResources[ index ]['type'] })`;
+
+                            let capContainer = document.createElement("p");
+                            capContainer.style = "display: none;";
+                            capContainer.innerText = filteredResources[ index ]['capabilities'];
+
+                            resources.appendChild( input );
+                            resources.appendChild( link );
+                            resources.appendChild( capContainer );
+
+                            if( ( index + 1 ) % 3 == 0 )
+                            {
+                                let lineBreak = document.createElement("br");
+                                resources.appendChild( lineBreak );
+                            }
+                        }
+                    }
+                    else
+                    {
+                        let noResources = document.createElement("p");
+                        noResources.innerText = "No available resources";
+                        resources.appendChild( noResources );
+                    }
+                }
+
+                function filterResources( type, capabilities )
+                {
+                    let matchedResources = [];
+
+                    let typeResources = [];
+
+                    //Get all resource with valid type
+                    for( let index = 0; index < allResources.length; index++ )
+                    {
+                        if( allResources[ index ]['type'] == type )
+                        {
+                            typeResources.push( allResources[ index ] );
+                        }
+                    }
+
+                    //If there are selected capabilities, then we want to filter
+                    if( capabilities.length > 0 )
+                    {
+                        //Loop through all resources of specified type
+                        for( resource in typeResources )
+                        {
+                            let resourceMatch = true;
+
+                            //Loop through specified capabilities
+                            for( cap in capabilities )
+                            {
+                                //Check for capability in cap array
+                                if( !resource.capabilities.includes( cap ) )
+                                {
+                                    resourceMatch = false;
+                                }
+                                //Append the resource to matched array
+                                if( resourceMatch )
+                                {
+                                    matchedResources.push( resource );
+                                }
+                            }
+                        }
+
+                        return matchedResources;
+                    }
+
+                    return typeResources;
                 }
 
                 function addResourceToForm()
@@ -143,6 +299,8 @@
 
                     let newDiv = document.createElement("div");
 
+                    newDiv.id = "cap-holder";
+
                     let noCapabilities = document.getElementById("no_capabilities");
                     
                     let index = 0
@@ -192,6 +350,8 @@
                     var capabilities = document.getElementById(
                                                             "id_capability_filter");
 
+                    getResources();
+
                     //delete preset django choice nodes
                     deleteExistingChildNodes( capabilities );
 
@@ -204,6 +364,7 @@
 
                     resourceType.addEventListener("change", function(){
                         generateFields( capabilities, resourceType.value );
+                        refreshResourcesFromFilter( resourceType.value, [] );
                     });
                 });
             </script>

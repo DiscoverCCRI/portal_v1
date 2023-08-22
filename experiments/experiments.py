@@ -120,29 +120,6 @@ def parseUuidString( string ):
     parsedArray.append( parsed )
 
     return parsedArray
-
-
-def get_filtered_resource( capabilities ):
-    """
-    param - capabilities: An array with filtering information
-
-    return - Resources matching the filtered request
-    """
-    matchedResources = []
-
-    resources = Resource.objects.all()
-
-    if len( capabilities ) > 0:
-        for resource in resources:
-            resourceMatch = True 
-            for cap in capabilities:
-                if cap not in resource.capabilities:
-                    resourceMatch = False
-            if resourceMatch:
-                matchedResources.append( resource )
-        return matchedResources
-    else:
-        return resources
     
 def parse_string( rawInput ):
     depList = []

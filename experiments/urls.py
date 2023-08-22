@@ -14,7 +14,8 @@ from .views import(
     experiment_initiate,
     experiment_manifest,
     experiment_submit,
-    experiment_link_update
+    experiment_link_update,
+    get_filtered_resource
 )
 
 urlpatterns = [
@@ -30,4 +31,5 @@ urlpatterns = [
     path('', include(('reservations.urls', 'reservations'), namespace='reservations')),
     path('<uuid:experiment_uuid>/submit', experiment_submit, name='experiment_submit'),
     path('<uuid:experiment_uuid>/update_link', experiment_link_update, name='experiment_link_update'),
+    path('filter', get_filtered_resource, name='get_filtered_resource'),
 ]
