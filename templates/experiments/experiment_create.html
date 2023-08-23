@@ -86,13 +86,15 @@
 
                 function capabilityChange( capability )
                 {
+                    let resourceType = document.getElementById(
+                                                            "id_resourceType");
                     if( capability.checked && 
                                          !checkForInArray( capability.value ) )
                     {
                         filterCapabilities.push( capability.value );
                     }
 
-                    filterResources( filterCapabilities );
+                    refreshResourcesFromFilter( resourceType.value );
                 }
 
                 function parseResourceType( string )
@@ -148,14 +150,14 @@
                 }
 
                 //Refresh the resource on type and cap change
-                function refreshResourcesFromFilter( type, capabilities )
+                function refreshResourcesFromFilter( type )
                 {
                     let resources = document.getElementById("resources");
 
                     //delete the existing resource nodes
                     deleteExistingChildNodes( resources );
 
-                    let filteredResources = filterResources( type, capabilities );
+                    let filteredResources = filterResources( type, filterCapabilities );
 
                     if( filteredResources.length > 0 )
                     {
@@ -216,22 +218,22 @@
                     if( capabilities.length > 0 )
                     {
                         //Loop through all resources of specified type
-                        for( resource in typeResources )
+                        for( let outIndex = 0; outIndex < typeResources.length; outIndex++ )
                         {
                             let resourceMatch = true;
 
                             //Loop through specified capabilities
-                            for( cap in capabilities )
+                            for( let innerIndex = 0; innerIndex < capabilities.length; innerIndex++ )
                             {
                                 //Check for capability in cap array
-                                if( !resource.capabilities.includes( cap ) )
+                                if( !typeResources[ outIndex ].capabilities.includes( capabilities[ innerIndex ] ) )
                                 {
                                     resourceMatch = false;
                                 }
                                 //Append the resource to matched array
                                 if( resourceMatch )
                                 {
-                                    matchedResources.push( resource );
+                                    matchedResources.push( typeResources[ outIndex ] );
                                 }
                             }
                         }
@@ -303,7 +305,7 @@
 
                     let noCapabilities = document.getElementById("no_capabilities");
                     
-                    let index = 0
+                    let index = 0;
                     if( cap == statCap || cap == roverCap || cap == droneCap )
                     {
                         noCapabilities.style.visibility = "hidden";
@@ -323,6 +325,10 @@
                             newInput.name = "capabilities";
                             newInput.value = key;
                             newInput.style = "margin-right: 10px; margin-left: 3px;";
+                            
+                            newInput.onclick = function() {
+                                capabilityChange( newInput ); 
+                            }
 
                             newLabel.appendChild( newInput );
 
@@ -364,7 +370,7 @@
 
                     resourceType.addEventListener("change", function(){
                         generateFields( capabilities, resourceType.value );
-                        refreshResourcesFromFilter( resourceType.value, [] );
+                        refreshResourcesFromFilter( resourceType.value );
                     });
                 });
             </script>
