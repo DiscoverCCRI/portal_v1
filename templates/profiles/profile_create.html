@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Create Profile{% endblock %}
+
+{% block title %}
+    Create Profile
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -10,14 +14,10 @@
                 {% csrf_token %}
                 {{ form.as_p }}
             </form>
-            <button class="btn btn-success mr-2"
-                    type="submit"
-                    form="create-profile"
-                    value="save">Save</button>
+            <button class="btn btn-success mr-2" type="submit" form="create-profile" value="save">Save</button>
             {% if project_uuid != 'None' %}
                 <button class="btn btn-secondary mr-2" value="cancel">
-                    <a href="{% url 'project_detail' project_uuid=project_uuid %}"
-                       class="unlink">Cancel</a>
+                    <a href="{% url 'project_detail' project_uuid=project_uuid %}" class="unlink">Cancel</a>
                 </button>
             {% else %}
                 <button class="btn btn-secondary mr-2" value="cancel">

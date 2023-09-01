@@ -1,5 +1,6 @@
 {% extends 'base_no_footer.html' %}
 {% load static bootstrap4 %}
+
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -21,14 +22,11 @@
             <h2>{{ experiment_name }}: Experimenters</h2>
             <form method="POST" class="form-group">
                 {% csrf_token %}
-                <input class="btn btn-success mr-2" type="submit" value="Save" />
+                <input class="btn btn-success mr-2" type="submit" value="Save"/>
                 <button class="btn btn-secondary mr-2">
-                    <a href="{% url 'experiment_detail' experiment_uuid=experiment_uuid %}"
-                       class="unlink">Cancel</a>
+                    <a href="{% url 'experiment_detail' experiment_uuid=experiment_uuid %}" class="unlink">Cancel</a>
                 </button>
-                <br>
-                <br>
-                <br>
+                <br><br><br>
                 {{ form.experimenter }}
             </form>
         </div>

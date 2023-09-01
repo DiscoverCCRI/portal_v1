@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}AERPAW CI/CD{% endblock %}
+
+{% block title %}
+    AERPAW CI/CD
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated and user.is_resource_manager or user.is_site_admin %}
         <div class="container">
@@ -24,7 +28,9 @@
                 {% for cicd in cicds %}
                     <tr>
                         <td>
-                            <a href="{% url 'cicd_detail' cicd_uuid=cicd.uuid %}">{{ cicd.name }}</a>
+                            <a href="{% url 'cicd_detail' cicd_uuid=cicd.uuid %}">
+                                {{ cicd.name }}
+                            </a>
                         </td>
                         <td>{{ cicd.description }}</td>
                         <td>{{ cicd.aerpaw_uuid }}</td>

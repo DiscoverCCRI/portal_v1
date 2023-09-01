@@ -1,12 +1,13 @@
 import uuid
 from json import JSONEncoder
 from uuid import UUID
+from projects.models import Project
 
-from accounts.models import AerpawUser
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
-from projects.models import Project
+
+from accounts.models import AerpawUser
 
 JSONEncoder_olddefault = JSONEncoder.default
 

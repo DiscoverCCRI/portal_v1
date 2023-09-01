@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}AERPAW CI/CD{% endblock %}
+
+{% block title %}
+    AERPAW CI/CD
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated and user.is_resource_manager or user.is_site_admin %}
         <div class="container">
@@ -9,7 +13,7 @@
             <form method="POST" class="post-form">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <input class="btn btn-success mr-2" type="submit" value="Save" />
+                <input class="btn btn-success mr-2" type="submit" value="Save"/>
                 <button class="btn btn-secondary mr-2">
                     <a href="{% url 'cicd_host_info' %}" class="unlink">Back</a>
                 </button>

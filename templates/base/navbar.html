@@ -1,19 +1,17 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg" style="background-color: white;">
     <a class="navbar-brand" href="{% url 'home' %}">
-        <img style="border: 2px solid white;
-                    margin-left: 2rem"
-             src="{% static 'images/logo/discoverlogo.jpeg' %}"
-             height="100"
-             alt="discover logo" />
+        <img style="border: 2px solid white; margin-left: 2rem;" src="{% static 'images/logo/discoverlogo.jpeg' %}" height="100" alt="discover logo"/>
     </a>
-    <button class="navbar-toggler"
+    <button
+            class="navbar-toggler"
             type="button"
             data-toggle="collapse"
             data-target="#navbarNav"
             aria-controls="navbarNav"
             aria-expanded="false"
-            aria-label="Toggle navigation">
+            aria-label="Toggle navigation"
+    >
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -22,119 +20,64 @@
                 {% if user.is_aerpaw_user %}
                     <li class="nav-item dropdown">
                         {% if user.is_site_admin %}
-                            <a class="nav-link dropdown-toggle"
-                               id="navbarDropdown"
-                               role="button"
-                               data-toggle="dropdown"
-                               aria-haspopup="true"
-                               aria-expanded="false"
-                               style="color:black;
-                                      font-family: bold">Projects</a>
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" style="color:black; font-family: bold;">
+                                Projects
+                            </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item"
-                                   style="color:black;
-                                          font-family: bold"
-                                   href="{% url 'project_request' %}">Request Project</a>
-                                <a class="dropdown-item"
-                                   style="color:black;
-                                          font-family: bold"
-                                   href="{% url 'project_requests' %}">Project Requests</a>
-                                <a class="dropdown-item"
-                                   style="color:black;
-                                          font-family: bold"
-                                   href="{% url 'projects' %}">Project List</a>
+                                <a class="dropdown-item" style="color:black; font-family: bold;" href="{% url 'project_request' %}">Request Project</a>
+                                <a class="dropdown-item" style="color:black; font-family: bold;" href="{% url 'project_requests' %}">Project Requests</a>
+                                <a class="dropdown-item" style="color:black; font-family: bold;" href="{% url 'projects' %}">Project List</a>
                             </div>
                         {% else %}
-                            <a class="nav-link"
-                               style="color:black;
-                                      font-family: bold"
-                               href="{% url 'projects' %}">Projects</a>
+                            <a class="nav-link" style="color:black; font-family: bold;" href="{% url 'projects' %}">Projects</a>
                         {% endif %}
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link"
-                           style="color:black;
-                                  font-family: bold"
-                           href="{% url 'resources' %}">Resources</a>
+                        <a class="nav-link" style= "color:black; font-family: bold;" href="{% url 'resources' %}">Resources</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle"
-                           id="navbarDropdown"
-                           role="button"
-                           data-toggle="dropdown"
-                           aria-haspopup="true"
-                           aria-expanded="false"
-                           style="color:black;
-                                  font-family: bold">Experiments</a>
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false" style="color:black; font-family: bold;">
+                            Experiments
+                        </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item"
-                               style="font-family: bold"
-                               href="{% url 'profiles' %}">Resource Definition (ERD)</a>
-                            <a class="dropdown-item"
-                               style="font-family: bold"
-                               href="{% url 'experiments' %}">Workspace</a>
+                            <a class="dropdown-item" style= "font-family: bold;" href="{% url 'profiles' %}">Resource Definition (ERD)</a>
+                            <a class="dropdown-item" style= "font-family: bold;" href="{% url 'experiments' %}">Workspace</a>
                         </div>
                     </li>
                 {% endif %}
                 {% if user.is_user_manager or user.is_site_admin %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle"
-                           id="navbarDropdown"
-                           role="button"
-                           data-toggle="dropdown"
-                           aria-haspopup="true"
-                           aria-expanded="false"
-                           style="color:black;
-                                  font-family: bold">User Management</a>
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false" style="color:black; font-family: bold;">
+                            User Management
+                        </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item"
-                               style="color:black;
-                                      font-family: bold"
-                               href="{% url 'user_requests' %}">Role Requests</a>
-                            <a class="dropdown-item"
-                               style="color:black;
-                                      font-family: bold"
-                               href="{% url 'user_groups' %}">All User Roles</a>
+                            <a class="dropdown-item" style="color:black; font-family: bold;"  href="{% url 'user_requests' %}">Role Requests</a>
+                            <a class="dropdown-item" style="color:black; font-family: bold;"  href="{% url 'user_groups' %}">All User Roles</a>
                         </div>
                     </li>
                 {% endif %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle"
-                       id="navbarDropdown"
-                       role="button"
-                       data-toggle="dropdown"
-                       aria-haspopup="true"
-                       aria-expanded="false"
-                       style="color:black;
-                              font-family: bold">Account</a>
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false" style="color:black; font-family: bold;">
+                        Account
+                    </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item"
-                           style="color:black;
-                                  font-family: bold"
-                           href="{% url 'profile' %}">User Profile</a>
-                        <a class="dropdown-item"
-                           style="color:black;
-                                  font-family: bold"
-                           href="{% url 'usercomms' %}">Messages</a>
-                        <a class="dropdown-item"
-                           style="color:black;
-                                  font-family: bold"
-                           href="{% url 'request_roles' %}">Request Roles</a>
+                        <a class="dropdown-item" style="color:black; font-family: bold;" href="{% url 'profile' %}">User Profile</a>
+                        <a class="dropdown-item" style="color:black; font-family: bold;" href="{% url 'usercomms' %}">Messages</a>
+                        <a class="dropdown-item" style="color:black; font-family: bold;" href="{% url 'request_roles' %}">Request Roles</a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"
-                       href="{% url 'logout' %}"
-                       style="color:black;
-                              font-family: bold">Logout: {{ user.display_name }}</a>
+                    <a class="nav-link" href="{% url 'logout' %}" style="color:black; font-family: bold;">Logout: {{ user.display_name }}</a>
                 </li>
             {% else %}
                 <ul class="navbar-nav ml-auto ns-navbar pull-right">
                     <li class="nav-item {{ login_page }}">
-                        <a class="nav-link"
-                           href="{% url 'login' %}"
-                           style="color:black;
-                                  font-family: bold">
+                        <a class="nav-link" href="{% url 'login' %}" style="color:black; font-family: bold;">
                             <i class="fa fa-fw fa-sign-in"></i> Login</a>
                     </li>
                 </ul>
@@ -143,5 +86,6 @@
     </div>
 </nav>
 <div style="background-image: linear-gradient(90deg,#1CB5E0,#0d0d77);
-            width: 100%;
-            height: 0.5rem"></div>
+
+width: 100%;
+height: 0.5rem;"></div>

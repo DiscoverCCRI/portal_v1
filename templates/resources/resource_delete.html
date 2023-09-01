@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Delete: {{ resource.name }}{% endblock %}
+
+{% block title %}
+    Delete: {{ resource.name }}
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated and user.is_resource_manager %}
         <div class="container">
@@ -52,13 +56,9 @@
             <form id="delete-resource" method="POST" class="post-form">
                 {% csrf_token %}
             </form>
-            <button class="btn btn-danger mr-2"
-                    type="submit"
-                    form="delete-resource"
-                    value="delete">Delete</button>
+            <button class="btn btn-danger mr-2" type="submit" form="delete-resource" value="delete">Delete</button>
             <button class="btn btn-secondary mr-2" value="cancel">
-                <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}"
-                   class="unlink">Cancel</a>
+                <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}" class="unlink">Cancel</a>
             </button>
         </div>
     {% else %}

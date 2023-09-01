@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Resource: {{ resource.name }}{% endblock %}
+
+{% block title %}
+    Resource: {{ resource.name }}
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -26,7 +30,9 @@
                     <td>Location</td>
                     <td>
                         {{ resource.location }}
-                        {% if resource_map %}(<a href="{{ resource.locationURL }}" target="_blank">map</a>){% endif %}
+                        {% if resource_map %}
+                            (<a href="{{ resource.locationURL }}" target="_blank">map</a>)
+                        {% endif %}
                     </td>
                 </tr>
                 {% if user.is_operator or user.is_resource_manager or user.is_site_admin %}
@@ -67,8 +73,7 @@
             </table>
             {% if user.is_resource_manager %}
                 <button class="btn btn-success mr-2">
-                    <a href="{% url 'resource_update' resource_uuid=resource.uuid %}"
-                       class="unlink">Update</a>
+                    <a href="{% url 'resource_update' resource_uuid=resource.uuid %}" class="unlink">Update</a>
                 </button>
             {% endif %}
             <button class="btn btn-secondary mr-2">
@@ -76,8 +81,7 @@
             </button>
             {% if user.is_resource_manager %}
                 <button class="btn btn-danger">
-                    <a href="{% url 'resource_delete' resource_uuid=resource.uuid %}"
-                       class="unlink">Delete</a>
+                    <a href="{% url 'resource_delete' resource_uuid=resource.uuid %}" class="unlink">Delete</a>
                 </button>
             {% endif %}
         </div>

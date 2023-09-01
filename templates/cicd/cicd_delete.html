@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}AERPAW CI/CD{% endblock %}
+
+{% block title %}
+    AERPAW CI/CD
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated %}
-        <div class="container">{{ hello }}</div>
+        <div class="container">
+            {{ hello }}
+        </div>
     {% else %}
         <div class="container">
             <p>You are not currently logged in or not authorized to view this page</p>
