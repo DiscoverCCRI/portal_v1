@@ -1,19 +1,19 @@
-import logging
+import uuid
 import os
 import sys
-import uuid
+from django.utils import timezone
 from datetime import datetime, timedelta
 
-import aerpawgw_client
 import pytz
-from accounts.models import AerpawUser
-from aerpawgw_client.rest import ApiException
+
 from django.db.models import Q
-from django.utils import timezone
-from reservations.models import Reservation, ReservationStatusChoice
 
 from .models import Resource
-
+from accounts.models import AerpawUser
+from reservations.models import Reservation, ReservationStatusChoice
+import aerpawgw_client
+from aerpawgw_client.rest import ApiException
+import logging
 logger = logging.getLogger(__name__)
 
 
@@ -26,27 +26,27 @@ def create_new_resource(request, form):
     """
     resource = Resource()
     resource.uuid = uuid.uuid4()
-    resource.name = form.data.getlist("name")[0]
+    resource.name = form.data.getlist('name')[0]
     try:
-        resource.description = form.data.getlist("description")[0]
+        resource.description = form.data.getlist('description')[0]
     except ValueError as e:
         print(e)
         resource.description = None
 
-    resource.resourceType = form.data.getlist("resourceType")[0]
+    resource.resourceType = form.data.getlist('resourceType')[0]
 
-    resource.units = form.data.getlist("units")[0]
+    resource.units = form.data.getlist('units')[0]
 
-    resource.location = form.data.getlist("location")[0]
+    resource.location = form.data.getlist('location')[0]
 
     try:
-        resource.ip_address = form.data.getlist("ip_address")[0]
+        resource.ip_address = form.data.getlist('ip_address')[0]
     except ValueError as e:
         print(e)
         resource.ip_address = None
 
     try:
-        resource.hostname = form.data.getlist("hostname")[0]
+        resource.hostname = form.data.getlist('hostname')[0]
     except ValueError as e:
         print(e)
         resource.hostname = None
@@ -63,29 +63,29 @@ def update_existing_resource(request, resource, form):
     :param form:
     :return:
     """
-    resource.name = form.data.getlist("name")[0]
+    resource.name = form.data.getlist('name')[0]
     try:
-        resource.description = form.data.getlist("description")[0]
+        resource.description = form.data.getlist('description')[0]
     except ValueError as e:
         print(e)
         resource.description = None
 
-    resource.resourceType = form.data.getlist("resourceType")[0]
+    resource.resourceType = form.data.getlist('resourceType')[0]
 
-    resource.units = form.data.getlist("units")[0]
+    resource.units = form.data.getlist('units')[0]
 
-    resource.location = form.data.getlist("location")[0]
+    resource.location = form.data.getlist('location')[0]
     resource.modified_by = request.user
     resource.modified_date = timezone.now()
 
     try:
-        resource.ip_address = form.data.getlist("ip_address")[0]
+        resource.ip_address = form.data.getlist('ip_address')[0]
     except ValueError as e:
         print(e)
         resource.ip_address = None
 
     try:
-        resource.hostname = form.data.getlist("hostname")[0]
+        resource.hostname = form.data.getlist('hostname')[0]
     except ValueError as e:
         print(e)
         resource.hostname = None
@@ -116,18 +116,18 @@ def get_resource_list(request):
     :return:
     """
     if request.user.is_superuser:
-        resources = Resource.objects.order_by("name")
+        resources = Resource.objects.order_by('name')
     else:
-        resources = Resource.objects.order_by("name")
+        resources = Resource.objects.order_by('name')
     return resources
 
 
 def get_reserved_resource(start_time, end_time):
-    resources = Resource.objects.order_by("name")
+    resources = Resource.objects.order_by('name')
     resource_units = {}
     for resource in resources:
         reserved_units = get_reserved_units(resource, start_time, end_time)
-        available_units = resource.units - reserved_units
+        available_units = resource.units-reserved_units
         units = []
         units.append(reserved_units)
         units.append(available_units)
@@ -150,11 +150,11 @@ def is_resource_available_time(resource, start_time, end_time):
     if not resource.is_units_available():
         return False
 
-    reserved_units = get_reserved_units(resource, start_time, end_time)
+    reserved_units = get_reserved_units(resource,start_time,end_time)
     return resource.is_units_available_reservation(reserved_units)
 
 
-def get_reserved_units(resource, start, end):
+def get_reserved_units(resource,start,end):
     qs0 = Reservation.objects.filter(state=ReservationStatusChoice.SUCCESS.value)
     qs1 = qs0.filter(start_date__lte=end)
     qs2 = qs1.filter(end_date__gte=end)
@@ -165,24 +165,22 @@ def get_reserved_units(resource, start, end):
     return units
 
 
-def update_units(
-    resource, updated_units, original_units, start_time, end_time, save=True
-):
-    count = updated_units - original_units
-    return remove_units(resource, count, start_time, end_time)
+def update_units(resource, updated_units, original_units, start_time, end_time, save=True):
+      count = updated_units - original_units
+      return remove_units(resource, count, start_time, end_time)
 
 
 def remove_units(resource, count, start_time, end_time, save=True):
     is_resource_available = is_resource_available_time(resource, start_time, end_time)
     if is_resource_available or count < 0:
-        # start_date = datetime.strptime(start_time,'%Y-%m-%d %H:%M:%S.%f%z')
-        # end_date = datetime.strptime(end_time,'%Y-%m-%d %H:%M:%S.%f%z')
-        # utc=pytz.UTC
+        #start_date = datetime.strptime(start_time,'%Y-%m-%d %H:%M:%S.%f%z')
+        #end_date = datetime.strptime(end_time,'%Y-%m-%d %H:%M:%S.%f%z')
+        #utc=pytz.UTC
         count_date = timezone.now() + timezone.timedelta(hours=2)
-        # count_date = count_date.replace(tzinfo=utc)
+        #count_date = count_date.replace(tzinfo=utc)
 
         if start_time <= count_date:
-            reserved_units = get_reserved_units(resource, start_time, end_time)
+            reserved_units = get_reserved_units(resource,start_time,end_time)
             resource.availableUnits = resource.units - reserved_units - count
         if save == True:
             resource.save()
@@ -197,30 +195,23 @@ def import_cloud_resources(request):
     :param form:
     :return:
     """
-    if (
-        not os.getenv("AERPAWGW_HOST")
-        or not os.getenv("AERPAWGW_PORT")
-        or not os.getenv("AERPAWGW_VERSION")
-    ):
+    if not os.getenv('AERPAWGW_HOST') \
+            or not os.getenv('AERPAWGW_PORT') \
+            or not os.getenv('AERPAWGW_VERSION'):
         return
 
     total_cloud_resources = {}
     avail_cloud_resources = {}
     try:
         emulab_resources = get_emulab_resource_list(request)
-        logger.info("parsing emulab resources:")
+        logger.info('parsing emulab resources:')
         for emulab_node in emulab_resources:
-            end_index = emulab_node.component_id.find(
-                "node"
-            )  # "urn:publicid:IDN+exogeni.net+node+pc1"
-            location_urn = emulab_node.component_id[: end_index - 1]
+            end_index = emulab_node.component_id.find('node')  # "urn:publicid:IDN+exogeni.net+node+pc1"
+            location_urn = emulab_node.component_id[:end_index-1]
             location = emulab_urn_to_location(location_urn)
-            key = location + "," + emulab_node.type
-            logger.warning(
-                "component_name = {}, location_urn = {}, key = {}, available = {}".format(
-                    emulab_node.component_name, location_urn, key, emulab_node.available
-                )
-            )
+            key = location + ',' + emulab_node.type
+            logger.warning('component_name = {}, location_urn = {}, key = {}, available = {}'.format(
+                emulab_node.component_name, location_urn, key, emulab_node.available))
 
             if key in total_cloud_resources:
                 total_cloud_resources[key] += 1
@@ -235,37 +226,25 @@ def import_cloud_resources(request):
 
         logger.warning("total_cloud_resources:{}".format(total_cloud_resources))
         logger.warning("avail_cloud_resources:{}".format(avail_cloud_resources))
-        logger.warning(
-            "portal should calculate the available counts by reservation, "
-            + "the avail_cloud_resources returned by emulab should just be reference \n"
-        )
+        logger.warning("portal should calculate the available counts by reservation, " +
+                       "the avail_cloud_resources returned by emulab should just be reference \n")
 
         # create or update resources in database
         for key in total_cloud_resources.keys():
-            create_or_update_cloud_resource(
-                request,
-                key.split(",")[0],
-                key.split(",")[1],
-                total_cloud_resources[key],
-                avail_cloud_resources[key],
-            )
+            create_or_update_cloud_resource(request, key.split(',')[0], key.split(',')[1],
+                                            total_cloud_resources[key],
+                                            avail_cloud_resources[key])
     except:
         logger.error("Import Emulab resource error", sys.exc_info()[0])
 
     # delete resources if they are no longer on emulab
     existing_resources = get_resource_list(request)
     for resource in existing_resources:
-        key = resource.location + "," + resource.name
-        if (
-            resource.description == "Emulab nodes"
-            and resource.resourceType.upper() == "CLOUD"
-            and key not in total_cloud_resources.keys()
-        ):
-            logger.warning(
-                "Emulab resource '{}' no longer exists, deleting it".format(
-                    resource.name
-                )
-            )
+        key = resource.location + ',' + resource.name
+        if resource.description == 'Emulab nodes' \
+                and resource.resourceType.upper() == 'CLOUD'\
+                and key not in total_cloud_resources.keys():
+            logger.warning('Emulab resource \'{}\' no longer exists, deleting it'.format(resource.name))
             delete_existing_resource(request, resource)
 
 
@@ -288,20 +267,20 @@ def create_or_update_cloud_resource(request, location, name, units, avail_units)
                 resource.units = units
                 resource.modified_date = timezone.now()
                 resource.save()
-                logger.warning("Emulab resource '{}' is updated".format(resource.name))
+                logger.warning('Emulab resource \'{}\' is updated'.format(resource.name))
             return
     # there was no such resource, let's create a new one
     newresource = Resource()
     newresource.uuid = uuid.uuid4()
     newresource.name = name
-    newresource.description = "Emulab nodes"
+    newresource.description = 'Emulab nodes'
     newresource.units = units
     newresource.availableUnits = avail_units
-    newresource.resourceType = "Cloud"
-    newresource.stage = "Development"
+    newresource.resourceType = 'Cloud'
+    newresource.stage = 'Development'
     newresource.location = location
     newresource.save()
-    logger.warning("Emulab resource '{}' is created".format(newresource.name))
+    logger.warning('Emulab resource \'{}\' is created'.format(newresource.name))
     return
 
 
@@ -324,14 +303,14 @@ def get_emulab_resource_list(request):
 
 
 def emulab_location_to_urn(location):
-    if location == "RENCIEmulab":
-        return os.getenv("URN_RENCIEMULAB")
+    if location == 'RENCIEmulab':
+        return os.getenv('URN_RENCIEMULAB')
     else:
-        raise Exception("unknown location")
+        raise Exception('unknown location')
 
 
 def emulab_urn_to_location(urn):
-    if urn == os.getenv("URN_RENCIEMULAB"):
-        return "RENCIEmulab"
+    if urn == os.getenv('URN_RENCIEMULAB'):
+        return 'RENCIEmulab'
     else:
-        raise Exception("unknown urn")
+        raise Exception('unknown urn')

@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}AERPAW reservations{% endblock %}
+
+{% block title %}
+    AERPAW reservations
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -20,7 +24,9 @@
                 {% for reservation in reservations %}
                     <tr>
                         <td>
-                            <a href="{% url 'reservation_detail_own' reservation_uuid=reservation.uuid %}">{{ reservation.name }}</a>
+                            <a href="{% url 'reservation_detail_own' reservation_uuid=reservation.uuid %}">
+                                {{ reservation.name }}
+                            </a>
                         </td>
                         <td>{{ reservation.description }}</td>
                         <td>{{ reservation.experiment }}</td>

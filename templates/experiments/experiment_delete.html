@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Delete: {{ experiment.name }}{% endblock %}
+
+{% block title %}
+    Delete: {{ experiment.name }}
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -13,26 +17,26 @@
                     </tr>
                     <tr>
                         <td>Github Link</td>
-                        <td>
-                            <a href="{{ experiment.github_link }}">{{ experiment.github_link }}</a>
-                        </td>
+                        <td><a href="{{experiment.github_link}}">{{ experiment.github_link }}</a></td>
                     </tr>
                     <tr>
                         <td>Cloud Storage Link</td>
-                        <td>
-                            <a href="{{ experiment.cloudstorage_link }}">{{ experiment.cloudstorage_link }}</a>
-                        </td>
+                        <td><a href="{{experiment.cloudstorage_link}}">{{ experiment.cloudstorage_link }}</a></td>
                     </tr>
                     <tr>
                         <td>Project</td>
                         <td>
-                            {% for member in project %}{{ member }},{% endfor %}
+                            {% for member in project %}
+                                {{ member }},
+                            {% endfor %}
                         </td>
                     </tr>
                     <tr>
                         <td>Experiment Members</td>
                         <td>
-                            {% for member in experimenter %}{{ member }},{% endfor %}
+                            {% for member in experimenter %}
+                                {{ member }},
+                            {% endfor %}
                         </td>
                     </tr>
                     <tr>
@@ -55,10 +59,11 @@
             </div>
             <form method="POST" class="post-form">
                 {% csrf_token %}
-                <input class="btn btn-danger mr-2" type="submit" value="Delete" />
+                <input class="btn btn-danger mr-2" type="submit" value="Delete"/>
                 <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}"
                    class="btn btn-secondary">Back</a>
             </form>
+
         </div>
     {% else %}
         <div class="container">

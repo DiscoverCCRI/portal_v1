@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Aerpaw User Signup{% endblock %}
+
+{% block title %}
+    Aerpaw User Signup
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -8,7 +12,7 @@
             <form method="POST" class="post-form">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <input class="btn btn-success mr-2" type="submit" value="Save" />
+                <input class="btn btn-success mr-2" type="submit" value="Save"/>
                 <button class="btn btn-secondary mr-2">
                     <a href="{% url '/' %}" class="unlink">Back</a>
                 </button>

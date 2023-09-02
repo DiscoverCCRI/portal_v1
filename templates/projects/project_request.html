@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Request Project{% endblock %}
+
+{% block title %}
+    Request Project
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated and user.is_project_manager or user.is_authenticated and user.is_site_admin %}
         <div class="container">
@@ -12,10 +16,7 @@
                     NOTE: Projects default to being <b>private</b> unless "Is public" is marked
                 </p>
             </form>
-            <button class="btn btn-success mr-2"
-                    type="submit"
-                    form="create-project"
-                    value="save">Save</button>
+            <button class="btn btn-success mr-2" type="submit" form="create-project" value="save">Save</button>
             <button class="btn btn-secondary mr-2" value="cancel">
                 <a href="{% url 'projects' %}" class="unlink">Back</a>
             </button>

@@ -1,13 +1,12 @@
-import uuid
 from sre_constants import SUCCESS
+import uuid
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.utils import timezone
 
-from .models import (AerpawUser, Project, ProjectMembershipRequest,
-                     ProjectRequest)
+from .models import Project, AerpawUser, ProjectMembershipRequest, ProjectRequest
 
 
 def create_new_project(request, form):
@@ -19,14 +18,14 @@ def create_new_project(request, form):
     """
     project = Project()
     project.uuid = uuid.uuid4()
-    project.name = form.data.getlist("name")[0]
+    project.name = form.data.getlist('name')[0]
     try:
-        project.description = form.data.getlist("description")[0]
+        project.description = form.data.getlist('description')[0]
     except IndexError as e:
         print(e)
         project.description = None
     try:
-        if form.data.getlist("is_public")[0]:
+        if form.data.getlist('is_public')[0]:
             project.is_public = True
     except IndexError as e:
         print(e)
@@ -52,7 +51,7 @@ def update_project_members(project, project_member_email_list):
     # clear current project membership
     # project.project_members.clear()
     # add members from project_member_id_update_list
-    project.project_pending_member_emails = ""
+    project.project_pending_member_emails = ''
     project.save()
     updated_pending_email_list = []
     for member_email in project_member_email_list:
@@ -69,13 +68,13 @@ def update_project_members(project, project_member_email_list):
             unique_list.append(email)
             seen.add(email)
     project.project_pending_member_emails = ",".join(str(x) for x in unique_list)
-    if project.project_pending_member_emails != "":
+    if project.project_pending_member_emails != '':
         send_pending_memeber_emails(unique_list)
 
 
 def send_pending_memeber_emails(pending_member_emails_list):
-    subject = "AERPAW project sign up"
-    message = "You received this email because a project PI has added you to the project. Please go to aerpaw.org to login and signup."
+    subject = 'AERPAW project sign up'
+    message = 'You received this email because a project PI has added you to the project. Please go to aerpaw.org to login and signup.'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = pending_member_emails_list
     send_mail(subject, message, email_from, recipient_list)
@@ -107,14 +106,14 @@ def update_existing_project(request, project, form):
     """
     project.modified_by = request.user
     project.modified_date = timezone.now()
-    project.name = form.data.getlist("name")[0]
+    project.name = form.data.getlist('name')[0]
     try:
-        project.description = form.data.getlist("description")[0]
+        project.description = form.data.getlist('description')[0]
     except IndexError as e:
         print(e)
         project.description = None
     try:
-        if form.data.getlist("is_public")[0]:
+        if form.data.getlist('is_public')[0]:
             project.is_public = True
     except IndexError as e:
         print(e)
@@ -152,16 +151,12 @@ def get_project_list(request):
     :param request:
     :return:
     """
-    my_projects = (
-        Project.objects.filter(
-            Q(project_creator=request.user)
-            | Q(project_owners__in=[request.user])
-            | Q(project_members__in=[request.user])
-        )
-        .order_by("name")
-        .distinct()
-    )
-    other_projects = Project.objects.all().difference(my_projects).order_by("name")
+    my_projects = Project.objects.filter(
+        Q(project_creator=request.user) |
+        Q(project_owners__in=[request.user]) |
+        Q(project_members__in=[request.user])
+    ).order_by('name').distinct()
+    other_projects = Project.objects.all().difference(my_projects).order_by('name')
     return my_projects, other_projects
 
 
@@ -181,19 +176,18 @@ def create_new_project_membership_request(request, project_uuid, member_type, me
 
     return True
 
-
 def create_new_project_request(request, form):
     project_request = ProjectRequest()
-    project_request.name = form.data.getlist("name")[0]
+    project_request.name = form.data.getlist('name')[0]
 
     try:
-        project_request.description = form.data.getlist("description")[0]
+        project_request.description = form.data.getlist('description')[0]
     except IndexError as e:
         print(e)
         project_request.description = None
 
     try:
-        if form.data.getlist("is_public")[0]:
+        if form.data.getlist('is_public')[0]:
             project_request.is_public = True
     except IndexError as e:
         print(e)

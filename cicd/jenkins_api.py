@@ -1,25 +1,26 @@
-import logging
-from datetime import datetime
-from pprint import pprint
 from uuid import UUID
-
-import aerpawgw_client
 import jenkins
-from accounts.models import AerpawUser
-from aerpawgw_client.rest import ApiException
-from django.conf import settings
-from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
-from jenkins import JenkinsException
-from profiles.models import Profile
-from profiles.profiles import *
-from projects.models import Project
-from reservations.models import Reservation
-from resources.resources import *
-
 from . import jenkins_server as js
 from .models import Cicd
+from django.shortcuts import render, redirect, get_object_or_404
+from pprint import pprint
+from jenkins import JenkinsException
+
+from django.utils import timezone
+from django.core.mail import send_mail
+from django.conf import settings
+
+from .models import Cicd
+from reservations.models import Reservation
+from accounts.models import AerpawUser
+from projects.models import Project
+from profiles.models import Profile
+from profiles.profiles import *
+from resources.resources import *
+import aerpawgw_client
+from aerpawgw_client.rest import ApiException
+from datetime import datetime
+import logging
 
 # logger = logging.getLogger(__name__)
 #

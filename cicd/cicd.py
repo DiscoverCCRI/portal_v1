@@ -1,6 +1,6 @@
 from django.contrib import messages
-from resources.resources import *
 
+from resources.resources import *
 from .models import Cicd, CicdHostInfo
 
 logger = logging.getLogger(__name__)

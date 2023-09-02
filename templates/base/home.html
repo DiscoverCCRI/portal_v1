@@ -1,54 +1,45 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Discover Home{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated %}
         <head>
             <meta charset="UTF-8">
-            <link rel="icon"
-                  type="image/x-icon"
-                  href="{% static 'images/logo/favicon-32x32.png' %}">
+            <link rel="icon" type="image/x-icon" href="{% static 'images/logo/favicon-32x32.png' %}">
         </head>
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
         <div class="homepage">
-            <img class="rounded my-4 img-fluid"
-                 width="25%"
-                 src="{% static 'images/logo/discoverlogo.jpeg' %}">
+            <img class="rounded my-4 img-fluid" width="25%" src="{% static 'images/logo/discoverlogo.jpeg' %}">
             <p>
-            <span class="h2"><a href="https://aerpaw.org/"
-   target="_blank"
-   style="color: #076AE0 !important">Discover CCRI</a>
-            </span> <strong>(Distributed Sensing & Computing Over Sparse Environments)</strong> is building a network of field sites to allow researchers to study distributed computing and networking in rural and remote areas to empower detection and response to environmental and civil disasters.  The DISCOVER cyberinfrastructure will allow computer scientists and engineers to study how IoT devices and networks can be designed to work in technically challenging rural or remote areas.
-        </p>
-        <p>
-            <strong>User manuals, tutorials, and other relevant documentation can be found at the following links;
-            please refer to relevant instructions before attempting to use this Portal.</strong>
-            <br>
-            - <a style="color: #076AE0 !important"
-    href="https://www.discoverccri.org/"
-    target="_blank">DISCOVER main website</a>
-            <br>
-            - <a style="color: #076AE0 !important"
-    href="https://sites.google.com/view/discover-user-manual/welcome"
-    target="_blank">DISCOVER wiki</a>
-            <br>
-        </p>
-        {% if user.is_operator %}
-            <hr>
-            <p>
-                <b>Operator's Tools</b>
-                <br>
-                - <b>Jenkins</b> - <a href="https://{{ operator_cicd.url }}:{{ operator_cicd.port }}/jenkins/"
-    target="_blank">https://{{ operator_cicd.url }}:{{ operator_cicd.port }}/jenkins/</a>
-                <br />
-                - <b>Gitea</b> - <a href="https://{{ operator_cicd.url }}:{{ operator_cicd.port }}/gitea/"
-    target="_blank">https://{{ operator_cicd.url }}:{{ operator_cicd.port }}/gitea/</a>
-                <br />
+        <span class="h2"><a href="https://aerpaw.org/" target="_blank" style = "color: #076AE0 !important;">Discover CCRI</a>
+        </span> <strong>(Distributed Sensing & Computing Over Sparse Environments)</strong> is building a network of field sites to allow researchers to study distributed computing and networking in rural and remote areas to empower detection and response to environmental and civil disasters.  The DISCOVER cyberinfrastructure will allow computer scientists and engineers to study how IoT devices and networks can be designed to work in technically challenging rural or remote areas.
+                
             </p>
-            <hr>
-        {% endif %}
-    </div>
-{% else %}
-    <h3 class="text-center mt-4">Please log in to gain full access of the Discover testbed.</h3>
-{% endif %}
+            <p>
+                <strong>User manuals, tutorials, and other relevant documentation can be found at the following links;
+                    please refer to relevant instructions before attempting to use this Portal.</strong><br>
+                - <a style = "color: #076AE0 !important;" href="https://www.discoverccri.org/" target="_blank">DISCOVER main website</a> <br>
+                - <a style = "color: #076AE0 !important;" href="https://sites.google.com/view/discover-user-manual/welcome" target="_blank">DISCOVER wiki</a><br>
+                
+            </p>
+            {% if user.is_operator %}
+                <hr>
+                <p>
+                    <b>Operator's Tools</b><br>
+                    - <b>Jenkins</b> - <a href="https://{{ operator_cicd.url }}:{{ operator_cicd.port }}/jenkins/"
+                                          target="_blank">
+                    https://{{ operator_cicd.url }}:{{ operator_cicd.port }}/jenkins/
+                </a><br/>
+                    - <b>Gitea</b> - <a href="https://{{ operator_cicd.url }}:{{ operator_cicd.port }}/gitea/"
+                                        target="_blank">
+                    https://{{ operator_cicd.url }}:{{ operator_cicd.port }}/gitea/
+                </a><br/>
+                </p>
+                <hr>
+            {% endif %}
+        </div>
+    {% else %}
+        <h3 class="text-center mt-4">Please log in to gain full access of the Discover testbed.</h3>
+    {% endif %}
 {% endblock %}

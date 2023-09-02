@@ -1,7 +1,10 @@
-from django.conf.urls import include
 from django.urls import path
+from django.conf.urls import include
 
-from .views import usercomm_detail, usercomms
+from .views import(
+    usercomms,
+    usercomm_detail,
+)
 
 urlpatterns = [
     path('', usercomms, name='usercomms'),

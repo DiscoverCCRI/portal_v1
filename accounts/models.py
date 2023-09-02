@@ -1,12 +1,13 @@
 # accounts/models.py
 
 # import files
-import uuid
 from enum import Enum
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
+
+import uuid
+
 
 # class AerpawUserRoleChoice(Enum):  # A subclass of Enum
 #     ADMIN = 'Admin'
@@ -19,16 +20,15 @@ from django.utils import timezone
 #     def choices(cls):
 #         return [(key.value, key.name) for key in cls]
 
-
 # DISCOVER User Roles
 class AerpawUserRoleChoice(Enum):  # A subclass of Enum
     # Roles
-    site_admin = "Administrator"
-    operator = "Operator"
-    project_manager = "Principal Investigator (PI)"
-    resource_manager = "Resource Manager"
-    user_manager = "User Role Manager"
-    aerpaw_user = "Discover User"
+    site_admin = 'Administrator'
+    operator = 'Operator'
+    project_manager = 'Principal Investigator (PI)'
+    resource_manager = 'Resource Manager'
+    user_manager = 'User Role Manager'
+    aerpaw_user = 'Discover User'
 
     @classmethod
     def choices(cls):
@@ -73,35 +73,34 @@ class AerpawUser(AbstractUser):
         return str(self.display_name)
 
     def is_aerpaw_user(self):
-        return self.groups.filter(name="aerpaw_user").exists()
+        return self.groups.filter(name='aerpaw_user').exists()
 
     def is_operator(self):
-        return self.groups.filter(name="operator").exists()
+        return self.groups.filter(name='operator').exists()
 
     def is_project_manager(self):
-        return self.groups.filter(name="project_manager").exists()
+        return self.groups.filter(name='project_manager').exists()
 
     def is_resource_manager(self):
-        return self.groups.filter(name="resource_manager").exists()
+        return self.groups.filter(name='resource_manager').exists()
 
     def is_user_manager(self):
-        return self.groups.filter(name="user_manager").exists()
+        return self.groups.filter(name='user_manager').exists()
 
     def is_site_admin(self):
-        return self.groups.filter(name="site_admin").exists()
+        return self.groups.filter(name='site_admin').exists()
 
 
 def is_PI(user):
     print(user)
     print(user.groups.all())
-    return user.groups.filter(name="project_manager").exists()
+    return user.groups.filter(name='project_manager').exists()
 
 
 def is_project_member(user, project_group):
     print(user)
     print(user.groups.all())
     return user.groups.filter(name=project_group).exists()
-
 
 # DISCOVER User Signup (CILogon)
 # Model stores user information from CILogon
@@ -122,18 +121,13 @@ class AerpawUserSignup(models.Model):
     def __str__(self):
         return self.user.oidc_claim_email
 
-
 # DISCOVER Role Request
-#
+# 
 class AerpawRoleRequest(models.Model):
     # User = get_user_model()
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     requested_by = models.ForeignKey(
-        AerpawUser,
-        related_name="role_request_requested_by",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
+        AerpawUser, related_name='role_request_requested_by', on_delete=models.CASCADE, null=True, blank=True
     )
     purpose = models.TextField()
     is_approved = models.BooleanField(default=False)
@@ -144,25 +138,16 @@ class AerpawRoleRequest(models.Model):
         choices=AerpawUserRoleChoice.choices(),
     )
     created_by = models.ForeignKey(
-        AerpawUser,
-        related_name="role_request_created_by",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
+        AerpawUser, related_name='role_request_created_by', on_delete=models.CASCADE, null=True, blank=True
     )
     created_date = models.DateTimeField(default=timezone.now)
     modified_by = models.ForeignKey(
-        AerpawUser,
-        related_name="role_request_modified_by",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
+        AerpawUser, related_name='role_request_modified_by', on_delete=models.CASCADE, null=True, blank=True
     )
     modified_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.requested_by
-
 
 # DISCOVER signup new user
 def create_new_signup(request, form):
@@ -176,16 +161,16 @@ def create_new_signup(request, form):
     signup = AerpawUserSignup()
     signup.uuid = uuid.uuid4()
     signup.user = request.user
-    signup.name = form.data.getlist("name")[0]
-    signup.title = form.data.getlist("title")[0]
-    signup.organization = form.data.getlist("organization")[0]
+    signup.name = form.data.getlist('name')[0]
+    signup.title = form.data.getlist('title')[0]
+    signup.organization = form.data.getlist('organization')[0]
     try:
-        signup.description = form.data.getlist("description")[0]
+        signup.description = form.data.getlist('description')[0]
     except ValueError as e:
         print(e)
         signup.description = None
 
-    signup.userRole = form.data.getlist("userRole")[0]
+    signup.userRole = form.data.getlist('userRole')[0]
     request.user.save()
     signup.save()
 

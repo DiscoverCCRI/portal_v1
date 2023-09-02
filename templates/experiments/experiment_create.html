@@ -1,26 +1,30 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Create Experiment{% endblock %}
+
+{% block title %}
+    Create Experiment
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
             <h2>Create Experiment</h2>
             <p>
-                Read about: <a href="https://sites.google.com/view/discover-user-manual/welcome/experiment-web-portal/creating-and-managing-experiments"
-    target="_blank">Creating and Managing Experiments</a>
+                Read about: <a
+                    href="https://sites.google.com/view/discover-user-manual/welcome/experiment-web-portal/creating-and-managing-experiments"
+                    target="_blank">
+                Creating and Managing Experiments
+            </a>
             </p>
             <form id="create-experiment" method="POST" class="post-form">
                 {% csrf_token %}
                 {{ form.as_p }}
             </form>
-            <button class="btn btn-success mr-2"
-                    style="background-color:#076AE0!important"
-                    type="submit"
-                    form="create-experiment"
-                    value="save">Save Experiment</button>
+            <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;" type="submit" form="create-experiment" value="save">
+                Save Experiment
+            </button>
             <button class="btn btn-secondary mr-2" value="cancel">
-                <a href="{% url 'project_detail' project_uuid=project_uuid %}"
-                   class="unlink">Cancel</a>
+                <a href="{% url 'project_detail' project_uuid=project_uuid %}" class="unlink">Cancel</a>
             </button>
         </div>
         <p class="text-info">

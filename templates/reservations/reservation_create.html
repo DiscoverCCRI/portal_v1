@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Create Reservation{% endblock %}
+
+{% block title %}
+    Create Reservation
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -11,7 +15,9 @@
                     <td>Stage:</td>
                     <td>{{ experiment.stage }}</td>
                     <td>
-                        {% for member in experimenter %}{{ member }},{% endfor %}
+                        {% for member in experimenter %}
+                            {{ member }},
+                        {% endfor %}
                     </td>
                 </tr>
             </table>
@@ -20,13 +26,9 @@
                 {% csrf_token %}
                 {{ form.as_p }}
             </form>
-            <button class="btn btn-success mr-2"
-                    type="submit"
-                    form="create-reservation"
-                    value="save">Save</button>
+            <button class="btn btn-success mr-2" type="submit" form="create-reservation" value="save">Save</button>
             <button class="btn btn-secondary mr-2" value="cancel">
-                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}"
-                   class="unlink">Cancel</a>
+                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}" class="unlink">Cancel</a>
             </button>
         </div>
     {% else %}
