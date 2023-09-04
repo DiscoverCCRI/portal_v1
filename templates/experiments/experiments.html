@@ -13,14 +13,13 @@
             </div>
             <table class="table table-striped table-bordered mt-4">
                 <tr>
-                    <th>Name</th>
+                    <th>Name (Mode)</th>
                     <th>Description</th>
                     <th>Github Link</th>
                     <th>Cloud Storage Link</th>
                     <th>Project</th>
                     <th>Created By</th>
                     <th>Created Date</th>
-                    <th>Mode</th>
                 </tr>
                 {% for experiment in experiments %}
                     <tr>
@@ -28,14 +27,14 @@
                             <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">
                                 {{ experiment.name }}
                             </a>
+                            <p style="color: rgb(126, 210, 0); font-style: italic;">({{ experiment.stage }})</p>
                         </td>
                         <td>{{ experiment.description }}</td>
-                        <td><a href="{{experiment.github_link}}">{{ experiment.github_link }}</a></td>
-                        <td><a href="{{experiment.cloudstorage_link}}">{{ experiment.cloudstorage_link }}</a></td>
+                        <td><a href="{{experiment.github_link}}">Link to GitHub</a></td>
+                        <td><a href="{{experiment.cloudstorage_link}}">Link to Cloud Storage</a></td>
                         <td>{{ experiment.project }}</td>
                         <td>{{ experiment.created_by }}</td>
                         <td>{{ experiment.created_date }}</td>
-                        <td>{{ experiment.stage }}</td>
                     </tr>
                 {% endfor %}
             </table>
