@@ -70,11 +70,15 @@
                                 <td>{{ project.created_date }}</td>
                                 <td>{{ project.modified_date }}</td>
                                 <td>
-                                    <!-- TODO: add request to join code -->
-                                    <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
-                                        <a href="{% url 'project_join' project_uuid=project.uuid %}"
-                                           class="unlink">Join</a>
-                                    </button>
+                                    {% if project.uuid in requested_projects %}
+                                        <!-- TODO: add request to join code -->
+                                        <p style="color: rgb(205, 205, 49); font-style: italic;">Request Sent</p>
+                                    {% else %}
+                                        <button class="btn btn-info mr-2" style = "background-color:#076AE0!important;">
+                                            <a href="{% url 'project_join' project_uuid=project.uuid %}"
+                                            class="unlink">Join</a>
+                                        </button>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endif %}
