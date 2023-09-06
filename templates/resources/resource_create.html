@@ -14,7 +14,7 @@
                 {{ form.as_p }}
             </form>
             <script>
-                const statCap = {
+                const STAT_CAP = {
                     't12': 'TEROS-12',
                     't21': 'TEROS-21',
                     'tts': 'Thermistor Temperature Sensor',
@@ -27,7 +27,7 @@
                     'cws': 'Compact Weather Sensor'
                 }
 
-                const roverCap = {
+                const ROVER_CAP = {
                     'rasPi': 'Raspberry Pi',
                     'camera': 'Camera',
                     'modem': 'Modem',
@@ -35,7 +35,7 @@
                     'gps': 'GPS'
                 }
 
-                const droneCap = {
+                const DRONE_CAP = {
                     'gimbal': 'Gimbal and RGB/IR Camera',
                     'lidar': 'LIDAR',
                     'jetson': 'Jetson Nano',
@@ -57,13 +57,13 @@
                     switch( choice )
                     {
                             case "Stationary":
-                                cap = statCap;
+                                cap = STAT_CAP;
                                 break;
                             case "Rover":
-                                cap = roverCap;
+                                cap = ROVER_CAP;
                                 break;
                             case "Drone":
-                                cap = droneCap;
+                                cap = DRONE_CAP;
                                 break;
                     }
 

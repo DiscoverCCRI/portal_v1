@@ -40,7 +40,6 @@
                 var resources = [];
                 var allResources = [];
                 var displayedResources = [];
-                var filterCapabilities = [];
 
                 const statCap = {
                     't12': 'TEROS-12',
@@ -84,17 +83,28 @@
                     addResourceToForm();
                 }
 
-                function capabilityChange( capability )
+                function getAllSelectedCapabilities()
                 {
-                    let resourceType = document.getElementById(
-                                                            "id_resourceType");
-                    if( capability.checked && 
-                                         !checkForInArray( capability.value ) )
+                    let selectedCapFilter = [];
+
+                    let allCapabilities = document.getElementById("cap-holder");
+
+                    let children = allCapabilities.children;
+
+                    for( let index = 0; index < children.length; index++ )
                     {
-                        filterCapabilities.push( capability.value );
+                        if( children[ index ].tagName.toLowerCase() == "label" )
+                        {
+                            let inputElement = children[ index ].children;
+
+                            if( inputElement[ 0 ].checked )
+                            {
+                                selectedCapFilter.push( inputElement[ 0 ].value );
+                            }
+                        } 
                     }
 
-                    refreshResourcesFromFilter( resourceType.value );
+                    return selectedCapFilter;
                 }
 
                 function parseResourceType( string )
@@ -150,14 +160,14 @@
                 }
 
                 //Refresh the resource on type and cap change
-                function refreshResourcesFromFilter( type )
+                function refreshResourcesFromFilter( type, filter )
                 {
                     let resources = document.getElementById("resources");
 
                     //delete the existing resource nodes
                     deleteExistingChildNodes( resources );
 
-                    let filteredResources = filterResources( type, filterCapabilities );
+                    let filteredResources = filterResources( type, filter );
 
                     if( filteredResources.length > 0 )
                     {
@@ -230,11 +240,12 @@
                                 {
                                     resourceMatch = false;
                                 }
-                                //Append the resource to matched array
-                                if( resourceMatch )
-                                {
-                                    matchedResources.push( typeResources[ outIndex ] );
-                                }
+                            }
+
+                            //Append the resource to matched array
+                            if( resourceMatch )
+                            {
+                                matchedResources.push( typeResources[ outIndex ] );
                             }
                         }
 
@@ -327,7 +338,12 @@
                             newInput.style = "margin-right: 10px; margin-left: 3px;";
                             
                             newInput.onclick = function() {
-                                capabilityChange( newInput ); 
+                                let resourceType = document.getElementById(
+                                                            "id_resourceType");
+
+                                let filter = getAllSelectedCapabilities();
+
+                                refreshResourcesFromFilter( resourceType.value, filter ); 
                             }
 
                             newLabel.appendChild( newInput );
@@ -346,7 +362,7 @@
                     }
                     else
                     {
-                        noCapabilities.style.visibility = "visible";
+                        noCapabilities.style.display = "none";
                     }
 
                     capabilities.appendChild( newDiv );
@@ -366,11 +382,15 @@
 
                     let resource_form = document.getElementById("id_resources");
 
+                    deleteExistingChildNodes( resource_form );
+
+                    refreshResourcesFromFilter( resourceType.value, [] );
+
                     resource_form.style.display = "none";
 
                     resourceType.addEventListener("change", function(){
                         generateFields( capabilities, resourceType.value );
-                        refreshResourcesFromFilter( resourceType.value );
+                        refreshResourcesFromFilter( resourceType.value, [] );
                     });
                 });
             </script>
