@@ -49,6 +49,8 @@ def create_new_experiment(request, form, project_id):
     experiment.created_date = timezone.now()
     experiment.save()
 
+    print( form.data.getlist('resources')[0] )
+
     resources_uuid = parseUuidString( form.data.getlist('resources')[0] )
 
     resources = Resource.objects.all()

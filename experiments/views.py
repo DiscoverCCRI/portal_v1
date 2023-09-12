@@ -117,35 +117,6 @@ def experiment_update_experimenters(request, experiment_uuid):
 #
 #     return render(request, 'experiment_create.html', {'form': form})
 
-def get_filtered_resource( self, **kwargs ):
-    """
-    param - capabilities: An array with filtering information
-
-    return - Resources matching the filtered request
-    """
-
-    resource_type = self.request.Get.get("resourceType")
-
-    capabilities = self.request.GET.get("capabilities")
-
-    matchedResources = []
-
-    allResources = Resource.objects.all()
-
-    resources = allResources.filter( resourceType=resource_type )
-
-    if len( capabilities ) > 0:
-        for resource in resources:
-            resourceMatch = True 
-            for cap in capabilities:
-                if cap not in resource.capabilities:
-                    resourceMatch = False
-            if resourceMatch:
-                matchedResources.append( resource )
-        return { 'matchedResources' : matchedResources }
-    else:
-        return { 'matchedResources' : resources }
-
 @login_required()
 def experiment_detail(request, experiment_uuid):
     """
