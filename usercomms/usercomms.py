@@ -65,14 +65,21 @@ def portal_mail(subject, body_message, sender, receivers, reference_note='', ref
         display_name_from = "[DISCOVER] User"
     else:
         display_name_from = str(sender.display_name)
-        
-    email_body = 'FROM: ' + display_name_from + \
-                    '\r\nREQUEST: ' + str(reference_note) + \
-                    '\r\n\r\nURL: ' + str(reference_url) + \
-                    '\r\n\r\nMESSAGE: ' + body_message
-    body = 'FROM: ' + display_name_from + \
-            '\r\nREQUEST: ' + str(reference_note) + \
-            '\r\nMESSAGE: ' + str(body_message)
+
+    if reference_note != None:
+        email_body = 'FROM: ' + display_name_from + \
+                        '\r\nREQUEST: ' + str(reference_note) + \
+                        '\r\n\r\nMESSAGE: ' + body_message + \
+                        '\r\n\rURL: ' + str(reference_url)
+        body = 'FROM: ' + display_name_from + \
+                '\r\nREQUEST: ' + str(reference_note) + \
+                '\r\nMESSAGE: ' + str(body_message)
+    else:
+        email_body = 'FROM: ' + display_name_from + \
+                        '\r\n\r\nMESSAGE: ' + body_message + \
+                        '\r\n\rURL: ' + str(reference_url)
+        body = 'FROM: ' + display_name_from + \
+                '\r\nMESSAGE: ' + str(body_message)
 
     receivers_email = []
     for rc in receivers:

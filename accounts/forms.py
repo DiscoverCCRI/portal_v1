@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import AerpawUser, AerpawUserSignup, AerpawUserCredential, AerpawRoleRequest, AerpawUserRoleChoice
+from .models import AerpawUser, AerpawUserSignup, AerpawRoleRequest, AerpawUserRoleChoice
 
 
 class AerpawUserCreationForm(UserCreationForm):
@@ -20,20 +20,7 @@ class AerpawUserChangeForm(UserChangeForm):
 class AerpawUserSignupForm(forms.ModelForm):
     class Meta:
         model = AerpawUserSignup
-        fields = ('user', 'name', 'title', 'organization', 'description', 'userRole', 'publickey')
-
-
-class AerpawUserCredentialForm(forms.ModelForm):
-    publickey = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 6, 'cols': 60}),
-        required=False,
-        label='New public key',
-    )
-
-    class Meta:
-        model = AerpawUserCredential
-        fields = ('publickey',)
-
+        fields = ('user', 'name', 'title', 'organization', 'description', 'userRole')
 
 class AerpawRoleRequestForm(forms.ModelForm):
 

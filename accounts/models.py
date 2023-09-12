@@ -69,9 +69,6 @@ class AerpawUser(AbstractUser):
     oidc_claim_acr = models.CharField(max_length=255)
     oidc_claim_entitlement = models.CharField(max_length=255)
 
-    # ssh public key
-    publickey = models.TextField(null=True)
-
     def __str__(self):
         return str(self.display_name)
 
@@ -119,7 +116,6 @@ class AerpawUserSignup(models.Model):
         max_length=64,
         choices=AerpawUserRoleChoice.choices(),
     )
-    publickey = models.TextField(null=True)
 
     # class method
     def __str__(self):
@@ -153,14 +149,7 @@ class AerpawRoleRequest(models.Model):
     def __str__(self):
         return self.requested_by
 
-
-class AerpawUserCredential(models.Model):
-    publickey = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return self.publickey
-
-
+# DISCOVER signup new user
 def create_new_signup(request, form):
     """
 
@@ -182,21 +171,7 @@ def create_new_signup(request, form):
         signup.description = None
 
     signup.userRole = form.data.getlist('userRole')[0]
-    signup.publickey = form.data.getlist('publickey')[0]
-    request.user.publickey = form.data.getlist('publickey')[0]
     request.user.save()
     signup.save()
 
     return str(signup.uuid)
-
-
-def update_credential(request, form):
-    """
-
-    :param request:
-    :param form:
-    :return:
-    """
-    request.user.publickey = form.data.getlist('publickey')[0]
-    request.user.save()
-    return str(request.user.publickey)

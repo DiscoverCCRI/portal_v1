@@ -222,7 +222,7 @@ def send_request_to_testbed(request, experiment):
         action = 'SUBMIT'
 
     if action:
-        subject = 'Aerpaw Experiment Action Session Request: {} {}:{}'.format(action,
+        subject = 'Discover Experiment Action Session Request: {} {}:{}'.format(action,
                                                                               str(experiment.uuid),
                                                                               experiment.stage)
         message = "[{}]\n\n".format(subject) \
@@ -239,6 +239,7 @@ def send_request_to_testbed(request, experiment):
                 session_req_json=json.dumps({"experiment_resource_definition":"Unable to serialize the object"})
             message += "Experiment {} Session Request:\n{}\n".format(experiment.stage, session_req_json)
 
+        reference_url = 'https://' + str(request.get_host()) + '/experiments/' + str(experiment.uuid)
         receivers = []
         operators = list(AerpawUser.objects.filter(groups__name='operator'))
         for operator in operators:
@@ -247,7 +248,7 @@ def send_request_to_testbed(request, experiment):
         logger.warning(message)
         portal_mail(subject=subject, body_message=message, sender=request.user,
                     receivers=receivers,
-                    reference_note=None, reference_url=None)
+                    reference_note=None, reference_url=reference_url)
         if action == 'START':
             kwargs = {'experiment_name': str(experiment)}
             ack_mail(
@@ -420,14 +421,12 @@ def generate_experiment_session_request(request, experiment):
             experiment.stage).lower()
 
     resources = parse_profile(request, experiment.profile.profile)
-    if resources is None:
-        return None
+    
     resource_def = {'experiment_uuid': str(experiment.uuid), 'experiment_idx': experiment.id,
                     'nodes': resources}
     session_req['experiment_resource_definition'] = resource_def
 
-    user = {'username': experiment.created_by.username.split('@')[0],
-            'publickey': experiment.created_by.publickey}
+    user = {'username': experiment.created_by.username.split('@')[0]}
     session_req['user'] = user
 
     return session_req
