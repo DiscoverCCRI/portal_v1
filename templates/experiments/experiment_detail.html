@@ -48,6 +48,33 @@
                         {% endif %}
                     </tr>
                     <tr>
+                        <td>Resources</td>
+                        <td>
+                            {% for resource in experiment.resources.all %}
+                                <li>
+                                    <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}" target="_blank">{{ resource.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td>Reservations</td>
+                        <td>
+                            {% for reservation in reservations %}
+                                <a href="{% url 'reservation_detail_own' reservation_uuid=reservation.uuid %}">
+                                    {{ reservation.name }}
+                                </a>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <button class="btn btn-info mr-2">
+                                <a href="{% url 'reservation_create' experiment_uuid=experiment.uuid %}" class="unlink">Create a New Reservation</a>
+                            </button>
+                        </td>
+                    </tr>
+                    -->
+                    <tr>
                         <td>Github Link</td>
                         <td><a href="{{experiment.github_link}}">{{ experiment.github_link }}</a></td>                  
                     </tr>
@@ -65,6 +92,14 @@
                                 </td>
                             {% endif %}
                         {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Experiment Dependencies</td>
+                        <td>
+                            {% for dep in experiment.dependencies %}
+                                <li>{{ dep }}</li>
+                            {% endfor %}
+                        </td>
                     </tr>
                     <tr>
                         <td>Mode</td>

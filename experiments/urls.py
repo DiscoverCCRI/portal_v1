@@ -14,7 +14,7 @@ from .views import(
     experiment_initiate,
     experiment_manifest,
     experiment_submit,
-    experiment_link_update
+    experiment_link_update,
 )
 
 urlpatterns = [

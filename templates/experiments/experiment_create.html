@@ -19,7 +19,23 @@
             <form id="create-experiment" method="POST" class="post-form">
                 {% csrf_token %}
                 {{ form.as_p }}
+                <p id="no_capabilities">No capabilities for secleted resource type.</p>
+                <h2>
+                    Available Resources
+                </h2>
+                <div id="resources">
+                    {% for resource in resources.all %}
+                        <input id="resource_{{ forloop.counter }}" value="{{ resource.uuid }}" style="margin-left: 10px;" type="checkbox">
+                            <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}" target="_blank">{{ resource.name }}({{ resource.resourceType }})</a>
+                            <p style="display: none;">{{ resource.capabilities }}</p>
+                            {% if forloop.counter|divisibleby:3 %}
+                                <br/>
+                            {% endif %}
+                        </input>
+                    {% endfor %}
+                </div>
             </form>
+            <script type="text/javascript" src="../../static/js/experiments.js"></script>
             <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;" type="submit" form="create-experiment" value="save">
                 Save Experiment
             </button>

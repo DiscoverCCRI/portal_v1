@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
 from projects.models import Project
+from resources.models import Resource
 from usercomms.usercomms import portal_mail
 from .experiments import get_experiment_list, generate_experiment_session_request, create_new_experiment, \
     get_emulab_manifest, experiment_state_change, query_emulab_instance_status, \
@@ -16,6 +17,7 @@ from .experiments import get_experiment_list, generate_experiment_session_reques
 from .forms import ExperimentCreateForm, ExperimentLinkUpdateForm, ExperimentUpdateExperimentersForm, ExperimentUpdateForm, ExperimentSubmitForm, \
     ExperimentUpdateByOpsForm
 from .models import Experiment
+
 
 logger = logging.getLogger(__name__)
 
@@ -38,19 +40,22 @@ def experiment_create(request):
     :param request:
     :return:
     """
+
     project_id = request.session.get('project_id', '')
     project = get_object_or_404(Project, id=int(project_id))
+    resources = Resource.objects.all()
     if request.method == "POST":
         form = ExperimentCreateForm(request.POST, project_id=project_id)
         if form.is_valid():
-            experiment_uuid = create_new_experiment(request, form, project_id)
+            experiment_uuid = create_new_experiment(request, form, project_id )
             return redirect('experiment_detail', experiment_uuid=experiment_uuid)
     elif request.user.is_anonymous:
         form = None
     else:
         form = ExperimentCreateForm(project_id=project_id)
     return render(request, 'experiment_create.html',
-                  {'form': form, 'project_uuid': str(project.uuid), 'project_id': str(project.id)})
+                  {'form': form, 'project_uuid': str(project.uuid),
+                   'project_id': str(project.id), 'resources': resources } )
 
 
 @login_required()
