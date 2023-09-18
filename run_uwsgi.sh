@@ -29,6 +29,7 @@ for fixture in "${FIXTURES_LIST[@]}";do
     python manage.py loaddata $fixture
 done
 python manage.py collectstatic --noinput
+python manage.py createsuperuser --noinput --username testAdmin --email testing@gmail.com
 
 if [[ "${USE_DOT_VENV}" -eq 1 ]]; then
     uwsgi --uid ${UWSGI_UID:-1000} --gid ${UWSGI_GID:-1000}  --virtualenv ./.venv --ini uwsgi.ini
