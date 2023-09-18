@@ -35,6 +35,8 @@ def create_new_resource(request, form):
 
     resource.resourceType = form.data.getlist('resourceType')[0]
 
+    resource.capabilities = form.data.getlist('capabilities')
+
     resource.units = form.data.getlist('units')[0]
 
     resource.location = form.data.getlist('location')[0]
@@ -92,6 +94,25 @@ def update_existing_resource(request, resource, form):
 
     resource.save()
     return str(resource.uuid)
+
+def get_filtered_resource( capabilities ):
+    """
+    param - request: A map with filtering information
+    request fields: capabilities( Array of strings )
+
+    return - Resources matching the filtered request
+    """
+    matchedResources = []
+
+    resources = Resource.objects
+
+    if len( capabilities ) > 0:
+        for resource in resources:
+            if resource.capabilities == capabilities:
+                matchedResources.append( resource )
+        return matchedResources
+    else:
+        return resources
 
 
 def delete_existing_resource(request, resource):

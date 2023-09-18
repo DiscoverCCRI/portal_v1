@@ -14,6 +14,28 @@ from urllib3.exceptions import MaxRetryError
 from .forms import ResourceCreateForm, ResourceChangeForm
 from .resources import *
 
+#Turns array values into displayable strings
+capabilityMap = {
+        'gimbal': 'Gimbal and RGB/IR Camera',
+        'lidar': 'LIDAR',
+        'jetson': 'Jetson Nano',
+        'rasPi': 'Raspberry Pi',
+        'sdr': 'Software Defined Radio',
+        '5g': '5G module(s)',
+        'camera': 'Camera',
+        'gps': 'GPS',
+        't12': 'TEROS-12',
+        't21': 'TEROS-21',
+        'tts': 'Thermistor Temperature Sensor',
+        'tsl259': 'TSL25911FN',
+        'bme': 'BME280',
+        'icm': 'ICM20948',
+        'ltr': 'LTR390-UV-1',
+        'sgp': 'SGP40',
+        'cws': 'Compact Weather Sensor',
+        'modem': 'Modem',
+    }
+
 
 def get_resources_json(resources):
     refactored_rescources_dict = {}
@@ -60,6 +82,7 @@ def resources(request):
     resources_json = get_resources_json(resources)
     reserved_resource = get_all_reserved_units(24, 2)
     reservations_json = get_reservations_json(reserved_resource)
+
     resource_map = {
         "NAU Core" : os.getenv('DISCOVER_NAU_CORE_MAP'),
         "Hat Ranch" : os.getenv('DISCOVER_HAT_RANCH_MAP'),
@@ -101,6 +124,7 @@ def resource_create(request):
             return redirect('resource_detail', resource_uuid=resource_uuid)
     else:
         form = ResourceCreateForm()
+
     return render(request, 'resource_create.html', {'form': form})
 
 
@@ -115,8 +139,12 @@ def resource_detail(request, resource_uuid):
     resource = get_object_or_404(Resource, uuid=UUID(str(resource_uuid)))
     resource_reservations = resource.reservation_of_resource
     resource_map = os.getenv('AERPAW_MAP_URL')
+    resource_capabilities = translate_cap_list( resource )
     return render(request, 'resource_detail.html',
-                  {'resource': resource, 'reservations': resource_reservations.all(), 'resource_map': resource_map})
+                  { 'resource': resource, 
+                    'reservations': resource_reservations.all(), 
+                    'resource_map': resource_map,
+                    'capabilityMap': resource_capabilities })
 
 
 @login_required()
@@ -139,7 +167,8 @@ def resource_update(request, resource_uuid):
         form = ResourceChangeForm(instance=resource)
     return render(request, 'resource_update.html',
                   {
-                      'form': form, 'resource_uuid': str(resource_uuid), 'resource_name': resource.name}
+                      'form': form, 'resource_uuid': str(resource_uuid),
+                                                'resource_name': resource.name}
                   )
 
 
@@ -153,8 +182,22 @@ def resource_delete(request, resource_uuid):
     :return:
     """
     resource = get_object_or_404(Resource, uuid=UUID(str(resource_uuid)))
+    resource_capabilities = translate_cap_list( resource )
     if request.method == "POST":
         is_removed = delete_existing_resource(request, resource)
         if is_removed:
             return redirect('resources')
-    return render(request, 'resource_delete.html', {'resource': resource})
+    return render(request, 'resource_delete.html', {'resource': resource, 
+                                        'capabilityMap': resource_capabilities})
+
+
+def translate_cap_list( resource ):
+    """
+    param: resource
+    return: List of capabilities to be displayed
+    """
+    resource_capabilities = []
+    for cap in resource.capabilities:
+        resource_capabilities.append( capabilityMap[ cap ] )
+
+    return resource_capabilities

@@ -19,6 +19,14 @@
                     <td>{{ resource.resourceType }}</td>
                 </tr>
                 <tr>
+                    <td>Resource Capabilities</td>
+                    <td>
+                        {% for item in capabilityMap %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
                     <td>Total units</td>
                     <td>{{ resource.units }}</td>
                 </tr>

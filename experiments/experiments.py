@@ -36,30 +36,42 @@ def create_new_experiment(request, form, project_id):
     experiment.name = form.data.getlist('name')[0]
     experiment.github_link = form.data.getlist('github_link')[0]
     experiment.cloudstorage_link = form.data.getlist('cloudstorage_link')[0]
+
+    experiment.dependencies = parse_string( 
+                                        form.data.getlist('dependencies')[0] )
+
     try:
         experiment.description = form.data.getlist('description')[0]
-        profile = Profile.objects.get(id=int(form.data.getlist('profile')[0]))
-        if profile.is_template:
-            profile.pk = None
-            profile.id = None
-            profile.save()
-            profile.uuid = uuid.uuid4()
-            profile.is_template = False
-            profile.name = profile.name + ' (copy)'
-            profile.created_by = request.user
-            profile.modified_by = request.user
-            profile.created_date = timezone.now()
-            profile.modified_date = timezone.now()
-            profile.project = Project.objects.get(id=str(project_id))
-            profile.save()
-        experiment.profile = profile
     except ValueError as e:
         print(e)
-        experiment.profile = None
+    experiment.profile = None
     experiment.created_by = request.user
     experiment.created_date = timezone.now()
     experiment.save()
 
+    print( form.data.getlist('resources')[0] )
+
+    resources_uuid = parseUuidString( form.data.getlist('resources')[0] )
+
+    resources = Resource.objects.all()
+
+    resourceArray = []
+
+    for resource_uuid in resources_uuid:
+        uuid_obj = uuid.UUID( resource_uuid )
+        for resource in resources:
+            if resource.uuid == uuid_obj:
+                resourceArray.append( resource ) 
+
+    experiment.resources.set( resourceArray )
+
+    '''
+    resources = get_filtered_resource( 
+                            form.data.getlist('capabilities') ) 
+    
+    experiment.resources.set( resources )
+    '''
+    
     experiment.project = Project.objects.get(id=str(project_id))
     experiment.experimenter.add(request.user)
     experiment.modified_by = experiment.created_by
@@ -92,6 +104,38 @@ def create_new_experiment(request, form, project_id):
 
     return str(experiment.uuid)
 
+def parseUuidString( string ):
+    parsed = ""
+    parsedArray = []
+
+    index = 0
+    length = len( string )
+
+    while index < length:
+        if string[ index ] != ',':
+            parsed += string[ index ]
+        else:
+            parsedArray.append( parsed )
+            parsed = ""
+        index += 1
+    
+    parsedArray.append( parsed )
+
+    return parsedArray
+    
+def parse_string( rawInput ):
+    depList = []
+    currentString = ""
+    for item in rawInput:
+        if item == '\r':
+            depList.append( currentString )
+            currentString = ""
+        elif item != '\n':
+            currentString += item
+    #Last item doesn't have terminating chars
+    depList.append( currentString )
+    
+    return depList
 
 def update_experimenter(experiment, experimenter_id_list):
     """
@@ -246,6 +290,36 @@ def delete_existing_experiment(request, experiment):
     except Exception as e:
         print(e)
     return False
+
+def produce_experiment_yaml_file( request ):
+    """
+    param request - Map of strings
+    fields- type: string
+            capabilities: Array of strings
+            dependencies: Array of strings
+    return- None
+    """
+        
+    resource_type = request['type']
+    resource_cap = request['capabilities']
+    resource_dep = request['dependencies']
+
+    file_pointer = open("experiment.yaml", "x")
+
+    file_pointer.write("device:\n")
+    file_pointer.write(f"    - type: { resource_type }\n")
+    file_pointer.write(f"    - capabilities:\n")
+
+    for cap in resource_cap:
+        file_pointer.write(f"       - { cap }\n")
+
+    file_pointer.write("code:\n")
+    file_pointer.write("    - dependencies:\n")
+
+    for dep in resource_dep:
+        file_pointer.write(f"       - { dep }\n")
+
+    file_pointer.close()
 
 
 def get_experiment_list(request):
