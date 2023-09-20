@@ -47,7 +47,11 @@
             -->
             <table style = "padding-top: 8rem; " class="table table-striped table-bordered mt-4">
                 <tr>
-                    <th>Name</th>
+                    {% if user.is_operator or user.is_resource_manager or user.is_site_admin %}
+                        <th>Name (Stage)</th>
+                    {% else %}
+                        <th>Name</th>
+                    {% endif %}
                     <th>Description</th>
                     <th>Resource Type</th>
                     <th>Location</th>
@@ -55,11 +59,9 @@
                     {% if user.is_operator or user.is_resource_manager or user.is_site_admin %}
                         <th>Available Units</th>
                         <th>UUID</th>
-                        <th>Stage</th>
                         <th>Admin</th>
                         <th>Created Date</th>
-                        <th>IP address</th>
-                        <th>hostname</th>
+                        <th>Hostname - IP address</th>
                     {% endif %}
                 </tr>
                 {% for resource in resources %}
@@ -68,6 +70,9 @@
                             <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}">
                                 {{ resource.name }}
                             </a>
+                            {% if user.is_operator or user.is_resource_manager or user.is_site_admin %}
+                                <p style="color: rgb(126, 210, 0); font-style: italic;">({{ resource.stage }})</p>
+                            {% endif %}
                         </td>
                         <td>{{ resource.description }}</td>
                         <td>{{ resource.resourceType }}</td>
@@ -81,11 +86,9 @@
                         {% if user.is_operator or user.is_resource_manager or user.is_site_admin %}
                             <td>{{ resource.availableUnits }}</td>
                             <td>{{ resource.uuid }}</td>
-                            <td>{{ resource.stage }}</td>
                             <td>{{ resource.admin }}</td>
                             <td>{{ resource.created_date }}</td>
-                            <td>{{ resource.ip_address }}</td>
-                            <td>{{ resource.hostname }}</td>
+                            <td>{{ resource.hostname }} - {{ resource.ip_address }}</td>
                         {% endif %}
                     </tr>
                 {% endfor %}
