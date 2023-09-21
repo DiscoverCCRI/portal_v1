@@ -17,8 +17,8 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            {% if user.is_authenticated %}
+        {% if user.is_authenticated %}
+            <ul class="navbar-nav">
                 {% if user.is_aerpaw_user %}
                     <li class="nav-item dropdown">
                         {% if user.is_site_admin %}
@@ -28,8 +28,7 @@
                                data-toggle="dropdown"
                                aria-haspopup="true"
                                aria-expanded="false"
-                               style="color:black;
-                                      font-family: bold">Projects</a>
+                               style="color:black;">Projects</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item"
                                    style="color:black;
@@ -46,15 +45,13 @@
                             </div>
                         {% else %}
                             <a class="nav-link"
-                               style="color:black;
-                                      font-family: bold"
+                               style="color:black;"
                                href="{% url 'projects' %}">Projects</a>
                         {% endif %}
                     </li>
                     <li class="nav-item">
                         <a class="nav-link"
-                           style="color:black;
-                                  font-family: bold"
+                           style="color:black;"
                            href="{% url 'resources' %}">Resources</a>
                     </li>
                     <li class="nav-item dropdown">
@@ -64,8 +61,7 @@
                            data-toggle="dropdown"
                            aria-haspopup="true"
                            aria-expanded="false"
-                           style="color:black;
-                                  font-family: bold">Experiments</a>
+                           style="color:black;">Experiments</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" style= "font-family: bold;" href="{% url 'experiments' %}">Workspace</a>
                         </div>
@@ -79,8 +75,7 @@
                            data-toggle="dropdown"
                            aria-haspopup="true"
                            aria-expanded="false"
-                           style="color:black;
-                                  font-family: bold">User Management</a>
+                           style="color:black;">User Management</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item"
                                style="color:black;
@@ -100,8 +95,7 @@
                        data-toggle="dropdown"
                        aria-haspopup="true"
                        aria-expanded="false"
-                       style="color:black;
-                              font-family: bold">Account</a>
+                       style="color:black;">Account</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item"
                            style="color:black;
@@ -117,24 +111,25 @@
                            href="{% url 'request_roles' %}">Request Roles</a>
                     </div>
                 </li>
-                <li class="nav-item">
+            </ul>
+            <div class="navbar-nav ml-auto ns-navbar pull-right">
+                <a class="nav-link"
+                        href="{% url 'logout' %}"
+                        style="color:black;
+                               font-family: bold">
+                        <i class="fa fa-fw fa-sign-out"></i> Logout</a>
+            </div>
+        {% else %}
+            <ul class="navbar-nav ml-auto ns-navbar pull-right">
+                <li class="nav-item {{ login_page }}">
                     <a class="nav-link"
-                       href="{% url 'logout' %}"
-                       style="color:black;
-                              font-family: bold">Logout: {{ user.display_name }}</a>
+                        href="{% url 'login' %}"
+                        style="color:black;
+                               font-family: bold">
+                        <i class="fa fa-fw fa-sign-in"></i> Login</a>
                 </li>
-            {% else %}
-                <ul class="navbar-nav ml-auto ns-navbar pull-right">
-                    <li class="nav-item {{ login_page }}">
-                        <a class="nav-link"
-                           href="{% url 'login' %}"
-                           style="color:black;
-                                  font-family: bold">
-                            <i class="fa fa-fw fa-sign-in"></i> Login</a>
-                    </li>
-                </ul>
-            {% endif %}
-        </ul>
+            </ul>
+        {% endif %}
     </div>
 </nav>
 <!-- <div style="background-image: linear-gradient(90deg,#1CB5E0,#0d0d77);  width: 100%; height: 0.5rem;"></div> -->
