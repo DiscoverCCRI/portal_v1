@@ -61,7 +61,7 @@
                 {% csrf_token %}
                 <input class="btn btn-danger mr-2" type="submit" value="Delete"/>
                 <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}"
-                   class="btn btn-secondary">Back</a>
+                   class="btn btn-secondary">Back: to {{ experiment.name }}</a>
             </form>
 
         </div>

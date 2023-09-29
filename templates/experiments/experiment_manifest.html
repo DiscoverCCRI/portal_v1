@@ -28,7 +28,7 @@
                 {% endif %}
             </table>
             <button class="btn btn-secondary mr-2">
-                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}" class="unlink">Back</a>
+                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}" class="unlink">Back: to {{ experiment.name }}</a>
             </button>
         </div>
     {% else %}
