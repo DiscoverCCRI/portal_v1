@@ -1,7 +1,7 @@
 from subprocess import run
 
-USER = 'cjb873'
-HOST = 'siccs106-12.egr.nau.edu'
+USER = 'portal'
+HOST = 'ccrissde1.iot.nau.edu'
 
 
 """
@@ -32,6 +32,6 @@ Examples
 
 
 def rsync_experiment(github_link: str):
-    code = run(f"ssh {USER}@{HOST} 'cd ~/experiments && \
+    code = run(f"ssh -p 2222 {USER}@{HOST} 'cd ~/experiments && \
                git clone {github_link}'", shell=True)
     return code.returncode
