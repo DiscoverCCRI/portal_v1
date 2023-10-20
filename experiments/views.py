@@ -13,7 +13,7 @@ from resources.models import Resource
 from usercomms.usercomms import portal_mail
 from .experiments import get_experiment_list, generate_experiment_session_request, create_new_experiment, \
     get_emulab_manifest, experiment_state_change, query_emulab_instance_status, \
-    delete_existing_experiment, is_emulab_stage, initiate_emulab_instance, update_existing_experiment
+    delete_existing_experiment, is_emulab_stage, initiate_emulab_instance, update_existing_experiment, rsync_experiment
 from .forms import ExperimentCreateForm, ExperimentLinkUpdateForm, ExperimentUpdateExperimentersForm, ExperimentUpdateForm, ExperimentSubmitForm, \
     ExperimentUpdateByOpsForm
 from .models import Experiment
@@ -292,6 +292,7 @@ def experiment_initiate(request, experiment_uuid):
             # we are going to initiate the development
             experiment.stage = 'Development'
             experiment.save()
+            rsync_experiment(experiment.github_link)
         elif experiment.can_terminate():
             # we are going to terminate the development
             experiment_state_change(request, experiment, "terminating")
