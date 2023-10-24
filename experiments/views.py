@@ -292,7 +292,9 @@ def experiment_initiate(request, experiment_uuid):
             # we are going to initiate the development
             experiment.stage = 'Development'
             experiment.save()
+            print("!!!Run Rsync!!!")
             rsync_experiment(experiment.github_link)
+            print("!!!Done Rsync!!!")
         elif experiment.can_terminate():
             # we are going to terminate the development
             experiment_state_change(request, experiment, "terminating")

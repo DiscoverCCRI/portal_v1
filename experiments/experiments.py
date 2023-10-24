@@ -21,9 +21,6 @@ from .jenkins_api import deploy_experiment, info_deployment
 from .models import Experiment
 from subprocess import run
 
-USER = 'portal'
-HOST = 'ccrissde1.iot.nau.edu'
-
 logger = logging.getLogger(__name__)
 
 
@@ -731,6 +728,8 @@ Examples
 
 
 def rsync_experiment(github_link: str):
+    USER = 'portal'
+    HOST = 'ccrissde1.iot.nau.edu'
     code = run(f"ssh -p 2222 {USER}@{HOST} 'cd ~/experiments && \
                git clone {github_link}'", shell=True)
     return code.returncode
