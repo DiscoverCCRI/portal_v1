@@ -49,9 +49,7 @@ def create_new_experiment(request, form, project_id):
     experiment.created_date = timezone.now()
     experiment.save()
 
-    print( form.data.getlist('resources')[0] )
-
-    resources_uuid = parseUuidString( form.data.getlist('resources')[0] )
+    resources_uuid = parse_uuid_string( form.data.getlist('resources')[0] )
 
     resources = Resource.objects.all()
 
@@ -61,16 +59,13 @@ def create_new_experiment(request, form, project_id):
         uuid_obj = uuid.UUID( resource_uuid )
         for resource in resources:
             if resource.uuid == uuid_obj:
-                resourceArray.append( resource ) 
+                resourceArray.append( resource )
+
+    push_to_bucket(form.data.getlist('github_link')[0],
+                    form.data.getlist('cloudstorage_link')[0],
+                      [ resource.location for resource in resourceArray ] ) 
 
     experiment.resources.set( resourceArray )
-
-    '''
-    resources = get_filtered_resource( 
-                            form.data.getlist('capabilities') ) 
-    
-    experiment.resources.set( resources )
-    '''
     
     experiment.project = Project.objects.get(id=str(project_id))
     experiment.experimenter.add(request.user)
@@ -104,7 +99,24 @@ def create_new_experiment(request, form, project_id):
 
     return str(experiment.uuid)
 
-def parseUuidString( string ):
+def push_to_bucket( github_link, cloud_link, exp_loc ):
+    local_file_path = "new_exp.txt"
+    file_ptr = open( local_file_path, 'w' )
+    file_ptr.write(f"{github_link}\n{cloud_link}")
+    file_ptr.close()
+
+    command = f"rsync -av -e 'ssh -p {os.getenv('BUCKET_PORT')}' "
+    for exp in exp_loc:
+        upload_loc = f" {os.getenv('BUCKET_USER')}@{os.getenv('BUCKET_IP')}:/discover/site_data/{ parse_sites( exp ) }"
+
+        os_status = os.system( command + local_file_path + upload_loc )
+
+        if os_status != 0:
+            print("error pushing to bucket")
+
+    os.remove( local_file_path )
+
+def parse_uuid_string( string ):
     parsed = ""
     parsedArray = []
 
@@ -122,6 +134,18 @@ def parseUuidString( string ):
     parsedArray.append( parsed )
 
     return parsedArray
+#Refactor(UGLY)
+def parse_sites( string ):
+    if string == "Navajo Tech":
+        return "ntu"
+    elif string == "Hat Ranch":
+        return "hatranch"
+    elif string == "Clemson":
+        return "cu"
+    elif string == "NAU Core":
+        return "nau"
+    else:
+        return "others"
     
 def parse_string( rawInput ):
     depList = []
