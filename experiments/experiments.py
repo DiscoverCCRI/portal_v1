@@ -61,9 +61,10 @@ def create_new_experiment(request, form, project_id):
             if resource.uuid == uuid_obj:
                 resourceArray.append( resource )
 
-    push_to_bucket(form.data.getlist('github_link')[0],
+    push_to_bucket( form.data.getlist('name')[0],
+                    form.data.getlist('github_link')[0],
                     form.data.getlist('cloudstorage_link')[0],
-                      [ resource.location for resource in resourceArray ] ) 
+                    [ resource.location for resource in resourceArray ] ) 
 
     experiment.resources.set( resourceArray )
     
@@ -99,21 +100,22 @@ def create_new_experiment(request, form, project_id):
 
     return str(experiment.uuid)
 
-def push_to_bucket( github_link, cloud_link, exp_loc ):
-    local_file_path = "new_exp.txt"
+def push_to_bucket( exp_name, github_link, cloud_link, exp_loc ):
+    exp_name = exp_name.replace(" ", "_")
+    json_dict = { "github_link": github_link, "cloud_link": cloud_link }
+    json_obj = json.dumps( json_dict, indent=4 )
+    local_file_path = f"{ exp_name }.json"
     file_ptr = open( local_file_path, 'w' )
-    file_ptr.write(f"{github_link}\n{cloud_link}")
+    file_ptr.write( json_obj )
     file_ptr.close()
 
     command = f"rsync -av -e 'ssh -p {os.getenv('BUCKET_PORT')}' "
+    loc_str = f" {os.getenv('BUCKET_USER')}@{os.getenv('BUCKET_IP')}"
     for exp in exp_loc:
-        upload_loc = f" {os.getenv('BUCKET_USER')}@{os.getenv('BUCKET_IP')}:/discover/site_data/{ parse_sites( exp ) }"
-
+        upload_loc = f" { loc_str }:/discover/site_data/{ parse_sites( exp ) }"
         os_status = os.system( command + local_file_path + upload_loc )
-
         if os_status != 0:
             print("error pushing to bucket")
-
     os.remove( local_file_path )
 
 def parse_uuid_string( string ):
@@ -134,18 +136,18 @@ def parse_uuid_string( string ):
     parsedArray.append( parsed )
 
     return parsedArray
-#Refactor(UGLY)
+
 def parse_sites( string ):
+    ret_str = "other"
     if string == "Navajo Tech":
-        return "ntu"
+        ret_str = "ntu"
     elif string == "Hat Ranch":
-        return "hatranch"
+        ret_str = "hatranch"
     elif string == "Clemson":
-        return "cu"
+        ret_str = "cu"
     elif string == "NAU Core":
-        return "nau"
-    else:
-        return "others"
+        ret_str = "nau"
+    return ret_str
     
 def parse_string( rawInput ):
     depList = []
