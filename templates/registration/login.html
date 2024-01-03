@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
 {% block title %}Discover Log In{% endblock %}
-
 {% block content %}
     {% if user.is_authenticated %}
         <p>Current user: {{ user.email }}</p>
@@ -12,17 +10,21 @@
     {% else %}
         <div>
             <b>Discover Portal uses <a href="https://www.cilogon.org" target="_blank">CILogon</a> to authenticate user
-                identity:</b>
+            identity:</b>
         </div>
         <br>
         <strong>Help (<a href="https://www.cilogon.org/selectidp" target="_blank">https://www.cilogon.org/selectidp</a>)</strong>
-        <br><br>
+        <br>
+        <br>
         <button class="message-btn btn btn-success">
-            <a href="{% url 'oidc_authentication_init' %}" class="unlink" style="font-size: x-large">
+            <a href="{% url 'oidc_authentication_init' %}"
+               class="unlink"
+               style="font-size: x-large">
                 <em class="fa fa-fw fa-sign-in"></em>DISCOVER Login
             </a>
         </button>
-        <br><br>
+        <br>
+        <br>
         <strong>NOTE:</strong> If this is your first time signing in an account will automatically be created for you based on the Identity Provider you choose to authenticate with.
     {% endif %}
 {% endblock %}

@@ -13,21 +13,20 @@ pc = portal.Context()
 request = pc.makeRequestRSpec()
 
 # Node node1
-node1 = request.RawPC('node1')
+node1 = request.RawPC("node1")
 node1.hardware_type = "FixedNode"
-node1.component_id= "CC1"
+node1.component_id = "CC1"
 node1.disk_image = "UBUNTU20-64-STD"
 
 
 node2 = request.RawPC("node2")
 node2.hardware_type = "FixedNode"
-node2.component_id= "CC2"
+node2.component_id = "CC2"
 node2.disk_image = "UBUNTU20-64-STD"
 
 
 # Create a link between them
-link1 = request.Link(members = [node1, node2])
+link1 = request.Link(members=[node1, node2])
 
 # Print the generated rspec
 pc.printRequestRSpec(request)
-

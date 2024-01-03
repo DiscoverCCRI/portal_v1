@@ -11,6 +11,7 @@ from django.utils import timezone
 
 from projects.models import Project
 from resources.models import Resource
+
 from .models import Profile
 
 logger = logging.getLogger(__name__)
@@ -26,17 +27,17 @@ def create_new_profile(request, form):
     """
     profile = Profile()
     profile.uuid = uuid.uuid4()
-    request.session['profile_uuid'] = profile.uuid
-    profile.name = form.data.getlist('name')[0]
+    request.session["profile_uuid"] = profile.uuid
+    profile.name = form.data.getlist("name")[0]
 
     try:
-        profile.description = form.data.getlist('description')[0]
+        profile.description = form.data.getlist("description")[0]
     except ValueError as e:
         print(e)
         profile.description = None
 
     try:
-        profile.profile = form.data.getlist('profile')[0]
+        profile.profile = form.data.getlist("profile")[0]
     except ValueError as e:
         print(e)
         profile.profile = None
@@ -48,21 +49,21 @@ def create_new_profile(request, form):
     profile.created_by = request.user
     profile.created_date = timezone.now()
     try:
-        project_id = request.GET.get('project_id', None)
+        project_id = request.GET.get("project_id", None)
         profile.project = Project.objects.get(id=int(project_id))
     except Exception as exc:
         profile.project = None
         profile.is_template = True
     # profile.stage = form.data.getlist('stage')[0]
 
-    '''
+    """
     # user doesn't care about emulab profile.
     # we change design to always use the default 1 node profie in emulab
     # not every profile need to be sent to emulab,
     # now in is_emulab_profile(), using Stage 'DEVELOPMENT' to see if it's for emulab
     if is_emulab_profile(profile):
         create_new_emulab_profile(request, profile)
-    '''
+    """
 
     profile.save()
     try:
@@ -95,7 +96,7 @@ def update_existing_profile(request, profile, form):
     :return:
     """
     try:
-        profile.description = form.data.getlist('description')[0]
+        profile.description = form.data.getlist("description")[0]
     except ValueError as e:
         profile.description = None
     profile.modified_by = request.user
@@ -142,15 +143,22 @@ def get_profile_list(request):
     :return:
     """
     if request.user.is_site_admin() or request.user.is_operator():
-        profiles = Profile.objects.order_by('name')
+        profiles = Profile.objects.order_by("name")
     else:
         # public_projects = list(Project.objects.filter(is_public=True).values_list('id', flat=True))
-        my_projects = Project.objects.filter(Q(project_creator=request.user) |
-                                             Q(project_members__in=[request.user]) |
-                                             Q(project_owners__in=[request.user])).values_list('id', flat=True)
+        my_projects = Project.objects.filter(
+            Q(project_creator=request.user)
+            | Q(project_members__in=[request.user])
+            | Q(project_owners__in=[request.user])
+        ).values_list("id", flat=True)
         # projects = set(list(public_projects) + list(my_projects))
-        profiles = Profile.objects.filter(Q(project__in=list(my_projects)) |
-                                          Q(is_template=True)).order_by('name').distinct()
+        profiles = (
+            Profile.objects.filter(
+                Q(project__in=list(my_projects)) | Q(is_template=True)
+            )
+            .order_by("name")
+            .distinct()
+        )
     return profiles
 
 
@@ -168,18 +176,27 @@ def parse_profile(request, experiment_definition):
         resources = json.loads(experiment_definition)
 
         if len(resources) < 1:
-            raise Exception('Empty definition')
+            raise Exception("Empty definition")
         for reqnode in resources:
-            if 'idx' not in reqnode.keys() \
-                    or 'name' not in reqnode.keys() \
-                    or 'hardware_type' not in reqnode.keys() \
-                    or ('component_id' not in reqnode.keys() and "vehicle" not in reqnode.keys()):
-                raise Exception('lacking necessary attribute(s)')
+            if (
+                "idx" not in reqnode.keys()
+                or "name" not in reqnode.keys()
+                or "hardware_type" not in reqnode.keys()
+                or (
+                    "component_id" not in reqnode.keys()
+                    and "vehicle" not in reqnode.keys()
+                )
+            ):
+                raise Exception("lacking necessary attribute(s)")
 
-            if 'component_id' in reqnode.keys():
-                resource = Resource.objects.get(resourceType=reqnode['hardware_type'], name=reqnode['component_id'])
-            elif 'vehicle' in reqnode.keys():
-                resource = Resource.objects.get(resourceType=reqnode['hardware_type'], name=reqnode['vehicle'])
+            if "component_id" in reqnode.keys():
+                resource = Resource.objects.get(
+                    resourceType=reqnode["hardware_type"], name=reqnode["component_id"]
+                )
+            elif "vehicle" in reqnode.keys():
+                resource = Resource.objects.get(
+                    resourceType=reqnode["hardware_type"], name=reqnode["vehicle"]
+                )
             else:
                 raise Exception("lacking component_id or vehicle in definition")
     except Resource.DoesNotExist:
@@ -196,18 +213,20 @@ def is_emulab_stage(stage):
     # not every profile need to be sent to emulab,
     # first check if we have AERPAWGW env setup,
     # and check the Stage 'DEVELOPMENT' to see if it's for emulab
-    if not os.getenv('AERPAWGW_HOST') \
-            or not os.getenv('AERPAWGW_PORT') \
-            or not os.getenv('AERPAWGW_VERSION'):
+    if (
+        not os.getenv("AERPAWGW_HOST")
+        or not os.getenv("AERPAWGW_PORT")
+        or not os.getenv("AERPAWGW_VERSION")
+    ):
         return False
-    elif stage.upper() == 'DEVELOPMENT' or stage.upper() == 'EMULATION':
+    elif stage.upper() == "DEVELOPMENT" or stage.upper() == "EMULATION":
         return True
     else:
         return False
 
 
 def is_emulab_profile(profile):
-    if not profile.profile.startswith('[{') and is_emulab_stage(profile.stage):
+    if not profile.profile.startswith("[{") and is_emulab_stage(profile.stage):
         return True
     else:
         return False
@@ -272,9 +291,13 @@ def delete_emulab_profile(request, profile, name_to_delete=None):
     :return
     """
     if name_to_delete is None:
-        emulab_profile_name = get_emulab_profile_name(profile.project.name, profile.name)
+        emulab_profile_name = get_emulab_profile_name(
+            profile.project.name, profile.name
+        )
     else:
-        emulab_profile_name = get_emulab_profile_name(profile.project.name, name_to_delete)
+        emulab_profile_name = get_emulab_profile_name(
+            profile.project.name, name_to_delete
+        )
     api_instance = aerpawgw_client.ProfileApi()
     try:
         # delete profile
@@ -284,4 +307,4 @@ def delete_emulab_profile(request, profile, name_to_delete=None):
 
 
 def get_emulab_profile_name(projectname, profilename):
-    return '{}-{}'.format(projectname, profilename)
+    return "{}-{}".format(projectname, profilename)

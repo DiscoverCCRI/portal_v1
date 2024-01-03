@@ -1,6 +1,5 @@
 {% extends 'base_no_footer.html' %}
 {% load static bootstrap4 %}
-
 {% block content %}
     {% with ua=user.is_authenticated admin=user.is_site_admin operator=user.is_operator %}
         {% if ua and admin or ua and is_pc or ua and is_po %}
@@ -23,11 +22,14 @@
                 <h2>{{ project_name }}: Project Members</h2>
                 <form method="POST" class="form-group">
                     {% csrf_token %}
-                    <input class="btn btn-success mr-2" type="submit" value="Save"/>
+                    <input class="btn btn-success mr-2" type="submit" value="Save" />
                     <button class="btn btn-secondary mr-2">
-                        <a href="{% url 'project_detail' project_uuid=project_uuid %}" class="unlink">Cancel</a>
+                        <a href="{% url 'project_detail' project_uuid=project_uuid %}"
+                           class="unlink">Cancel</a>
                     </button>
-                    <br><br><br>
+                    <br>
+                    <br>
+                    <br>
                     {{ form.project_members }}
                 </form>
             </div>

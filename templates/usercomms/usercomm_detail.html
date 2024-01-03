@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Project: {{ project.name }}
-{% endblock %}
-
+{% block title %}Project: {{ project.name }}{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -19,7 +15,9 @@
                 {% if uc.reference_url %}
                     <tr>
                         <td>Reference URL</td>
-                        <td><a href="{{ uc.reference_url }}">{{ uc.reference_url }}</a></td>
+                        <td>
+                            <a href="{{ uc.reference_url }}">{{ uc.reference_url }}</a>
+                        </td>
                     </tr>
                 {% endif %}
                 <tr>
@@ -34,7 +32,8 @@
                     <td>Receivers</td>
                     <td>
                         {% for rec in uc.receivers.all %}
-                            {{ rec.display_name }}, <br>
+                            {{ rec.display_name }},
+                            <br>
                         {% endfor %}
                     </td>
                 </tr>
@@ -47,7 +46,6 @@
                     <td>{{ uc.created_date }}</td>
                 </tr>
             </table>
-
             <button class="btn btn-secondary mr-2">
                 <a href="{% url 'usercomms' %}" class="unlink">Back</a>
             </button>
@@ -56,6 +54,5 @@
         <div class="container">
             <p>You are not currently logged in or not authorized to view this page</p>
         </div>
-
     {% endif %}
 {% endblock %}

@@ -1,55 +1,51 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Create Experiment
-{% endblock %}
-
+{% block title %}Create Experiment{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
             <h2>Create Experiment</h2>
             <p>
-                Read about: <a
-                    href="https://sites.google.com/view/discover-user-manual/welcome/experiment-web-portal/creating-and-managing-experiments"
-                    target="_blank">
-                Creating and Managing Experiments
-            </a>
-            </p>
-            <form id="create-experiment" method="POST" class="post-form">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <p id="no_capabilities">No capabilities for secleted resource type.</p>
-                <h2>
-                    Available Resources
-                </h2>
-                <div id="resources">
-                    {% for resource in resources.all %}
-                        <input id="resource_{{ forloop.counter }}" value="{{ resource.uuid }}" style="margin-left: 10px;" type="checkbox">
-                            <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}" target="_blank">{{ resource.name }}({{ resource.resourceType }})</a>
-                            <p style="display: none;">{{ resource.capabilities }}</p>
-                            {% if forloop.counter|divisibleby:3 %}
-                                <br/>
-                            {% endif %}
-                        </input>
-                    {% endfor %}
-                </div>
-            </form>
-            <script type="text/javascript" src="../../static/js/experiments.js"></script>
-            <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;" type="submit" form="create-experiment" value="save">
-                Save Experiment
-            </button>
-            <button class="btn btn-secondary mr-2" value="cancel">
-                <a href="{% url 'project_detail' project_uuid=project_uuid %}" class="unlink">Cancel</a>
-            </button>
-        </div>
-        <p class="text-info">
-            <b>As an experimenter</b>: If you choose to use an Experiment Resource Definition Template a COPY will be
-            made and is assigned to your Project and Experiment(s).
+                Read about: <a href="https://sites.google.com/view/discover-user-manual/welcome/experiment-web-portal/creating-and-managing-experiments"
+    target="_blank">Creating and Managing Experiments</a>
         </p>
-    {% else %}
-        <div class="container">
-            <p>You are not currently logged in or are not authorized to view this page</p>
+        <form id="create-experiment" method="POST" class="post-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p id="no_capabilities">No capabilities for secleted resource type.</p>
+            <h2>Available Resources</h2>
+            <div id="resources">
+                {% for resource in resources.all %}
+                    <input id="resource_{{ forloop.counter }}"
+                           value="{{ resource.uuid }}"
+                           style="margin-left: 10px"
+                           type="checkbox">
+                    <a href="{% url 'resource_detail' resource_uuid=resource.uuid %}"
+                       target="_blank">{{ resource.name }}({{ resource.resourceType }})</a>
+                    <p style="display: none;">{{ resource.capabilities }}</p>
+                    {% if forloop.counter|divisibleby:3 %}<br />{% endif %}
+                </input>
+            {% endfor %}
         </div>
-    {% endif %}
+    </form>
+    <script type="text/javascript" src="../../static/js/experiments.js"></script>
+    <button class="btn btn-success mr-2"
+            style="background-color:#076AE0!important"
+            type="submit"
+            form="create-experiment"
+            value="save">Save Experiment</button>
+    <button class="btn btn-secondary mr-2" value="cancel">
+        <a href="{% url 'project_detail' project_uuid=project_uuid %}"
+           class="unlink">Cancel</a>
+    </button>
+</div>
+<p class="text-info">
+    <b>As an experimenter</b>: If you choose to use an Experiment Resource Definition Template a COPY will be
+    made and is assigned to your Project and Experiment(s).
+</p>
+{% else %}
+<div class="container">
+    <p>You are not currently logged in or are not authorized to view this page</p>
+</div>
+{% endif %}
 {% endblock %}

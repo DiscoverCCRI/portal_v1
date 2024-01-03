@@ -1,32 +1,34 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Discover: Request Roles
-{% endblock %}
-
+{% block title %}Discover: Request Roles{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
             <h2>Discover Role Requests</h2>
-            <p>
-                Welcome to the DiscoverCCRI Role Requests page. Here you can request for a specific role in the portal.
-            </p>
+            <p>Welcome to the DiscoverCCRI Role Requests page. Here you can request for a specific role in the portal.</p>
             {% if has_role_options %}
                 <form id="request-role" method="POST" class="post-form">
                     {% csrf_token %}
                     <br>
                     {{ form.requested_role.label }}: {{ form.requested_role }}
-                    <br><br>
+                    <br>
+                    <br>
                     {{ form.purpose.label }}: {{ form.purpose }}
-                    <br><br>
+                    <br>
+                    <br>
                 </form>
-                <button class="btn btn-success mr-2" type="submit" form="request-role" value="save" style = "background-color: #076AE0 !important; ">Save</button>
+                <button class="btn btn-success mr-2"
+                        type="submit"
+                        form="request-role"
+                        value="save"
+                        style="background-color: #076AE0 !important">Save</button>
                 <button class="btn btn-secondary mr-2" value="cancel">
                     <a href="{% url 'profile' %}" class="unlink">Back</a>
                 </button>
             {% else %}
-                No roles available for request at this time<br><br>
+                No roles available for request at this time
+                <br>
+                <br>
                 <button class="btn btn-secondary mr-2" value="cancel">
                     <a href="{% url 'profile' %}" class="unlink">Back</a>
                 </button>

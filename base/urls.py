@@ -14,23 +14,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 from django.views.generic.base import TemplateView
+
 from .views import home
 
 urlpatterns = [
-    #path('', TemplateView.as_view(template_name='base/home.html'), name='home'),
-    path('', home, name='home'),
-    path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('oidc/', include('mozilla_django_oidc.urls')),
-    path('projects/', include('projects.urls')),
-    path('experiments/', include('experiments.urls')),
-    path('reservations/', include('reservations.urls')),
-    path('resources/', include('resources.urls')),
-    path('profile/', include('profiles.urls')),
+    # path('', TemplateView.as_view(template_name='base/home.html'), name='home'),
+    path("", home, name="home"),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("accounts.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("oidc/", include("mozilla_django_oidc.urls")),
+    path("projects/", include("projects.urls")),
+    path("experiments/", include("experiments.urls")),
+    path("reservations/", include("reservations.urls")),
+    path("resources/", include("resources.urls")),
+    path("profile/", include("profiles.urls")),
     # path('cicd/', include('cicd.urls')), # RM_CICD
-    path('manage/', include('user_groups.urls')),
-    path('messages/', include('usercomms.urls')),
+    path("manage/", include("user_groups.urls")),
+    path("messages/", include("usercomms.urls")),
 ]

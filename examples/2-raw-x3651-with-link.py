@@ -16,6 +16,6 @@ node1.hardware_type = "x3651"
 node2.hardware_type = "x3651"
 
 # Create a link between them
-link1 = request.Link(members = [node1, node2])
+link1 = request.Link(members=[node1, node2])
 
 portal.context.printRequestRSpec()

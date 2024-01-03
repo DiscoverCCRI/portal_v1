@@ -13,11 +13,10 @@ pc = portal.Context()
 request = pc.makeRequestRSpec()
 
 # Node node1
-node1 = request.RawPC('node1')
+node1 = request.RawPC("node1")
 node1.hardware_type = "FixedNode"
-node1.component_id= "CC1"
+node1.component_id = "CC1"
 node1.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD"
 
 # Print the generated rspec
 pc.printRequestRSpec(request)
-
