@@ -3,135 +3,148 @@ from django import forms
 from accounts.models import AerpawUser
 from projects.models import Project
 from reservations.models import Reservation
-from .models import Resource,ResourceStageChoice,ResourceTypeChoice,ResourceLocationChoice
+
+from .models import (Resource, ResourceLocationChoice, ResourceStageChoice,
+                     ResourceTypeChoice)
+
 
 class ResourceCreateForm(forms.ModelForm):
-
-    capabilities_choices = [ ('gimbal','Gimbal and RGB/IR Camera'), ('lidar','LIDAR'), 
-                 ('jetson', 'Jetson Nano'), ('sdr', 'Software Defined Radio'), 
-                 ('5g', '5G module(s)'), ('rasPi', 'Raspberry Pi'),
-                 ('camera','Camera'), ('gps','GPS'), ('modem','Modem'),
-                 ('t12','TEROS-12' ), ('t21','TEROS-21'), 
-                 ('tts', 'Thermistor Temperature Sensor'), 
-                 ('tsl259','TSL25911FN'),('bme', 'BME280'), 
-                 ('icm', 'ICM20948'), ('ltr', 'LTR390-UV-1' ),
-                 ('sgp', 'SGP40' ), ('cws', 'Compact Weather Sensor') ]
+    capabilities_choices = [
+        ("gimbal", "Gimbal and RGB/IR Camera"),
+        ("lidar", "LIDAR"),
+        ("jetson", "Jetson Nano"),
+        ("sdr", "Software Defined Radio"),
+        ("5g", "5G module(s)"),
+        ("rasPi", "Raspberry Pi"),
+        ("camera", "Camera"),
+        ("gps", "GPS"),
+        ("modem", "Modem"),
+        ("t12", "TEROS-12"),
+        ("t21", "TEROS-21"),
+        ("tts", "Thermistor Temperature Sensor"),
+        ("tsl259", "TSL25911FN"),
+        ("bme", "BME280"),
+        ("icm", "ICM20948"),
+        ("ltr", "LTR390-UV-1"),
+        ("sgp", "SGP40"),
+        ("cws", "Compact Weather Sensor"),
+    ]
 
     name = forms.CharField(
-        widget=forms.TextInput(attrs={'size': 60}),
+        widget=forms.TextInput(attrs={"size": 60}),
         required=True,
-        label='Resource Name',
+        label="Resource Name",
     )
 
     description = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 6, 'cols': 60}),
+        widget=forms.Textarea(attrs={"rows": 6, "cols": 60}),
         required=False,
-        label='Resource Description',
+        label="Resource Description",
     )
 
     resourceType = forms.ChoiceField(
         choices=ResourceTypeChoice.choices(),
         widget=forms.Select(),
         required=False,
-        label='Resource Type',
+        label="Resource Type",
     )
 
     capabilities = forms.MultipleChoiceField(
-        required = False,
-        widget = forms.CheckboxSelectMultiple(),
-        choices = capabilities_choices,
+        required=False,
+        widget=forms.CheckboxSelectMultiple(),
+        choices=capabilities_choices,
     )
 
     units = forms.IntegerField(
         required=True,
         initial=0,
         widget=forms.NumberInput(),
-        label='Resource Units',
+        label="Resource Units",
     )
 
     location = forms.ChoiceField(
         choices=ResourceLocationChoice.choices(),
         widget=forms.Select(),
         required=False,
-        label='Resource Location',
+        label="Resource Location",
     )
 
     stage = forms.ChoiceField(
         choices=ResourceStageChoice.choices(),
         widget=forms.Select(),
         required=False,
-        label='Resource Stage',
+        label="Resource Stage",
     )
 
     ip_address = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 1, 'cols': 20}),
+        widget=forms.Textarea(attrs={"rows": 1, "cols": 20}),
         required=False,
-        label='IP Address',
+        label="IP Address",
     )
 
     hostname = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 1, 'cols': 20}),
+        widget=forms.Textarea(attrs={"rows": 1, "cols": 20}),
         required=False,
-        label='Hostname',
+        label="Hostname",
     )
 
     class Meta:
         model = Resource
         fields = [
-            'name',
-            'description',
-            'resourceType',
-            'capabilities',
-            'units',
-            'availableUnits',
-            'location',
-            'stage',
-            'created_date',
-            'ip_address',
-            'hostname'
+            "name",
+            "description",
+            "resourceType",
+            "capabilities",
+            "units",
+            "availableUnits",
+            "location",
+            "stage",
+            "created_date",
+            "ip_address",
+            "hostname",
         ]
 
 
 class ResourceChangeForm(forms.ModelForm):
     name = forms.CharField(
-        widget=forms.TextInput(attrs={'size': 60}),
+        widget=forms.TextInput(attrs={"size": 60}),
         required=True,
     )
 
     description = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 6, 'cols': 60}),
+        widget=forms.Textarea(attrs={"rows": 6, "cols": 60}),
         required=False,
-        label='Resource Description',
+        label="Resource Description",
     )
 
     resourceType = forms.ChoiceField(
         choices=ResourceTypeChoice.choices(),
         widget=forms.Select(),
         required=True,
-        label='Resource Type',
+        label="Resource Type",
     )
 
     units = forms.IntegerField(
         required=True,
         initial=0,
         widget=forms.NumberInput(),
-        label='Resource Units',
+        label="Resource Units",
     )
 
     location = forms.ChoiceField(
         choices=ResourceLocationChoice.choices(),
         widget=forms.Select(),
         required=True,
-        label='Resource Location',
+        label="Resource Location",
     )
 
     stage = forms.ChoiceField(
         choices=ResourceStageChoice.choices(),
         widget=forms.Select(),
         required=True,
-        label='Resource Stage',
+        label="Resource Stage",
     )
 
     class Meta:
         model = Resource
-        fields = '__all__'
+        fields = "__all__"

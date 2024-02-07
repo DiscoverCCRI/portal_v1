@@ -1,13 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Initiate/Stop: {{ experiment.name }}
-{% endblock %}
-
+{% block title %}Initiate/Stop: {{ experiment.name }}{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
-
         <div class="container">
             <h2>Experiment "{{ experiment.name }}"</h2>
             <table class="table table-striped table-bordered my-4">
@@ -17,11 +12,15 @@
                 </tr>
                 <tr>
                     <td>Github Link</td>
-                    <td><a href="{{experiment.github_link}}">{{ experiment.github_link }}</a></td>
+                    <td>
+                        <a href="{{ experiment.github_link }}">{{ experiment.github_link }}</a>
+                    </td>
                 </tr>
                 <tr>
                     <td>Cloud Storage Link</td>
-                    <td><a href="{{experiment.cloudstorage_link}}">{{ experiment.cloudstorage_link }}</a></td>
+                    <td>
+                        <a href="{{ experiment.cloudstorage_link }}">{{ experiment.cloudstorage_link }}</a>
+                    </td>
                 </tr>
                 <tr>
                     <td>Project</td>
@@ -38,29 +37,28 @@
                 <tr>
                     <td>Experiment Members</td>
                     <td>
-                        {% for member in experimenter %}
-                            {{ member }},
-                        {% endfor %}
+                        {% for member in experimenter %}{{ member }},{% endfor %}
                     </td>
                 </tr>
             </table>
         </div>
-            <p style="color:red";>{{ msg }}</p>
-            <form method="POST" class="post-form">
-                {% csrf_token %}
-                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}" class="btn btn-secondary">Back: to {{ experiment.name }}</a>
-                &emsp;
-                {% if experiment.can_initiate %}
-                <input class="btn btn-success mr-2" type="submit" value="Initiate Development"/>
-                {% endif %}
-                {% if experiment.can_terminate %}
-                <input class="btn btn-success mr-2" type="submit" value="Terminate"/>
-                {% endif %}
-            </form>
-        </div>
-    {% else %}
-        <div class="container">
-            <p>You are not currently logged in or not authorized to view this page</p>
-        </div>
-    {% endif %}
+        <p style="color:red";>{{ msg }}</p>
+        <form method="POST" class="post-form">
+            {% csrf_token %}
+            <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}"
+               class="btn btn-secondary">Back: to {{ experiment.name }}</a>
+            &emsp;
+            {% if experiment.can_initiate %}
+                <input class="btn btn-success mr-2"
+                       type="submit"
+                       value="Initiate Development" />
+            {% endif %}
+            {% if experiment.can_terminate %}<input class="btn btn-success mr-2" type="submit" value="Terminate" />{% endif %}
+        </form>
+    </div>
+{% else %}
+    <div class="container">
+        <p>You are not currently logged in or not authorized to view this page</p>
+    </div>
+{% endif %}
 {% endblock %}

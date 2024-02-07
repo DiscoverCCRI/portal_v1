@@ -1,38 +1,28 @@
 import uuid
+from uuid import UUID
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import BadHeaderError
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from uuid import UUID
 
 from accounts.models import AerpawUser
 from experiments.models import Experiment
 from profiles.models import Profile
-from usercomms.usercomms import portal_mail, ack_mail
+from usercomms.usercomms import ack_mail, portal_mail
 
 # from cicd.models import Cicd
-from .forms import (
-    ProjectCreateForm,
-    ProjectUpdateForm,
-    ProjectUpdateMembersForm,
-    ProjectUpdateOwnersForm,
-    ProjectJoinForm,
-    ProjectRequestForm,
-    JOIN_CHOICES,
-)
+from .forms import (JOIN_CHOICES, ProjectCreateForm, ProjectJoinForm,
+                    ProjectRequestForm, ProjectUpdateForm,
+                    ProjectUpdateMembersForm, ProjectUpdateOwnersForm)
 from .models import Project, ProjectMembershipRequest, ProjectRequest
-from .projects import (
-    create_new_project,
-    get_project_list,
-    update_existing_project,
-    delete_existing_project,
-    create_new_project_membership_request,
-    create_new_project_request,
-)
+from .projects import (create_new_project,
+                       create_new_project_membership_request,
+                       create_new_project_request, delete_existing_project,
+                       get_project_list, update_existing_project)
 
 PI_message = "Please email the admin to become a PI first!"
 
@@ -59,9 +49,7 @@ def projects(request):
         requested_uuid[project["project_uuid"]] = project["is_approved"]
 
     for project in other_projects:
-        if (
-            str(project.uuid) in requested_uuid.keys()
-        ):
+        if str(project.uuid) in requested_uuid.keys():
             requested_uuids.append(project.uuid)
 
     return render(

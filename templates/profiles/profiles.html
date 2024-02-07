@@ -1,87 +1,81 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Discover Profiles
-{% endblock %}
-
+{% block title %}Discover Profiles{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <h2>Experiment Resource Definition (ERD)</h2>
                 {% if user.is_site_admin %}
-                    <button class="btn btn-success mr-2" style = "background-color:#076AE0!important;">
+                    <button class="btn btn-success mr-2"
+                            style="background-color:#076AE0!important">
                         <a href="{% url 'profile_create' %}?is_template=true" class="unlink">Create Template</a>
                     </button>
                 {% endif %}
             </div>
             {# per GH issue #87 - language changes #}
             <p class="text-info">
-                <b style="color: #076AE0 !important;">Each Experiment must reference an ERD</b>:<p style="color: black !important;">An ERD is a subset of Discover resources to be used in an
-                Experiment. When defining an Experiment from within a Project the User may use one of the ERD Templates
-                provided below, or create their own - It should be noted that ERD creation and assignment can only take
-                place from within a Project.</p>
+                <b style="color: #076AE0 !important;">Each Experiment must reference an ERD</b>:
+                <p style="color: black !important;">
+                    An ERD is a subset of Discover resources to be used in an
+                    Experiment. When defining an Experiment from within a Project the User may use one of the ERD Templates
+                    provided below, or create their own - It should be noted that ERD creation and assignment can only take
+                    place from within a Project.
+                </p>
             </p>
             <p>
-                Read about: <a
-                    href="https://sites.google.com/view/discover-user-manual/welcome/experiment-web-portal/creating-and-managing-experiments"
-                    target="_blank" style="color: #076AE0 !important;">
-                Creating and Managing Experiments
-            </a>
-            </p>
-            <h3>Templates</h3>
-            <table class="table table-striped table-bordered mt-4">
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Created By</th>
-                    <th>Created Date</th>
-                </tr>
-                {% for profile in profiles %}
-                    {% if profile.is_template %}
-                        <tr>
-                            <td>
-                                <a href="{% url 'profile_detail' profile_uuid=profile.uuid %}">
-                                    {{ profile.name }}
-                                </a>
-                            </td>
-                            <td>{{ profile.description }}</td>
-                            <td>{{ profile.created_by }}</td>
-                            <td>{{ profile.created_date }}</td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </table>
-            <h3>My Definitions</h3>
-            <table class="table table-striped table-bordered mt-4">
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Project</th>
-                    <th>Created By</th>
-                    <th>Created Date</th>
-                </tr>
-                {% for profile in profiles %}
-                    {% if not profile.is_template %}
-                        <tr>
-                            <td>
-                                <a href="{% url 'profile_detail' profile_uuid=profile.uuid %}">
-                                    {{ profile.name }}
-                                </a>
-                            </td>
-                            <td>{{ profile.description }}</td>
-                            <td>{{ profile.project }}</td>
-                            <td>{{ profile.created_by }}</td>
-                            <td>{{ profile.created_date }}</td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </table>
-        </div>
-    {% else %}
-        <div class="container">
-            <p>You are not currently logged in or not authorized to view this page</p>
-        </div>
-    {% endif %}
+                Read about: <a href="https://sites.google.com/view/discover-user-manual/welcome/experiment-web-portal/creating-and-managing-experiments"
+    target="_blank"
+    style="color: #076AE0 !important">Creating and Managing Experiments</a>
+        </p>
+        <h3>Templates</h3>
+        <table class="table table-striped table-bordered mt-4">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+            </tr>
+            {% for profile in profiles %}
+                {% if profile.is_template %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'profile_detail' profile_uuid=profile.uuid %}">{{ profile.name }}</a>
+                        </td>
+                        <td>{{ profile.description }}</td>
+                        <td>{{ profile.created_by }}</td>
+                        <td>{{ profile.created_date }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+        <h3>My Definitions</h3>
+        <table class="table table-striped table-bordered mt-4">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Project</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+            </tr>
+            {% for profile in profiles %}
+                {% if not profile.is_template %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'profile_detail' profile_uuid=profile.uuid %}">{{ profile.name }}</a>
+                        </td>
+                        <td>{{ profile.description }}</td>
+                        <td>{{ profile.project }}</td>
+                        <td>{{ profile.created_by }}</td>
+                        <td>{{ profile.created_date }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+{% else %}
+    <div class="container">
+        <p>You are not currently logged in or not authorized to view this page</p>
+    </div>
+{% endif %}
 {% endblock %}

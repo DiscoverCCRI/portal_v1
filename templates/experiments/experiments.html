@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Discover Projects
-{% endblock %}
-
+{% block title %}Discover Projects{% endblock %}
 {% block content %}
     {% if user.is_authenticated and user.is_aerpaw_user %}
         <div class="container">
@@ -24,14 +20,16 @@
                 {% for experiment in experiments %}
                     <tr>
                         <td>
-                            <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">
-                                {{ experiment.name }}
-                            </a>
+                            <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{ experiment.name }}</a>
                             <p style="color: rgb(126, 210, 0); font-style: italic;">({{ experiment.stage }})</p>
                         </td>
                         <td>{{ experiment.description }}</td>
-                        <td><a href="{{experiment.github_link}}">Link to GitHub</a></td>
-                        <td><a href="{{experiment.cloudstorage_link}}">Link to Cloud Storage</a></td>
+                        <td>
+                            <a href="{{ experiment.github_link }}">Link to GitHub</a>
+                        </td>
+                        <td>
+                            <a href="{{ experiment.cloudstorage_link }}">Link to Cloud Storage</a>
+                        </td>
                         <td>{{ experiment.project }}</td>
                         <td>{{ experiment.created_by }}</td>
                         <td>{{ experiment.created_date }}</td>

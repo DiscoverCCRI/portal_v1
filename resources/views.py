@@ -8,33 +8,33 @@ from uuid import UUID
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms.models import model_to_dict
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from urllib3.exceptions import MaxRetryError
 
-from .forms import ResourceCreateForm, ResourceChangeForm
+from .forms import ResourceChangeForm, ResourceCreateForm
 from .resources import *
 
-#Turns array values into displayable strings
+# Turns array values into displayable strings
 capabilityMap = {
-        'gimbal': 'Gimbal and RGB/IR Camera',
-        'lidar': 'LIDAR',
-        'jetson': 'Jetson Nano',
-        'rasPi': 'Raspberry Pi',
-        'sdr': 'Software Defined Radio',
-        '5g': '5G module(s)',
-        'camera': 'Camera',
-        'gps': 'GPS',
-        't12': 'TEROS-12',
-        't21': 'TEROS-21',
-        'tts': 'Thermistor Temperature Sensor',
-        'tsl259': 'TSL25911FN',
-        'bme': 'BME280',
-        'icm': 'ICM20948',
-        'ltr': 'LTR390-UV-1',
-        'sgp': 'SGP40',
-        'cws': 'Compact Weather Sensor',
-        'modem': 'Modem',
-    }
+    "gimbal": "Gimbal and RGB/IR Camera",
+    "lidar": "LIDAR",
+    "jetson": "Jetson Nano",
+    "rasPi": "Raspberry Pi",
+    "sdr": "Software Defined Radio",
+    "5g": "5G module(s)",
+    "camera": "Camera",
+    "gps": "GPS",
+    "t12": "TEROS-12",
+    "t21": "TEROS-21",
+    "tts": "Thermistor Temperature Sensor",
+    "tsl259": "TSL25911FN",
+    "bme": "BME280",
+    "icm": "ICM20948",
+    "ltr": "LTR390-UV-1",
+    "sgp": "SGP40",
+    "cws": "Compact Weather Sensor",
+    "modem": "Modem",
+}
 
 
 def get_resources_json(resources):
@@ -76,7 +76,7 @@ def resources(request):
     try:
         import_cloud_resources(request)
     except MaxRetryError as err:
-        messages.info(request, 'ERROR: ' + str(err))
+        messages.info(request, "ERROR: " + str(err))
 
     resources = get_resource_list(request)
     resources_json = get_resources_json(resources)
@@ -84,29 +84,32 @@ def resources(request):
     reservations_json = get_reservations_json(reserved_resource)
 
     resource_map = {
-        "NAU Core" : os.getenv('DISCOVER_NAU_CORE_MAP'),
-        "Hat Ranch" : os.getenv('DISCOVER_HAT_RANCH_MAP'),
-        "Navajo Tech" : os.getenv('DISCOVER_NAVAJO_TECH_MAP'),
-        "Clemson" : os.getenv('DISCOVER_CLEMSON_MAP'),
-        "Others" : os.getenv('DISCOVER_OTHERS_MAP'),
+        "NAU Core": os.getenv("DISCOVER_NAU_CORE_MAP"),
+        "Hat Ranch": os.getenv("DISCOVER_HAT_RANCH_MAP"),
+        "Navajo Tech": os.getenv("DISCOVER_NAVAJO_TECH_MAP"),
+        "Clemson": os.getenv("DISCOVER_CLEMSON_MAP"),
+        "Others": os.getenv("DISCOVER_OTHERS_MAP"),
     }
 
     # resource type list
     resource_list = []
     for res in resources.values():
-        type = res.get('resourceType')
+        type = res.get("resourceType")
         if type not in resource_list:
             resource_list.append(type)
 
-    return render(request, 'resources.html',
-                  {
-                      'resources': resources,
-                      'resources_json': resources_json,
-                      'reservations': reserved_resource,
-                      'reservations_json': reservations_json,
-                      'resource_list': resource_list,
-                      'resource_map': resource_map,
-                  })
+    return render(
+        request,
+        "resources.html",
+        {
+            "resources": resources,
+            "resources_json": resources_json,
+            "reservations": reserved_resource,
+            "reservations_json": reservations_json,
+            "resource_list": resource_list,
+            "resource_map": resource_map,
+        },
+    )
 
 
 @login_required()
@@ -121,11 +124,11 @@ def resource_create(request):
         form = ResourceCreateForm(request.POST)
         if form.is_valid():
             resource_uuid = create_new_resource(request, form)
-            return redirect('resource_detail', resource_uuid=resource_uuid)
+            return redirect("resource_detail", resource_uuid=resource_uuid)
     else:
         form = ResourceCreateForm()
 
-    return render(request, 'resource_create.html', {'form': form})
+    return render(request, "resource_create.html", {"form": form})
 
 
 @login_required()
@@ -138,13 +141,18 @@ def resource_detail(request, resource_uuid):
     """
     resource = get_object_or_404(Resource, uuid=UUID(str(resource_uuid)))
     resource_reservations = resource.reservation_of_resource
-    resource_map = os.getenv('AERPAW_MAP_URL')
-    resource_capabilities = translate_cap_list( resource )
-    return render(request, 'resource_detail.html',
-                  { 'resource': resource, 
-                    'reservations': resource_reservations.all(), 
-                    'resource_map': resource_map,
-                    'capabilityMap': resource_capabilities })
+    resource_map = os.getenv("AERPAW_MAP_URL")
+    resource_capabilities = translate_cap_list(resource)
+    return render(
+        request,
+        "resource_detail.html",
+        {
+            "resource": resource,
+            "reservations": resource_reservations.all(),
+            "resource_map": resource_map,
+            "capabilityMap": resource_capabilities,
+        },
+    )
 
 
 @login_required()
@@ -162,14 +170,18 @@ def resource_update(request, resource_uuid):
         if form.is_valid():
             resource = form.save(commit=False)
             resource_uuid = update_existing_resource(request, resource, form)
-            return redirect('resource_detail', resource_uuid=str(resource.uuid))
+            return redirect("resource_detail", resource_uuid=str(resource.uuid))
     else:
         form = ResourceChangeForm(instance=resource)
-    return render(request, 'resource_update.html',
-                  {
-                      'form': form, 'resource_uuid': str(resource_uuid),
-                                                'resource_name': resource.name}
-                  )
+    return render(
+        request,
+        "resource_update.html",
+        {
+            "form": form,
+            "resource_uuid": str(resource_uuid),
+            "resource_name": resource.name,
+        },
+    )
 
 
 @login_required()
@@ -182,22 +194,25 @@ def resource_delete(request, resource_uuid):
     :return:
     """
     resource = get_object_or_404(Resource, uuid=UUID(str(resource_uuid)))
-    resource_capabilities = translate_cap_list( resource )
+    resource_capabilities = translate_cap_list(resource)
     if request.method == "POST":
         is_removed = delete_existing_resource(request, resource)
         if is_removed:
-            return redirect('resources')
-    return render(request, 'resource_delete.html', {'resource': resource, 
-                                        'capabilityMap': resource_capabilities})
+            return redirect("resources")
+    return render(
+        request,
+        "resource_delete.html",
+        {"resource": resource, "capabilityMap": resource_capabilities},
+    )
 
 
-def translate_cap_list( resource ):
+def translate_cap_list(resource):
     """
     param: resource
     return: List of capabilities to be displayed
     """
     resource_capabilities = []
     for cap in resource.capabilities:
-        resource_capabilities.append( capabilityMap[ cap ] )
+        resource_capabilities.append(capabilityMap[cap])
 
     return resource_capabilities

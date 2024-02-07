@@ -28,7 +28,7 @@
                                data-toggle="dropdown"
                                aria-haspopup="true"
                                aria-expanded="false"
-                               style="color:black;">Projects</a>
+                               style="color:black">Projects</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item"
                                    style="color:black;
@@ -44,15 +44,11 @@
                                    href="{% url 'projects' %}">Project List</a>
                             </div>
                         {% else %}
-                            <a class="nav-link"
-                               style="color:black;"
-                               href="{% url 'projects' %}">Projects</a>
+                            <a class="nav-link" style="color:black;" href="{% url 'projects' %}">Projects</a>
                         {% endif %}
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"
-                           style="color:black;"
-                           href="{% url 'resources' %}">Resources</a>
+                        <a class="nav-link" style="color:black;" href="{% url 'resources' %}">Resources</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle"
@@ -61,9 +57,11 @@
                            data-toggle="dropdown"
                            aria-haspopup="true"
                            aria-expanded="false"
-                           style="color:black;">Experiments</a>
+                           style="color:black">Experiments</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" style= "font-family: bold;" href="{% url 'experiments' %}">Workspace</a>
+                            <a class="dropdown-item"
+                               style="font-family: bold"
+                               href="{% url 'experiments' %}">Workspace</a>
                         </div>
                     </li>
                 {% endif %}
@@ -75,7 +73,7 @@
                            data-toggle="dropdown"
                            aria-haspopup="true"
                            aria-expanded="false"
-                           style="color:black;">User Management</a>
+                           style="color:black">User Management</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item"
                                style="color:black;
@@ -95,7 +93,7 @@
                        data-toggle="dropdown"
                        aria-haspopup="true"
                        aria-expanded="false"
-                       style="color:black;">Account</a>
+                       style="color:black">Account</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item"
                            style="color:black;
@@ -114,18 +112,18 @@
             </ul>
             <div class="navbar-nav ml-auto ns-navbar pull-right">
                 <a class="nav-link"
-                        href="{% url 'logout' %}"
-                        style="color:black;
-                               font-family: bold">
-                        <i class="fa fa-fw fa-sign-out"></i> Logout</a>
+                   href="{% url 'logout' %}"
+                   style="color:black;
+                          font-family: bold">
+                    <i class="fa fa-fw fa-sign-out"></i> Logout</a>
             </div>
         {% else %}
             <ul class="navbar-nav ml-auto ns-navbar pull-right">
                 <li class="nav-item {{ login_page }}">
                     <a class="nav-link"
-                        href="{% url 'login' %}"
-                        style="color:black;
-                               font-family: bold">
+                       href="{% url 'login' %}"
+                       style="color:black;
+                              font-family: bold">
                         <i class="fa fa-fw fa-sign-in"></i> Login</a>
                 </li>
             </ul>

@@ -2,15 +2,15 @@ import logging
 
 from django.utils import timezone
 
-from .models import AerpawUserRoleChoice, AerpawRoleRequest
+from .models import AerpawRoleRequest, AerpawUserRoleChoice
 
 logger = logging.getLogger(__name__)
 
 
 def create_new_role_request(request, form):
     role_request = AerpawRoleRequest()
-    requested_role = form.data.getlist('requested_role')[0]
-    purpose = form.data.getlist('purpose')[0]
+    requested_role = form.data.getlist("requested_role")[0]
+    purpose = form.data.getlist("purpose")[0]
 
     role_request.requested_by = request.user
     role_request.purpose = purpose

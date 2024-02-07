@@ -7,7 +7,9 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
-default_message = "You don't have the right priviledge to proceed, please contact the admin"
+default_message = (
+    "You don't have the right priviledge to proceed, please contact the admin"
+)
 
 
 def user_passes_test(test_func, message=default_message):
@@ -44,13 +46,17 @@ def login_required_message(function=None, message=default_message):
     return actual_decorator
 
 
-def login_required_messsage_and_redirect(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None,
-                                         message=default_message):
+def login_required_messsage_and_redirect(
+    function=None,
+    redirect_field_name=REDIRECT_FIELD_NAME,
+    login_url=None,
+    message=default_message,
+):
     if function:
         return login_required_message(
-            login_required(function, redirect_field_name, login_url),
-            message
+            login_required(function, redirect_field_name, login_url), message
         )
 
-    return lambda deferred_function: login_required_message_and_redirect(deferred_function, redirect_field_name,
-                                                                         login_url, message)
+    return lambda deferred_function: login_required_message_and_redirect(
+        deferred_function, redirect_field_name, login_url, message
+    )

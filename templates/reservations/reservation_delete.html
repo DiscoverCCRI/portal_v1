@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Delete: {{ reservation.name }}
-{% endblock %}
-
+{% block title %}Delete: {{ reservation.name }}{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
@@ -24,9 +20,7 @@
                         <td>{{ reservation.resource }}</td>
                         <!--
                         <td>
-                            {% for rs in reservation_resources %}
-                                {{ rs }},
-                            {% endfor %}
+                            {% for rs in reservation_resources %}{{ rs }},{% endfor %}
                         </td>
                         -->
                     </tr>
@@ -55,11 +49,11 @@
                 <!--a href="{% url 'reservation_detail_own' reservation_uuid=reservation.uuid %}"
                    class="btn btn-secondary">Back</a>-->
                 <button class="btn btn-secondary mr-2">
-                    <a href="{% url 'experiment_detail' experiment_uuid=reservation.experiment.uuid %}" class="unlink">Cancel</a>
+                    <a href="{% url 'experiment_detail' experiment_uuid=reservation.experiment.uuid %}"
+                       class="unlink">Cancel</a>
                 </button>
-                <input class="btn btn-danger mr-2" type="submit" value="Delete"/>
+                <input class="btn btn-danger mr-2" type="submit" value="Delete" />
             </form>
-
         </div>
     {% else %}
         <div class="container">

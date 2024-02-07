@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static user_groups %}
-
-{% block title %}
-    User Role Requests
-{% endblock %}
-
+{% block title %}User Role Requests{% endblock %}
 {% block content %}
     {% if user.is_authenticated and user.is_aerpaw_user and user.is_user_manager or user.is_site_admin %}
         <div class="container">
@@ -28,14 +24,17 @@
                             <td>{{ ur.requested_role|role_name }}</td>
                             <td>{{ ur.purpose }}</td>
                             <td>
-                                <input type="text"
-                                       name="notes_{{ ur.id }}">
+                                <input type="text" name="notes_{{ ur.id }}">
                             </td>
                             <td style="text-align: center">
-                                <input type="submit" class="btn btn-success mr-2"
-                                       name="{{ ur.requested_role }}_{{ ur.id }}" value='Approve'>
-                                <input type="submit" class="btn btn-danger mr-2"
-                                       name="{{ ur.requested_role }}_{{ ur.id }}" value='Deny'>
+                                <input type="submit"
+                                       class="btn btn-success mr-2"
+                                       name="{{ ur.requested_role }}_{{ ur.id }}"
+                                       value='Approve'>
+                                <input type="submit"
+                                       class="btn btn-danger mr-2"
+                                       name="{{ ur.requested_role }}_{{ ur.id }}"
+                                       value='Deny'>
                             </td>
                         </tr>
                     {% endfor %}

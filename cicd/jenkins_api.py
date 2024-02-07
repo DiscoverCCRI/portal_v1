@@ -1,26 +1,26 @@
-from uuid import UUID
-import jenkins
-from . import jenkins_server as js
-from .models import Cicd
-from django.shortcuts import render, redirect, get_object_or_404
+import logging
+from datetime import datetime
 from pprint import pprint
+from uuid import UUID
+
+import aerpawgw_client
+import jenkins
+from aerpawgw_client.rest import ApiException
+from django.conf import settings
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from jenkins import JenkinsException
 
-from django.utils import timezone
-from django.core.mail import send_mail
-from django.conf import settings
-
-from .models import Cicd
-from reservations.models import Reservation
 from accounts.models import AerpawUser
-from projects.models import Project
 from profiles.models import Profile
 from profiles.profiles import *
+from projects.models import Project
+from reservations.models import Reservation
 from resources.resources import *
-import aerpawgw_client
-from aerpawgw_client.rest import ApiException
-from datetime import datetime
-import logging
+
+from . import jenkins_server as js
+from .models import Cicd
 
 # logger = logging.getLogger(__name__)
 #
@@ -49,23 +49,25 @@ import logging
 def deploy_cicd_environment(cicd_uuid):
     cicd = get_object_or_404(Cicd, uuid=UUID(str(cicd_uuid)))
     print(cicd.aerpaw_uuid)
-    if not cicd.aerpaw_uuid == '00000000-0000-0000-0000-000000000000':
+    if not cicd.aerpaw_uuid == "00000000-0000-0000-0000-000000000000":
         params = {
-            'AERPAW_UUID': str(cicd.aerpaw_uuid),
-            'AERPAW_COMMAND': 'DEPLOY',
-            'FQDN_OR_IP': str(cicd.cicd_host_info.fqdn_or_ip),
-            'DOCKER_SUBNET': str(cicd.cicd_host_info.docker_subnet),
-            'JENKINS_ADMIN_ID': str(cicd.jenkins_admin_id),
-            'JENKINS_ADMIN_NAME': str(cicd.jenkins_admin_name),
-            'JENKINS_ADMIN_PASSWORD': str(cicd.jenkins_admin_password),
-            'JENKINS_SERVICE_AGENT_PORT': str(cicd.cicd_host_info.jenkins_service_agent_port),
-            'JENKINS_SSH_AGENT_PORT': str(cicd.cicd_host_info.jenkins_ssh_agent_port),
-            'NGINX_HTTP_PORT': str(cicd.cicd_host_info.nginx_http_port),
-            'NGINX_HTTPS_PORT': str(cicd.cicd_host_info.nginx_https_port),
-            'GITEA_SERVICE_AGENT_PORT': str(cicd.cicd_host_info.gitea_ssh_agent_port)
-            }
-        next_bn = js.get_job_info('manage-aerpaw-cicd')['nextBuildNumber']
-        output = js.build_job('manage-aerpaw-cicd', parameters=params)
+            "AERPAW_UUID": str(cicd.aerpaw_uuid),
+            "AERPAW_COMMAND": "DEPLOY",
+            "FQDN_OR_IP": str(cicd.cicd_host_info.fqdn_or_ip),
+            "DOCKER_SUBNET": str(cicd.cicd_host_info.docker_subnet),
+            "JENKINS_ADMIN_ID": str(cicd.jenkins_admin_id),
+            "JENKINS_ADMIN_NAME": str(cicd.jenkins_admin_name),
+            "JENKINS_ADMIN_PASSWORD": str(cicd.jenkins_admin_password),
+            "JENKINS_SERVICE_AGENT_PORT": str(
+                cicd.cicd_host_info.jenkins_service_agent_port
+            ),
+            "JENKINS_SSH_AGENT_PORT": str(cicd.cicd_host_info.jenkins_ssh_agent_port),
+            "NGINX_HTTP_PORT": str(cicd.cicd_host_info.nginx_http_port),
+            "NGINX_HTTPS_PORT": str(cicd.cicd_host_info.nginx_https_port),
+            "GITEA_SERVICE_AGENT_PORT": str(cicd.cicd_host_info.gitea_ssh_agent_port),
+        }
+        next_bn = js.get_job_info("manage-aerpaw-cicd")["nextBuildNumber"]
+        output = js.build_job("manage-aerpaw-cicd", parameters=params)
         # print(output)
     else:
         next_bn = -1
@@ -75,13 +77,10 @@ def deploy_cicd_environment(cicd_uuid):
 
 def start_cicd_environment(cicd_uuid):
     cicd = get_object_or_404(Cicd, uuid=UUID(str(cicd_uuid)))
-    params = {
-        'AERPAW_UUID': str(cicd.aerpaw_uuid),
-        'AERPAW_COMMAND': 'START'
-    }
+    params = {"AERPAW_UUID": str(cicd.aerpaw_uuid), "AERPAW_COMMAND": "START"}
     print(params)
-    next_bn = js.get_job_info('manage-aerpaw-cicd')['nextBuildNumber']
-    output = js.build_job('manage-aerpaw-cicd', parameters=params)
+    next_bn = js.get_job_info("manage-aerpaw-cicd")["nextBuildNumber"]
+    output = js.build_job("manage-aerpaw-cicd", parameters=params)
     # print(output)
     # info = js.get_build_console_output('aerpaw-cicd-control', next_bn)
     # pprint(info)
@@ -90,13 +89,10 @@ def start_cicd_environment(cicd_uuid):
 
 def stop_cicd_environment(cicd_uuid):
     cicd = get_object_or_404(Cicd, uuid=UUID(str(cicd_uuid)))
-    params = {
-        'AERPAW_UUID': str(cicd.aerpaw_uuid),
-        'AERPAW_COMMAND': 'STOP'
-    }
+    params = {"AERPAW_UUID": str(cicd.aerpaw_uuid), "AERPAW_COMMAND": "STOP"}
     print(params)
-    next_bn = js.get_job_info('manage-aerpaw-cicd')['nextBuildNumber']
-    output = js.build_job('manage-aerpaw-cicd', parameters=params)
+    next_bn = js.get_job_info("manage-aerpaw-cicd")["nextBuildNumber"]
+    output = js.build_job("manage-aerpaw-cicd", parameters=params)
     # print(output)
     # info = js.get_build_console_output('aerpaw-cicd-control', next_bn)
     # pprint(info)
@@ -105,14 +101,11 @@ def stop_cicd_environment(cicd_uuid):
 
 def purge_cicd_environment(cicd_uuid):
     cicd = get_object_or_404(Cicd, uuid=UUID(str(cicd_uuid)))
-    if not cicd.aerpaw_uuid == '00000000-0000-0000-0000-000000000000':
-        params = {
-            'AERPAW_UUID': str(cicd.aerpaw_uuid),
-            'AERPAW_COMMAND': 'PURGE'
-        }
+    if not cicd.aerpaw_uuid == "00000000-0000-0000-0000-000000000000":
+        params = {"AERPAW_UUID": str(cicd.aerpaw_uuid), "AERPAW_COMMAND": "PURGE"}
         print(params)
-        next_bn = js.get_job_info('manage-aerpaw-cicd')['nextBuildNumber']
-        output = js.build_job('manage-aerpaw-cicd', parameters=params)
+        next_bn = js.get_job_info("manage-aerpaw-cicd")["nextBuildNumber"]
+        output = js.build_job("manage-aerpaw-cicd", parameters=params)
         # print(output)
         # info = js.get_build_console_output('aerpaw-cicd-control', next_bn)
         # pprint(info)
@@ -125,12 +118,14 @@ def info_cicd_environment(cicd_uuid):
     # next_bn = js.get_job_info('manage-aerpaw-cicd')['nextBuildNumber']
     # output = js.build_job('manage-aerpaw-cicd', parameters=params)
     try:
-        next_bn = js.get_job_info('manage-aerpaw-cicd')['nextBuildNumber']
-        info = js.get_build_console_output('manage-aerpaw-cicd', int(next_bn - 1))
-        response = '[job #{0}]: '.format(str(next_bn - 1)) + "<br />".join(info.split("\n"))
+        next_bn = js.get_job_info("manage-aerpaw-cicd")["nextBuildNumber"]
+        info = js.get_build_console_output("manage-aerpaw-cicd", int(next_bn - 1))
+        response = "[job #{0}]: ".format(str(next_bn - 1)) + "<br />".join(
+            info.split("\n")
+        )
     except JenkinsException as err:
         print(err)
-        response = '[job #?]: Unable to locate job'
+        response = "[job #?]: Unable to locate job"
     # pprint(info)
 
     # print(response)
