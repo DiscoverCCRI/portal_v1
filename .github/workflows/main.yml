@@ -1,0 +1,22 @@
+on: [push, pull_request]
+
+jobs:
+  python-lint:
+    runs-on: ubuntu-latest
+    name: CI workflow
+    steps:
+    - name: checkout source repo
+      uses: actions/checkout@main
+
+    - name: linting
+      uses: programmingwithalex/pylinter@main
+      with:
+        python-root: '.'
+        flake8-flags: ''
+        mypy-flags: ''
+        fail-on-isort: false
+        skip-flake8: true
+        # skip-mypy: false
+        # skip-isort: false
+        # mypy-ignore-dirs-files: ''
+        # requirements-file: ''
