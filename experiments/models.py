@@ -12,6 +12,7 @@ from accounts.models import AerpawUser
 from profiles.models import Profile
 from projects.models import Project
 from resources.models import Resource, ResourceStageChoice
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 logger = logging.getLogger(__name__)
 
@@ -104,6 +105,9 @@ class Experiment(models.Model):
     github_link = models.CharField(max_length=255, blank=False, null=False, default="")
     cloudstorage_link = models.CharField(
         max_length=255, blank=False, null=False, default=""
+    )
+    execution_duration = models.IntegerField(
+        validators=[MaxValueValidator(100), MinValueValidator(1)]
     )
     description = models.TextField()
     experimenter = models.ManyToManyField(

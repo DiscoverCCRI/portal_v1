@@ -22,7 +22,6 @@ class ExperimentModelChoiceField(ModelChoiceField):
             erd_project = obj.project.name
         return "{0} ({1})".format(erd_name, erd_project)
 
-
 class ExperimentCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.project_id = kwargs.pop("project_id", None)
@@ -98,7 +97,41 @@ class ExperimentCreateForm(forms.ModelForm):
             "description",
             "github_link",
             "cloudstorage_link",
+            "execution_duration",
         ]
+        widgets = {
+            "name": forms.TextInput(attrs=
+                               {
+                                   'placeholder': 'Name',
+                                   'style': 'width: 300px;',
+                                   'class': 'form-control'
+                                }),
+            "github_link": forms.TextInput(attrs=
+                               {
+                                   'placeholder': 'Link to GitHub',
+                                   'style': 'width: 300px;',
+                                   'class': 'form-control'
+                                }),
+            "cloudstorage_link": forms.TextInput(attrs=
+                               {
+                                   'placeholder': 'Link to Cloud Storage',
+                                   'style': 'width: 300px;',
+                                   'class': 'form-control'
+                                }),
+            "execution_duration": forms.NumberInput(attrs=
+                               {
+                                   'placeholder': 'Duration Hour(s)',
+                                   'style': 'width: 300px;',
+                                   'class': 'form-control'
+                                }),
+            "description": forms.Textarea(attrs=
+                               {
+                                    'placeholder': 'Description...',
+                                    'class': 'form-control',
+                                    "rows": 6,
+                                    "cols": 60,
+                                })
+        }
 
 
 class ExperimentUpdateExperimentersForm(forms.ModelForm):
