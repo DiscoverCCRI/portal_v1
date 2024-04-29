@@ -11,44 +11,7 @@
         </p>
         <form id="create-experiment" method="POST" class="post-form">
             {% csrf_token %}
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-30">
-                        {{ form.name }}
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-30">
-                        {{ form.github_link }}
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-30">
-                        {{ form.execution_duration }}
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-30">
-                        {{ form.cloudstorage_link }}
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="form-group mb-30">
-                        {{ form.description }}
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="form-group mb-30">
-                        {{ form.dependencies }}
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <p>Resource Type:</p>
-                    <div class="form-group mb-30">
-                        {{ form.resourceType }}
-                    </div>
-                </div>
-            </div>
+            {{ form.as_p }}
             <p id="no_capabilities">No capabilities for secleted resource type.</p>
             <h2>Available Resources</h2>
             <div id="resources">
