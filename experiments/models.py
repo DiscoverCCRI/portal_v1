@@ -107,6 +107,7 @@ class Experiment(models.Model):
         max_length=255, blank=False, null=False, default=""
     )
     execution_duration = models.IntegerField(
+        default=1,
         validators=[MaxValueValidator(100), MinValueValidator(1)]
     )
     description = models.TextField()
