@@ -130,6 +130,12 @@ class ExperimentCreateForm(forms.ModelForm):
                                     'class': 'form-control',
                                     "rows": 6,
                                     "cols": 60,
+                                }),
+            "dependencies": forms.Textarea(attrs=
+                               {
+                                    'class': 'form-control',
+                                    "rows": 6,
+                                    "cols": 60,
                                 })
         }
 
@@ -292,15 +298,15 @@ class ExperimentUpdateForm(forms.ModelForm):
 
 
 class ExperimentUpdateByOpsForm(forms.ModelForm):
-    stage = forms.ChoiceField(
+    """ stage = forms.ChoiceField(
         choices=StageChoice.choices(),
         required=True,
         widget=forms.Select(),
         label="Mode",
-    )
+    ) """
 
     state = forms.ChoiceField(
-        choices=Experiment.STATE_CHOICES,
+        choices=Experiment.CHOICES_STATUS,
         required=True,
         widget=forms.Select(),
         label="state",
@@ -315,7 +321,7 @@ class ExperimentUpdateByOpsForm(forms.ModelForm):
     class Meta:
         model = Experiment
         fields = (
-            "stage",
+            # "stage",
             "state",
             "message",
         )

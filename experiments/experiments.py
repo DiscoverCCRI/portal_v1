@@ -468,7 +468,10 @@ def generate_experiment_session_request(request, experiment):
             experiment.stage
         ).lower()
 
-    resources = parse_profile(request, experiment.profile.profile)
+    resources = None
+
+    if experiment.profile != None and experiment.profile.profile != None:
+        resources = parse_profile(request, experiment.profile.profile)
 
     resource_def = {
         "experiment_uuid": str(experiment.uuid),
