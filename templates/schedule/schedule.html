@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/schedule.css' %}">
+    </head>
+    <body>
+        <div class="container">
+            <table border="1">
+                <tr>
+                    <th colspan="2">Not Yet Scheduled</th>
+                </tr>
+                {% for experiment in experiments.all %}
+                    <!-- If experiment.state == pending -->
+                    <tr>
+                        <td colspan="2">
+                            <a class="link" href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a>
+                            <p class="text-above-field">Schedule</p>
+                            <input type="date" class="date-field">
+                            <button class="button">Move To Error</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <table border="1">
+                <tr>
+                    <th colspan="3">Scheduled</th>
+                </tr>
+                
+                {% for experiment in experiments.all %}
+                <!-- If experiment.state == scheduled -->
+                    <tr>
+                        <td colspan="3">
+                            <a class="link" href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a>
+                            <p class="text-above-field">Reschedule</p>
+                            <input type="date" class="date-field">
+                            <button class="button">Move To Completed</button>
+                            <div class="scheduled-info">
+                                    <!-- {{experiment.scheduleDate}} -->
+                                <p><span>Scheduled Date:</span> 2024-06-10</p>
+                                <p><span>Scheduled By:</span> John Doe</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <table border="1">
+                <tr>
+                    <th colspan="2">Completed</th>
+                </tr>
+                {% for experiment in experiments.all %}
+                <!-- If experiment.state == completed -->
+                    <tr>
+                        <td colspan="2"><a class="link" href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <table border="1">
+                <tr>
+                    <th colspan="2">Error</th>
+                </tr>
+                {% for experiment in experiments.all %}
+                <!-- If experiment.state == error -->
+                    <tr>
+                        <td colspan="2"><a class="link" href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a> 
+                        <button class="button">Move To Not-Scheduled</button></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </body>
+</html>
