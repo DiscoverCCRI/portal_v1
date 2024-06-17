@@ -62,6 +62,7 @@ class ExperimentCreateForm(forms.ModelForm):
     dependencies = forms.CharField(
         widget=forms.Textarea(
             attrs={
+                "class": "form-control",
                 "rows": 6,
                 "cols": 60,
                 "placeholder": "List each dependency followed by a new line. Ex:\nmozilla-django-oidc\npsycopg2-binary\npython-dotenv",
@@ -98,13 +99,16 @@ class ExperimentCreateForm(forms.ModelForm):
             "github_link",
             "cloudstorage_link",
             "execution_duration",
+            "execution_condition",
         ]
         widgets = {
             "name": forms.TextInput(attrs=
                                {
                                    'placeholder': 'Name',
                                    'style': 'width: 300px;',
-                                   'class': 'form-control'
+                                   'class': 'form-control',
+                                   'data-tooltip': 'text info',
+                                   'data-tooltip-location': 'top',
                                 }),
             "github_link": forms.TextInput(attrs=
                                {
@@ -127,6 +131,13 @@ class ExperimentCreateForm(forms.ModelForm):
             "description": forms.Textarea(attrs=
                                {
                                     'placeholder': 'Description...',
+                                    'class': 'form-control',
+                                    "rows": 6,
+                                    "cols": 60,
+                                }),
+            "execution_condition": forms.Textarea(attrs=
+                               {
+                                    'placeholder': 'Weather, Time,...',
                                     'class': 'form-control',
                                     "rows": 6,
                                     "cols": 60,

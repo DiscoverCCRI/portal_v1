@@ -121,9 +121,11 @@ class Experiment(models.Model):
     )
     execution_duration = models.IntegerField(
         default=1,
-        validators=[MaxValueValidator(12), MinValueValidator(1)]
+        validators=[MaxValueValidator(12), MinValueValidator(1)],
+        blank=False
     )
     description = models.TextField()
+    execution_condition = models.TextField(default="Weather, Time,...", blank=False)
     experimenter = models.ManyToManyField(
         AerpawUser, related_name="experiment_of_experimenter"
     )

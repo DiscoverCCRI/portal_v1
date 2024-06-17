@@ -105,6 +105,10 @@
                         <td>{{ experiment.execution_duration }} hour(s)</td>
                     </tr>
                     <tr>
+                        <td>Notes (Condition)</td>
+                        <td>{{ experiment.execution_condition }}</td>
+                    </tr>
+                    <tr>
                         <td>Experiment Status</td>
                         <td>{{ experiment_status }}</td>
                         {% if is_creator or is_exp or admin or operator %}
