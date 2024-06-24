@@ -48,6 +48,11 @@
                         {% endif %}
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link"
+                            style="color:black;"
+                            href="{% url 'schedule' %}">Schedule Management</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" style="color:black;" href="{% url 'resources' %}">Resources</a>
                     </li>
                     <li class="nav-item dropdown">
@@ -94,10 +99,6 @@
                        aria-haspopup="true"
                        aria-expanded="false"
                        style="color:black">Account</a>
-                    <a class="nav-item"
-                        style="color:black;
-                              font-family: bold"
-                        href="{% url 'schedule' %}">Schedule Management</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item"
                            style="color:black;
