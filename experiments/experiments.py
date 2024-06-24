@@ -45,11 +45,11 @@ def create_new_experiment(request, form, project_id):
     except ValueError as e:
         print(e)
     experiment.profile = None
+    #experiment.scheduled_by = None
+    experiment.scheduled_date = None
     experiment.created_by = request.user
     experiment.created_date = timezone.now()
     experiment.save()
-
-    print(form.data.getlist("resources")[0])
 
     resources_uuid = parseUuidString(form.data.getlist("resources")[0])
 

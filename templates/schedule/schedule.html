@@ -1,4 +1,6 @@
+{% extends 'base.html' %}
 {% load static %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -13,16 +15,21 @@
                     <th colspan="2">Not Yet Scheduled</th>
                 </tr>
                 {% for experiment in experiments.all %}
-                    <!-- If experiment.state == pending -->
-                    <tr>
-                        <td colspan="2">
-                            <a class="link" href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a>
-                            <p class="text-above-field">Schedule</p>
-                            <input type="date" class="date-field">
-                            <button class="button">Move To Error</button>
-                        </td>
-                    </tr>
+                   <form method="post" action="{% url 'schedule_experiment' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
+                        <tr>
+                            <td colspan="2">
+                                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{ experiment.name }}</a>
+                                <p class="text-above-field">Schedule</p>
+                                {{ form.scheduled_time }}
+                                <button type="submit" class="button">Schedule</button>
+                                <button class="button">Move To Error</button>
+                            </td>
+                        </tr>
+                    </form>
                 {% endfor %}
+            
             </table>
 
             <table border="1">
@@ -34,15 +41,19 @@
                 <!-- If experiment.state == scheduled -->
                     <tr>
                         <td colspan="3">
-                            <a class="link" href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a>
-                            <p class="text-above-field">Reschedule</p>
-                            <input type="date" class="date-field">
-                            <button class="button">Move To Completed</button>
-                            <div class="scheduled-info">
-                                    <!-- {{experiment.scheduleDate}} -->
-                                <p><span>Scheduled Date:</span> 2024-06-10</p>
-                                <p><span>Scheduled By:</span> John Doe</p>
-                            </div>
+                            <form method="post" action="{% url 'schedule_experiment' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
+                                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a>
+                                <p class="text-above-field">Reschedule</p>
+                                {{ form.scheduled_time }}
+                                <button type="submit" class="button">Reschedule</button>
+                                <div class="scheduled-info">
+                                        <!-- {{experiment.scheduleDate}} -->
+                                    <p><span>Scheduled Date:</span>{{experiment.scheduled_date}}</p>
+                                </div>
+                            </form>
+                            <button class="button">Move To Complete</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -55,7 +66,7 @@
                 {% for experiment in experiments.all %}
                 <!-- If experiment.state == completed -->
                     <tr>
-                        <td colspan="2"><a class="link" href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a></td>
+                        <td colspan="2"><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a></td>
                     </tr>
                 {% endfor %}
             </table>
@@ -67,7 +78,7 @@
                 {% for experiment in experiments.all %}
                 <!-- If experiment.state == error -->
                     <tr>
-                        <td colspan="2"><a class="link" href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a> 
+                        <td colspan="2"><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a> 
                         <button class="button">Move To Not-Scheduled</button></td>
                     </tr>
                 {% endfor %}
@@ -76,3 +87,4 @@
 
     </body>
 </html>
+{% endblock %}

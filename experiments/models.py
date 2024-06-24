@@ -141,6 +141,19 @@ class Experiment(models.Model):
         on_delete=models.SET_NULL,
     )
 
+    scheduled_date = models.DateField(blank=True, null=True)
+    
+    '''
+    scheduled_by = models.ForeignKey(
+        AerpawUser,
+        related_name="experiment_scheduled_by",
+        blank=True,
+        null=True,
+        db_column='scheduled_by',
+        on_delete=models.SET_NULL,
+    )
+    '''
+
     is_snapshotted = models.BooleanField(default=False, blank=True, null=True)
 
     state = FSMIntegerField(default=0, blank=True, null=True, choices=STATE_CHOICES)
