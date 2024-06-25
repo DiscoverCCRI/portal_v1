@@ -12,6 +12,7 @@ from accounts.models import AerpawUser
 from profiles.models import Profile
 from projects.models import Project
 from resources.models import Resource, ResourceStageChoice
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 logger = logging.getLogger(__name__)
 
@@ -95,6 +96,19 @@ class Experiment(models.Model):
         (STATE_DEPLOYED, "ready"),
         (STATE_SUBMIT, "submitted"),
     )
+
+    PENDING_STATUS = 0
+    SCHEDULED_STATUS = 1
+    COMPLETED_STATUS = 3
+    ERROR_STATUS = 4
+    CANCELLED_STATUS = 5
+    CHOICES_STATUS = (
+        (PENDING_STATUS, "Pending"),
+        (SCHEDULED_STATUS, "Scheduled"),
+        (COMPLETED_STATUS, "Completed"),
+        (ERROR_STATUS, "Error"),
+        (CANCELLED_STATUS, "Cancelled"),
+    )
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     resources = models.ManyToManyField(Resource)
     dependencies = ArrayField(
@@ -105,7 +119,13 @@ class Experiment(models.Model):
     cloudstorage_link = models.CharField(
         max_length=255, blank=False, null=False, default=""
     )
+    execution_duration = models.IntegerField(
+        default=1,
+        validators=[MaxValueValidator(12), MinValueValidator(1)],
+        blank=False
+    )
     description = models.TextField()
+    execution_condition = models.TextField(default="Weather, Time,...", blank=False)
     experimenter = models.ManyToManyField(
         AerpawUser, related_name="experiment_of_experimenter"
     )
@@ -143,7 +163,9 @@ class Experiment(models.Model):
 
     is_snapshotted = models.BooleanField(default=False, blank=True, null=True)
 
-    state = FSMIntegerField(default=0, blank=True, null=True, choices=STATE_CHOICES)
+    state = FSMIntegerField(default=0, blank=True, null=True, choices=CHOICES_STATUS)
+
+    state_temp = FSMIntegerField(default=0, blank=True, null=True, choices=CHOICES_STATUS)
 
     @transition(field=state, source=STATE_IDLE, target=STATE_PROVISIONING)
     def provision(self):

@@ -21,7 +21,7 @@ from .experiments import (create_new_experiment, delete_existing_experiment,
                           update_existing_experiment)
 from .forms import (ExperimentCreateForm, ExperimentLinkUpdateForm,
                     ExperimentSubmitForm, ExperimentUpdateByOpsForm,
-                    ExperimentUpdateExperimentersForm, ExperimentUpdateForm)
+                    ExperimentUpdateExperimentersForm, ExperimentUpdateForm, ExperimentStatusUpdateForm)
 from .models import Experiment
 
 logger = logging.getLogger(__name__)
@@ -175,6 +175,7 @@ def experiment_detail(request, experiment_uuid):
             "experiment": experiment,
             "experimenter": experiment.experimenter.all(),
             "experiment_status": Experiment.STATE_CHOICES[experiment.state][1],
+            "experiment_status_temp": Experiment.CHOICES_STATUS[experiment.state_temp][1],
             "reservations": experiment_reservations.all(),
             "is_creator": is_creator,
             "is_exp": is_exp,
@@ -477,6 +478,38 @@ def experiment_link_update(request, experiment_uuid):
     return render(
         request,
         "experiment_link_update.html",
+        {
+            "experiment": experiment,
+            "experiment_uuid": str(experiment_uuid),
+            "form": form,
+        },
+    )
+
+
+@login_required
+def experiment_status_update(request, experiment_uuid):
+    """
+    render manifest information for the experiment
+
+    :param request:
+    :param experiment_uuid:
+    :return:
+    """
+    experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
+
+    if request.method == "POST":
+        form = ExperimentStatusUpdateForm(request.POST, instance=experiment)
+
+        if form.is_valid():
+            state = form.cleaned_data.get("state_temp")
+            experiment.state_temp = state
+            experiment.save()
+            return redirect("experiment_detail", experiment_uuid=str(experiment.uuid))
+
+    form = ExperimentStatusUpdateForm(instance=experiment)
+    return render(
+        request,
+        "experiment_status_update.html",
         {
             "experiment": experiment,
             "experiment_uuid": str(experiment_uuid),

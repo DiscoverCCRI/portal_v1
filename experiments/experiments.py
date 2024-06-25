@@ -37,6 +37,9 @@ def create_new_experiment(request, form, project_id):
     experiment.name = form.data.getlist("name")[0]
     experiment.github_link = form.data.getlist("github_link")[0]
     experiment.cloudstorage_link = form.data.getlist("cloudstorage_link")[0]
+    experiment.execution_duration = form.data.getlist("execution_duration")[0]
+    experiment.execution_condition = form.data.getlist("execution_condition")[0]
+    experiment.state_temp = "Pending"
 
     experiment.dependencies = parse_string(form.data.getlist("dependencies")[0])
 
@@ -48,8 +51,6 @@ def create_new_experiment(request, form, project_id):
     experiment.created_by = request.user
     experiment.created_date = timezone.now()
     experiment.save()
-
-    print(form.data.getlist("resources")[0])
 
     resources_uuid = parseUuidString(form.data.getlist("resources")[0])
 
@@ -469,7 +470,10 @@ def generate_experiment_session_request(request, experiment):
             experiment.stage
         ).lower()
 
-    resources = parse_profile(request, experiment.profile.profile)
+    resources = None
+
+    if experiment.profile != None and experiment.profile.profile != None:
+        resources = parse_profile(request, experiment.profile.profile)
 
     resource_def = {
         "experiment_uuid": str(experiment.uuid),

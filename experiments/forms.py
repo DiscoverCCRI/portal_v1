@@ -22,7 +22,6 @@ class ExperimentModelChoiceField(ModelChoiceField):
             erd_project = obj.project.name
         return "{0} ({1})".format(erd_name, erd_project)
 
-
 class ExperimentCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.project_id = kwargs.pop("project_id", None)
@@ -63,6 +62,7 @@ class ExperimentCreateForm(forms.ModelForm):
     dependencies = forms.CharField(
         widget=forms.Textarea(
             attrs={
+                "class": "form-control",
                 "rows": 6,
                 "cols": 60,
                 "placeholder": "List each dependency followed by a new line. Ex:\nmozilla-django-oidc\npsycopg2-binary\npython-dotenv",
@@ -98,7 +98,57 @@ class ExperimentCreateForm(forms.ModelForm):
             "description",
             "github_link",
             "cloudstorage_link",
+            "execution_duration",
+            "execution_condition",
         ]
+        widgets = {
+            "name": forms.TextInput(attrs=
+                               {
+                                   'placeholder': 'Name',
+                                   'style': 'width: 300px;',
+                                   'class': 'form-control',
+                                   'data-tooltip': 'text info',
+                                   'data-tooltip-location': 'top',
+                                }),
+            "github_link": forms.TextInput(attrs=
+                               {
+                                   'placeholder': 'Link to GitHub',
+                                   'style': 'width: 300px;',
+                                   'class': 'form-control'
+                                }),
+            "cloudstorage_link": forms.TextInput(attrs=
+                               {
+                                   'placeholder': 'Link to Cloud Storage',
+                                   'style': 'width: 300px;',
+                                   'class': 'form-control'
+                                }),
+            "execution_duration": forms.NumberInput(attrs=
+                               {
+                                   'placeholder': 'Duration Hour(s)',
+                                   'style': 'width: 300px;',
+                                   'class': 'form-control'
+                                }),
+            "description": forms.Textarea(attrs=
+                               {
+                                    'placeholder': 'Description...',
+                                    'class': 'form-control',
+                                    "rows": 6,
+                                    "cols": 60,
+                                }),
+            "execution_condition": forms.Textarea(attrs=
+                               {
+                                    'placeholder': 'Weather, Time,...',
+                                    'class': 'form-control',
+                                    "rows": 6,
+                                    "cols": 60,
+                                }),
+            "dependencies": forms.Textarea(attrs=
+                               {
+                                    'class': 'form-control',
+                                    "rows": 6,
+                                    "cols": 60,
+                                })
+        }
 
 
 class ExperimentUpdateExperimentersForm(forms.ModelForm):
@@ -259,15 +309,15 @@ class ExperimentUpdateForm(forms.ModelForm):
 
 
 class ExperimentUpdateByOpsForm(forms.ModelForm):
-    stage = forms.ChoiceField(
+    """ stage = forms.ChoiceField(
         choices=StageChoice.choices(),
         required=True,
         widget=forms.Select(),
         label="Mode",
-    )
+    ) """
 
     state = forms.ChoiceField(
-        choices=Experiment.STATE_CHOICES,
+        choices=Experiment.CHOICES_STATUS,
         required=True,
         widget=forms.Select(),
         label="state",
@@ -282,7 +332,7 @@ class ExperimentUpdateByOpsForm(forms.ModelForm):
     class Meta:
         model = Experiment
         fields = (
-            "stage",
+            # "stage",
             "state",
             "message",
         )
@@ -372,3 +422,16 @@ class ExperimentLinkUpdateForm(forms.ModelForm):
     class Meta:
         model = Experiment
         fields = ("cloudstorage_link",)
+
+
+class ExperimentStatusUpdateForm(forms.ModelForm):
+    state_temp = forms.ChoiceField(
+        choices=Experiment.CHOICES_STATUS,
+        required=True,
+        widget=forms.Select(),
+        label="Status",
+    )
+
+    class Meta:
+        model = Experiment
+        fields = ("state_temp",)
