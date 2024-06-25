@@ -15,7 +15,6 @@
                     <th colspan="2">Not Yet Scheduled</th>
                 </tr>
                 {% for experiment in experiments.all %}
-<<<<<<< HEAD
                     {% if experiment.state_temp == experiment.PENDING_STATUS %}
                         <tr>
                             <td colspan="2">
@@ -35,21 +34,6 @@
                             </td>
                         </tr>
                     {% endif %}
-=======
-                   <form method="post" action="{% url 'schedule_experiment' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                        <tr>
-                            <td colspan="2">
-                                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{ experiment.name }}</a>
-                                <p class="text-above-field">Schedule</p>
-                                {{ form.scheduled_time }}
-                                <button type="submit" class="button">Schedule</button>
-                                <button class="button">Move To Error</button>
-                            </td>
-                        </tr>
-                    </form>
->>>>>>> 47771781af2ea17a72f28ce018b2b50eea89331e
                 {% endfor %}
             
             </table>
@@ -61,7 +45,6 @@
                 
                 {% for experiment in experiments.all %}
                 <!-- If experiment.state == scheduled -->
-<<<<<<< HEAD
                     {% if experiment.state_temp == experiment.SCHEDULED_STATUS %}
                         <tr>
                             <td colspan="3">
@@ -85,25 +68,6 @@
                             </td>
                         </tr>
                     {% endif %}
-=======
-                    <tr>
-                        <td colspan="3">
-                            <form method="post" action="{% url 'schedule_experiment' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a>
-                                <p class="text-above-field">Reschedule</p>
-                                {{ form.scheduled_time }}
-                                <button type="submit" class="button">Reschedule</button>
-                                <div class="scheduled-info">
-                                        <!-- {{experiment.scheduleDate}} -->
-                                    <p><span>Scheduled Date:</span>{{experiment.scheduled_date}}</p>
-                                </div>
-                            </form>
-                            <button class="button">Move To Complete</button>
-                        </td>
-                    </tr>
->>>>>>> 47771781af2ea17a72f28ce018b2b50eea89331e
                 {% endfor %}
             </table>
 
@@ -112,18 +76,11 @@
                     <th colspan="2">Completed</th>
                 </tr>
                 {% for experiment in experiments.all %}
-<<<<<<< HEAD
                     {% if experiment.state_temp == experiment.COMPLETED_STATUS %}
                         <tr>
                             <td colspan="2"><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a></td>
                         </tr>
                     {% endif %}
-=======
-                <!-- If experiment.state == completed -->
-                    <tr>
-                        <td colspan="2"><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a></td>
-                    </tr>
->>>>>>> 47771781af2ea17a72f28ce018b2b50eea89331e
                 {% endfor %}
             </table>
 
@@ -133,7 +90,6 @@
                 </tr>
                 {% for experiment in experiments.all %}
                 <!-- If experiment.state == error -->
-<<<<<<< HEAD
                     {% if experiment.state_temp == experiment.ERROR_STATUS %}
                         <tr>
                             <td colspan="2"><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a> 
@@ -145,12 +101,6 @@
                             </td>
                         </tr>
                     {% endif %}
-=======
-                    <tr>
-                        <td colspan="2"><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a> 
-                        <button class="button">Move To Not-Scheduled</button></td>
-                    </tr>
->>>>>>> 47771781af2ea17a72f28ce018b2b50eea89331e
                 {% endfor %}
             </table>
         </div>
