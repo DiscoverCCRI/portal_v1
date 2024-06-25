@@ -39,6 +39,7 @@ def create_new_experiment(request, form, project_id):
     experiment.cloudstorage_link = form.data.getlist("cloudstorage_link")[0]
     experiment.execution_duration = form.data.getlist("execution_duration")[0]
     experiment.execution_condition = form.data.getlist("execution_condition")[0]
+    experiment.state_temp = "Pending"
 
     experiment.dependencies = parse_string(form.data.getlist("dependencies")[0])
 

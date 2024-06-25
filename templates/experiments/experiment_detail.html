@@ -121,6 +121,19 @@
                             </td>
                         {% endif %}
                     </tr>
+                    <tr>
+                        <td>Status</td>
+                        <td>{{ experiment_status_temp }}</td>
+                        {% if is_creator or is_exp or admin or operator %}
+                            <td>
+                                <button class="btn btn-info mr-2"
+                                        style="background-color:#076AE0!important">
+                                    <a href="{% url 'experiment_status_update' experiment_uuid=experiment.uuid %}"
+                                       class="unlink">Update</a>
+                                </button>
+                            </td>
+                        {% endif %}
+                    </tr>
                 </table>
                 <button class="btn btn-secondary mr-2">
                     <a href="{% url 'project_detail' project_uuid=experiment.project.uuid %}"

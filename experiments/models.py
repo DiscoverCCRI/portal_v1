@@ -165,6 +165,8 @@ class Experiment(models.Model):
 
     state = FSMIntegerField(default=0, blank=True, null=True, choices=CHOICES_STATUS)
 
+    state_temp = FSMIntegerField(default=0, blank=True, null=True, choices=CHOICES_STATUS)
+
     @transition(field=state, source=STATE_IDLE, target=STATE_PROVISIONING)
     def provision(self):
         logger.warning(

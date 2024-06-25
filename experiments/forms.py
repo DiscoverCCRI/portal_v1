@@ -422,3 +422,16 @@ class ExperimentLinkUpdateForm(forms.ModelForm):
     class Meta:
         model = Experiment
         fields = ("cloudstorage_link",)
+
+
+class ExperimentStatusUpdateForm(forms.ModelForm):
+    state_temp = forms.ChoiceField(
+        choices=Experiment.CHOICES_STATUS,
+        required=True,
+        widget=forms.Select(),
+        label="Status",
+    )
+
+    class Meta:
+        model = Experiment
+        fields = ("state_temp",)
