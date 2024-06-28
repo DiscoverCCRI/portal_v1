@@ -6,7 +6,17 @@
         {% if ua and is_creator or ua and is_pm or ua and is_po or admin or operator %}
             <div class="container">
                 <h2>{{ experiment.name }} (in Project: <a href="{% url 'project_detail' project_uuid=experiment.project.uuid %}">{{ experiment.project }})</a></h2>
-                <p style="color: rgb(255, 183, 15); font-style: italic;">This may take 3-5 business days to complete!</p>
+                {% if experiment.state_temp == 0 %}
+                    <p style="color: rgb(255, 183, 15); font-style: italic;">This may take 3-5 business days to complete!</p>
+                {% elif experiment.state_temp == 1 %}
+                    <p style="color: rgb(255, 183, 15); font-style: italic;">Experiment is scheduled. We will let you know when the experiment finishes. </p>
+                {% elif experiment.state_temp == 2 %}
+                    <p style="color: rgb(20, 219, 73); font-style: italic;">Experiment is COMPLETED. Please check your email for more information.</p>
+                {% elif experiment.state_temp == 3 %}
+                    <p style="color: rgb(237, 76, 76); font-style: italic;">There is an ERROR. Please check your email for more information.</p>
+                {% else %}
+                    <p style="color: rgb(255, 1, 1); font-style: italic;">Experiment is CANCELLED. Please check your email for more information.</p>
+                {% endif %}                
                 <table class="table table-striped table-bordered my-4">
                     <tr>
                         <td>Description</td>
