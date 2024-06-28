@@ -99,9 +99,9 @@ class Experiment(models.Model):
 
     PENDING_STATUS = 0
     SCHEDULED_STATUS = 1
-    COMPLETED_STATUS = 3
-    ERROR_STATUS = 4
-    CANCELLED_STATUS = 5
+    COMPLETED_STATUS = 2
+    ERROR_STATUS = 3
+    CANCELLED_STATUS = 4
     CHOICES_STATUS = (
         (PENDING_STATUS, "Pending"),
         (SCHEDULED_STATUS, "Scheduled"),
