@@ -18,7 +18,7 @@ def move_to_error(request):
     if request.method == 'POST':
         experiment_uuid = request.POST.get('experiment_uuid')
         experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
-        change_experiment_state(experiment,4)
+        change_experiment_state( experiment, 3 )
     
     return redirect('schedule')
 
@@ -26,7 +26,7 @@ def move_to_complete(request):
     if request.method == 'POST':
         experiment_uuid = request.POST.get('experiment_uuid')
         experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
-        change_experiment_state(experiment,3)
+        change_experiment_state( experiment, 2 )
     
     return redirect('schedule')
 
@@ -34,7 +34,7 @@ def move_to_not_scheduled(request):
     if request.method == 'POST':
         experiment_uuid = request.POST.get('experiment_uuid')
         experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
-        change_experiment_state(experiment,0)
+        change_experiment_state( experiment, 0 )
     
     return redirect('schedule')
 
