@@ -432,6 +432,25 @@ class ExperimentStatusUpdateForm(forms.ModelForm):
         label="Status",
     )
 
+    scheduled_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+            },
+        ),
+        help_text='Select a date',
+    )
+
     class Meta:
         model = Experiment
-        fields = ("state_temp",)
+        fields = ("state_temp", "scheduled_date", "error_message")
+        widgets = {
+            "error_message": forms.Textarea(attrs=
+                               {
+                                    'placeholder': 'Describe the ERROR',
+                                    'class': 'form-control',
+                                    "rows": 6,
+                                    "cols": 60,
+                                }),
+        }

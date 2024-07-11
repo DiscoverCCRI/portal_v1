@@ -6,7 +6,17 @@
         {% if ua and is_creator or ua and is_pm or ua and is_po or admin or operator %}
             <div class="container">
                 <h2>{{ experiment.name }} (in Project: <a href="{% url 'project_detail' project_uuid=experiment.project.uuid %}">{{ experiment.project }})</a></h2>
-                <p style="color: rgb(255, 183, 15); font-style: italic;">This may take 3-5 business days to complete!</p>
+                {% if experiment.state_temp == 0 %}
+                    <p style="color: rgb(255, 255, 0); font-style: italic;">This may take 3-5 business days to complete!</p>
+                {% elif experiment.state_temp == 1 %}
+                    <p style="color: rgb(255, 183, 15); font-style: italic;">{{ experiment_status_temp }}</p>
+                {% elif experiment.state_temp == 2 %}
+                    <p style="color: rgb(0, 254, 38); font-style: italic;">{{ experiment_status_temp }}</p>
+                {% elif experiment.state_temp == 3 %}
+                    <p style="color: rgb(254, 0, 0); font-style: italic;">{{ experiment_status_temp }}</p>
+                {% else %}
+                    <p style="color: rgb(254, 0, 0); font-style: italic;">{{ experiment_status_temp }}</p>
+                {% endif %} 
                 <table class="table table-striped table-bordered my-4">
                     <tr>
                         <td>Description</td>
@@ -127,7 +137,19 @@
                     </tr>
                     <tr>
                         <td>Status</td>
-                        <td>{{ experiment.state_temp }}</td>
+                        <td>
+                            {% if experiment.state_temp == 0 %}
+                                <p style="color: rgb(255, 183, 15); font-style: italic;">{{ experiment_status_temp }}</p>
+                            {% elif experiment.state_temp == 1 %}
+                                <p style="color: rgb(0, 254, 38); font-style: italic;">{{ experiment_status_temp }}</p>
+                            {% elif experiment.state_temp == 2 %}
+                                <p style="color: rgb(0, 254, 38); font-style: italic;">{{ experiment_status_temp }}</p>
+                            {% elif experiment.state_temp == 3 %}
+                                <p style="color: rgb(254, 0, 0); font-style: italic;">{{ experiment_status_temp }}</p>
+                            {% else %}
+                                <p style="color: rgb(254, 0, 0); font-style: italic;">{{ experiment_status_temp }}</p>
+                            {% endif %}
+                        </td>
                         {% if is_creator or is_exp or admin or operator %}
                             <td>
                                 <button class="btn btn-info mr-2"
@@ -138,6 +160,12 @@
                             </td>
                         {% endif %}
                     </tr>
+                    {% if experiment.state_temp == 1 %}
+                        <tr>
+                            <td>Scheduled Date</td>
+                            <td>{{ experiment.scheduled_date }}</td>
+                        </tr>
+                    {% endif %}
                 </table>
                 <button class="btn btn-secondary mr-2">
                     <a href="{% url 'project_detail' project_uuid=experiment.project.uuid %}"
@@ -162,6 +190,11 @@
                             <a href="{% url 'experiment_initiate' experiment_uuid=experiment.uuid %}"
                                class="unlink">Initiate
                             Development</a>
+                        </button>
+                    {% endif %}
+                    {% if experiment.state_temp == 0 %}
+                        <button class="btn btn-info mr-2" style="background-color:#076AE0!important">
+                            <a href="{% url 'experiment_status_update' experiment_uuid=experiment.uuid %}" class="unlink">Update</a>
                         </button>
                     {% endif %}
                 {% endif %}

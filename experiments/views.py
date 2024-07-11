@@ -501,9 +501,55 @@ def experiment_status_update(request, experiment_uuid):
         form = ExperimentStatusUpdateForm(request.POST, instance=experiment)
 
         if form.is_valid():
+            experimenter = (
+                experiment.created_by
+            ) 
             state = form.cleaned_data.get("state_temp")
+            error = form.cleaned_data.get("error_message")
+
+            """ if experiment.state_temp != state:
+                subject = "DISCOVER Experiment Notification: {}".format(experiment.uuid)
+                if state == 3:
+                    email_message = (
+                        "[{}]\n\n".format(subject)
+                        + "Experiment Name: {}\n".format(str(experiment))
+                        + "Project: {}\n\n".format(experiment.project)
+                        + "Experiment's Status is changed from {} to {}\n".format(experiment.state_temp, state)
+                        + "Error message: \n{}\n".format(experiment.error_message)
+                    )
+                elif state == 1:
+                    email_message = (
+                        "[{}]\n\n".format(subject)
+                        + "Experiment Name: {}\n".format(str(experiment))
+                        + "Project: {}\n\n".format(experiment.project)
+                        + "Experiment's Status is changed from {} to {}\n".format(experiment.state_temp, state)
+                        + "Experiment is scheduled to implement in {}\n".format(experiment.scheduled_date)
+                    )
+                else:
+                    email_message = (
+                        "[{}]\n\n".format(subject)
+                        + "Experiment Name: {}\n".format(str(experiment))
+                        + "Project: {}\n\n".format(experiment.project)
+                        + "Experiment's Status is changed from {} to {}\n".format(experiment.state_temp, state)
+                    )
+
+                receivers = [experimenter]
+                logger.warning("send_email:\n" + subject)
+                logger.warning(email_message)
+                logger.warning("receivers = {}\n".format(receivers))
+                portal_mail(
+                    subject=subject,
+                    body_message=email_message,
+                    sender=request.user,
+                    receivers=receivers,
+                    reference_note=None,
+                    reference_url=None,
+                ) """
+
             experiment.state_temp = state
+            experiment.error_message = error
             experiment.save()
+
             return redirect("experiment_detail", experiment_uuid=str(experiment.uuid))
 
     form = ExperimentStatusUpdateForm(instance=experiment)
