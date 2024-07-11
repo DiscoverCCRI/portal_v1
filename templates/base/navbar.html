@@ -47,6 +47,14 @@
                             <a class="nav-link" style="color:black;" href="{% url 'projects' %}">Projects</a>
                         {% endif %}
                     </li>
+
+                    {% if user.is_site_admin %}
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                style="color:black;"
+                                href="{% url 'schedule' %}">Schedule Management</a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" style="color:black;" href="{% url 'resources' %}">Resources</a>
                     </li>

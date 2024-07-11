@@ -39,7 +39,7 @@ def create_new_experiment(request, form, project_id):
     experiment.cloudstorage_link = form.data.getlist("cloudstorage_link")[0]
     experiment.execution_duration = form.data.getlist("execution_duration")[0]
     experiment.execution_condition = form.data.getlist("execution_condition")[0]
-    experiment.state_temp = "Pending"
+    experiment.state_temp = 0
 
     experiment.dependencies = parse_string(form.data.getlist("dependencies")[0])
 
@@ -48,6 +48,8 @@ def create_new_experiment(request, form, project_id):
     except ValueError as e:
         print(e)
     experiment.profile = None
+    #experiment.scheduled_by = None
+    experiment.scheduled_date = None
     experiment.created_by = request.user
     experiment.created_date = timezone.now()
     experiment.save()

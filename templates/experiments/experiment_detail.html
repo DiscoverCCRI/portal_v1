@@ -97,6 +97,10 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Scheduled Date</td>
+                        <td>{{experiment.scheduled_date}}</td>
+                    </tr>
+                    <tr>
                         <td>Mode</td>
                         <td>{{ experiment.stage }}</td>
                     </tr>
@@ -123,7 +127,7 @@
                     </tr>
                     <tr>
                         <td>Status</td>
-                        <td>{{ experiment_status_temp }}</td>
+                        <td>{{ experiment.state_temp }}</td>
                         {% if is_creator or is_exp or admin or operator %}
                             <td>
                                 <button class="btn btn-info mr-2"

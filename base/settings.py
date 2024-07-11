@@ -96,6 +96,7 @@ TEMPLATES = [
             # os.path.join(BASE_DIR, 'templates/cicd'),
             os.path.join(BASE_DIR, "templates/manage"),
             os.path.join(BASE_DIR, "templates/usercomms"),
+            os.path.join(BASE_DIR, "templates/schedule"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
