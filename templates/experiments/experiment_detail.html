@@ -191,11 +191,6 @@
                                class="unlink">Initiate
                             Development</a>
                         </button> -->
-                        <button class="btn btn-info mr-2"
-                            style="background-color:#076AE0!important">
-                            <a href="{% url 'experiment_status_update' experiment_uuid=experiment.uuid %}"
-                            class="unlink">Update</a>
-                        </button>
                     {% endif %}
                     {% if experiment.state_temp == 0 %}
                         <button class="btn btn-info mr-2" style="background-color:#076AE0!important">
@@ -221,11 +216,16 @@
                     {% endif %}
                 {% endif %}
                 {% if operator %}
-                    <button class="btn btn-success mr-2"
+                    <!-- <button class="btn btn-success mr-2"
                             style="background-color:#076AE0!important">
                         <a href="{% url 'experiment_update_by_ops' experiment_uuid=experiment.uuid %}"
                            class="unlink">Ops
                         actions</a>
+                    </button> -->
+                    <button class="btn btn-info mr-2"
+                            style="background-color:#076AE0!important">
+                            <a href="{% url 'experiment_status_update' experiment_uuid=experiment.uuid %}"
+                            class="unlink">Update</a>
                     </button>
                 {% endif %}
             </div>
