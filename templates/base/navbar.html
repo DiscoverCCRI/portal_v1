@@ -48,7 +48,7 @@
                         {% endif %}
                     </li>
 
-                    {% if user.is_site_admin %}
+                    {% if users.is_operator or user.is_site_admin %}
                         <li class="nav-item">
                             <a class="nav-link"
                                 style="color:black;"
