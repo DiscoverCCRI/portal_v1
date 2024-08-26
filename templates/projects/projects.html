@@ -6,19 +6,21 @@
         {% if ua %}
             <div class="container">
                 <div class="d-flex flex-row align-items-center justify-content-between">
-                    <h2 style="display: inline-block; position: absolute;">Projects</h2>
-                    <br>
-                    <br>
-                    <p style= "padding-top: 9rem;">
+                    <h2>Projects</h2>
+                </div>
+                <div class="d-flex flex-row align-items-center justify-content-between">
+                    <div class="p-2">   
                         Welcome to the DiscoverCCRI Project Portal page. This page reveals what projects you currently have access to as well as all ongoing public Discover projects. If you would like to participate in a public project please click the “Join” button under the Public Project section.
-                    </p>
-                    {% if user.is_project_manager or user.is_site_admin %}
-                        <button class="btn btn-success mr-2"
-                                style="background-color:#076AE0!important;
-                                       margin-left: 3rem">
-                            <a href="{% url 'project_request' %}" class="unlink">Request New Project</a>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="p-2">
+                        {% if user.is_project_manager or user.is_site_admin %}
+                        <button class="btn btn-primary text-nowrap w-auto">
+                            <i class="bi bi-plus"></i>
+                            <a href="{% url 'project_request' %}" class="unlink">Add New Project</a>
                         </button>
-                    {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
                 <h3 style="padding-top: 3rem;">My Projects</h3>
                 <table class="table table-striped table-bordered mt-4">
@@ -104,13 +106,12 @@
                                     <td>{{ project.project_creator }}</td>
                                     <td>{{ project.created_date }}</td>
                                     <td>{{ project.modified_date }}</td>
-                                    {#                                    <td>#}
-                                    {#                                        <!-- TODO: add request to join code -->#}
-                                    {#                                        <button class="btn btn-info mr-2">#}
-                                    {#                                            <a href="{% url 'project_join' project_uuid=project.uuid %}"
-                                               class="unlink">Join</a>#}
-                                    {#                                        </button>#}
-                                    {#                                    </td>#}
+                                    <!-- <td>
+                                        <button class="btn btn-info mr-2">
+                                            <a href="{% url 'project_join' project_uuid=project.uuid %}"
+                                               class="unlink">Join</a>
+                                        </button>
+                                    </td> -->
                                 </tr>
                             {% endif %}
                         {% endfor %}
