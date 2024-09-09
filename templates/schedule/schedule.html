@@ -3,108 +3,204 @@
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{% static 'css/schedule.css' %}">
-    </head>
-    <body>
-        <div class="container">
-            <table border="1">
-                <tr>
-                    <th colspan="2">Not Yet Scheduled</th>
-                </tr>
-                {% for experiment in experiments.all %}
-                    {% if experiment.state_temp == experiment.PENDING_STATUS %}
-                        <tr>
-                            <td colspan="2">
-                                <form method="post" action="{% url 'schedule_experiment' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                        <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{ experiment.name }}</a>
-                                        <p class="text-above-field">Schedule</p>
-                                        {{ form.scheduled_time }}
-                                        <button type="submit" class="button">Schedule</button>
-                                </form>
-                                <form method="post" action="{% url 'move_to_error' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                    <button type="submit" class="button">Move To Error</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            
-            </table>
-
-            <table border="1">
-                <tr>
-                    <th colspan="3">Scheduled</th>
-                </tr>
-                
-                {% for experiment in experiments.all %}
-                <!-- If experiment.state == scheduled -->
-                    {% if experiment.state_temp == experiment.SCHEDULED_STATUS %}
-                        <tr>
-                            <td colspan="3">
-                                <form method="post" action="{% url 'schedule_experiment' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                    <a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a>
-                                    <p class="text-above-field">Reschedule</p>
-                                    {{ form.scheduled_time }}
-                                    <button type="submit" class="button">Reschedule</button>
-                                    <div class="scheduled-info">
-                                        <p><span>Scheduled Date:</span>{{experiment.scheduled_date}}</p>
-                                    </div>
-                                </form>
-
-                                <form method="post" action="{% url 'move_to_complete' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                    <button type="submit" class="button">Move To Complete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </table>
-
-            <table border="1">
-                <tr>
-                    <th colspan="2">Completed</th>
-                </tr>
-                {% for experiment in experiments.all %}
-                    {% if experiment.state_temp == experiment.COMPLETED_STATUS %}
-                        <tr>
-                            <td colspan="2"><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a></td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </table>
-
-            <table border="1">
-                <tr>
-                    <th colspan="2">Error</th>
-                </tr>
-                {% for experiment in experiments.all %}
-                <!-- If experiment.state == error -->
-                    {% if experiment.state_temp == experiment.ERROR_STATUS %}
-                        <tr>
-                            <td colspan="2"><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}">{{experiment.name}}</a> 
-                                <form method="post" action="{% url 'move_to_not_scheduled' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                    <button type="submit" class="button">Move To Pending</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </table>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/schedule.css' %}">
+    <title>Experiments Schedule Management</title>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex flex-row align-items-center justify-content-between">
+            <h2 style="display: inline-block; position: absolute;">Experiments Schedule Management</h2>
+            <br>
+            <br>
+            <p style= "padding-top: 9rem;">
+                Welcome to Schedule Management! This is the place to manage the status of the experiments set to be run at your site. As you look over, schedule, and complete experiments, their status should be updated here.
+            </p>
         </div>
 
-    </body>
+
+        <div class="site-filter">
+            <h1>
+                Filter By Your Site
+            </h1>
+            <form method="post" action="{% url 'site_filter' %}">
+                {% csrf_token %}
+                {{ form.location }}
+                <button type="submit" class="button">Filter</button>
+            </form>
+        </div>
+
+        <!-- Pending Section -->
+        <div class="schedule-section">
+            <h3 style="color: rgb(60, 131, 245); font-style: italic;"><b>Pending</b></h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Site</th>
+                            <th>Status</th>
+                            <th>Schedule</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for experiment in experiments.all %}
+                            {% if experiment.state_temp == experiment.PENDING_STATUS %}
+                                <tr>
+                                    <td><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}" class="experiment-link" target="_blank">{{ experiment.name }}</a></td>
+                                    <td>
+                                        {% for resource in experiment.resources.all %}
+                                            <p>{{ resource.location }}</p>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        <p style="color: rgb(60, 131, 245); font-style: italic;">Pending</p>
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'schedule_experiment' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
+                                            {{ form.scheduled_time }}
+                                            <button type="submit" class="button">Schedule</button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'move_to_error' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
+                                            <button type="submit" class="button">Move To Error</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Scheduled Section -->
+        <div class="schedule-section">
+            <h3 style="color: rgb(255, 183, 15); font-style: italic;"><b>Scheduled</b></h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Site</th>
+                            <th>Scheduled Date</th>
+                            <th>Status</th>
+                            <th>Reschedule</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for experiment in experiments.all %}
+                            {% if experiment.state_temp == experiment.SCHEDULED_STATUS %}
+                                <tr>
+                                    <td><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}" class="experiment-link">{{ experiment.name }}</a></td>
+                                    <td>
+                                        {% for resource in experiment.resources.all %}
+                                            <p>{{ resource.location }}</p>
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ experiment.scheduled_date }}</td>
+                                    <td>
+                                        <p style="color: rgb(255, 183, 15); font-style: italic;">Scheduled</p>
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'schedule_experiment' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
+                                            {{ form.scheduled_time }}
+                                            <button type="submit" class="button">Reschedule</button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'move_to_complete' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
+                                            <button type="submit" class="button">Move To Complete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Completed Section -->
+        <div class="schedule-section">
+            <h3 style="color: rgb(0, 254, 38); font-style: italic;"><b>Completed</b></h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for experiment in experiments.all %}
+                            {% if experiment.state_temp == experiment.COMPLETED_STATUS %}
+                                <tr>
+                                    <td><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}" class="experiment-link">{{ experiment.name }}</a></td>
+                                    <td><p style="color: rgb(0, 254, 38); font-style: italic;">Completed</p></td>
+                                    <td></td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Error Section -->
+        <div class="schedule-section">
+            <h3 style="color: rgb(254, 0, 0); font-style: italic;"><b>Error</b></h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Site</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for experiment in experiments.all %}
+                            {% if experiment.state_temp == experiment.ERROR_STATUS %}
+                                <tr>
+                                    <td><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}" class="experiment-link">{{ experiment.name }}</a></td>
+                                    <td>
+                                        {% for resource in experiment.resources.all %}
+                                            <p>{{ resource.location }}</p>
+                                        {% endfor %}
+                                    </td>
+                                    <td><p style="color: rgb(254, 0, 0); font-style: italic;">Error</p>
+                                    <td>
+                                        <form method="post" action="{% url 'move_to_not_scheduled' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
+                                            <button type="submit" class="button">Move To Pending</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
+
 {% endblock %}

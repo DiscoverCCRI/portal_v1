@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import DateTimeForm
+from .forms import ScheduleForm
 from experiments.experiments import get_experiment_list
 from django.shortcuts import get_object_or_404
 from uuid import UUID
@@ -8,11 +8,20 @@ from .schedule import update_scheduled_time, change_experiment_state
 
 def schedule(request):
     experiments = get_experiment_list(request)
-    form = DateTimeForm()  # Initialize form
+    form = ScheduleForm()  # Initialize form
     return render(
         request,
         "schedule.html", 
         {"experiments": experiments, "form": form})  # Pass form to template
+
+def site_filter(request):
+    if request.method == "POST":
+        form = ScheduleForm(request.POST) 
+        location = request.POST.get('location')
+        site_experiments = Experiment.objects.filter(resources__location=location)
+    else:
+        form = ScheduleForm()  # If not POST, create a blank form
+    return render(request,"schedule.html", {"experiments": site_experiments, "form": form})
 
 def move_to_error(request):
     if request.method == 'POST':
@@ -40,7 +49,7 @@ def move_to_not_scheduled(request):
 
 def schedule_experiment(request):
     if request.method == "POST":
-        form = DateTimeForm(request.POST)  # Bind form with POST data
+        form = ScheduleForm(request.POST)  # Bind form with POST data
         if form.is_valid():
             scheduled_date = form.data['scheduled_time']
             experiment_uuid = form.data['experiment_uuid']
@@ -50,6 +59,6 @@ def schedule_experiment(request):
             # Redirect to prevent re-submission
             return redirect('schedule')
     else:
-        form = DateTimeForm()  # If not POST, create a blank form
+        form = ScheduleForm()  # If not POST, create a blank form
 
     return render(request, "schedule.html", {"form": form})  # Pass form to template

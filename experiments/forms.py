@@ -8,6 +8,7 @@ from profiles.models import Profile
 from projects.models import Project
 from reservations.models import Reservation
 from resources.models import ResourceTypeChoice
+from resources.models import Resource
 
 from .models import Experiment, StageChoice, UserStageChoice
 
@@ -40,24 +41,7 @@ class ExperimentCreateForm(forms.ModelForm):
         )
         """
 
-    capabilities_list = [
-        ("gimbal", "Gimbal and RGB/IR Camera"),
-        ("lidar", "LIDAR"),
-        ("jetson", "Jetson Nano"),
-        ("sdr", "Software Defined Radio"),
-        ("5g", "5G module(s)"),
-        ("camera", "Camera"),
-        ("gps", "GPS"),
-        ("t12", "TEROS-12"),
-        ("t21", "TEROS-21"),
-        ("tts", "Thermistor Temperature Sensor"),
-        ("tsl259", "TSL25911FN"),
-        ("bme", "BME280"),
-        ("icm", "ICM20948"),
-        ("ltr", "LTR390-UV-1"),
-        ("sgp", "SGP40"),
-        ("cws", "Compact Weather Sensor"),
-    ]
+    resource_choices = ((resource.uuid,resource.name + f" ({resource.resourceType})") for resource in Resource.objects.all())
 
     dependencies = forms.CharField(
         widget=forms.Textarea(
@@ -72,23 +56,11 @@ class ExperimentCreateForm(forms.ModelForm):
         label="Dependencies",
     )
 
-    resourceType = forms.ChoiceField(
-        choices=ResourceTypeChoice.choices(),
-        widget=forms.Select(),
-        required=False,
-        label="Resource Type",
-    )
-
-    capability_filter = forms.MultipleChoiceField(
-        required=False,
-        widget=forms.CheckboxSelectMultiple(),
-        choices=capabilities_list,
-    )
-
-    resources = forms.CharField(
-        widget=forms.Textarea(),
-        required=False,
-        label="",
+    resources = forms.ChoiceField(
+        widget=forms.RadioSelect,
+        choices=resource_choices,
+        required=True,
+        label="Resource",
     )
 
     class Meta:
