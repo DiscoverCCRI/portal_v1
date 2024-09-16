@@ -15,21 +15,31 @@
             <h2 style="display: inline-block; position: absolute;">Experiments Schedule Management</h2>
             <br>
             <br>
-            <p style= "padding-top: 9rem;">
-                Welcome to Schedule Management! This is the place to manage the status of the experiments set to be run at your site. As you look over, schedule, and complete experiments, their status should be updated here.
+            <p style="padding-top: 9rem;">
+                Welcome to Schedule Management! This is the place to manage the status of the experiments set to be run at your site. As you look over, schedule, and complete experiments, their status should be updated here. Please filter by your site to manage the experiments set to run there. 
             </p>
         </div>
 
+        <div class="filter-container">
+            <div class="site-filter">
+                <h2>
+                    Filter By Your Site
+                </h2>
+                <form method="post" action="{% url 'site_filter' %}">
+                    {% csrf_token %}
+                    {{ form.location }}
+                    <button type="submit">Filter</button>
+                </form>
+            </div>
 
-        <div class="site-filter">
-            <h1>
-                Filter By Your Site
-            </h1>
-            <form method="post" action="{% url 'site_filter' %}">
-                {% csrf_token %}
-                {{ form.location }}
-                <button type="submit" class="button">Filter</button>
-            </form>
+            <div class="exp-search">
+                <h2>Search For An Experiment</h2>
+                <form method="post" action="{% url 'search_experiments' %}">
+                    {% csrf_token %}
+                    {{ form.experiment_name }}
+                    <button type="submit">Search</button>
+                </form>
+            </div>
         </div>
 
         <!-- Pending Section -->
@@ -152,7 +162,13 @@
                                 <tr>
                                     <td><a href="{% url 'experiment_detail' experiment_uuid=experiment.uuid %}" class="experiment-link">{{ experiment.name }}</a></td>
                                     <td><p style="color: rgb(0, 254, 38); font-style: italic;">Completed</p></td>
-                                    <td></td>
+                                    <td>
+                                        <form method="post" action="{% url 'move_to_not_scheduled' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
+                                            <button type="submit" class="button">Move To Pending</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             {% endif %}
                         {% endfor %}

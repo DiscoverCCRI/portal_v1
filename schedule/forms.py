@@ -12,3 +12,9 @@ class ScheduleForm(forms.Form):
         required=False,
         label="Site",
     )
+
+    experiment_name = forms.CharField(
+        widget=forms.TextInput(attrs={"size": 60}),
+        required=True,
+        label="Search",
+    )

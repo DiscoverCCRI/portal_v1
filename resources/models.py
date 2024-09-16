@@ -43,7 +43,6 @@ class ResourceLocationChoice(Enum):  # A subclass of Enum
     NAVAJO_TECH = "Navajo Tech"
     CLEMSON = "Clemson"
     # RENCIEMULAB = 'RENCIEmulab'   # need correspondent entry in .env for the urn
-    OTHERS = "Others"
 
     @classmethod
     def choices(cls):

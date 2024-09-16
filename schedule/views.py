@@ -23,6 +23,15 @@ def site_filter(request):
         form = ScheduleForm()  # If not POST, create a blank form
     return render(request,"schedule.html", {"experiments": site_experiments, "form": form})
 
+def search_experiments(request):
+    if request.method == "POST":
+        form = ScheduleForm(request.POST) 
+        name = request.POST.get('experiment_name')
+        experiments = Experiment.objects.filter(name=name)
+    else:
+        form = ScheduleForm()  # If not POST, create a blank form
+    return render(request,"schedule.html", {"experiments": experiments, "form": form})
+
 def move_to_error(request):
     if request.method == 'POST':
         experiment_uuid = request.POST.get('experiment_uuid')
