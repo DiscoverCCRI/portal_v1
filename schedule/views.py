@@ -1,36 +1,69 @@
 from django.shortcuts import render, redirect
-from .forms import ScheduleForm
+from .forms import ScheduleForm, LocationFilterForm, ExperimentSearchForm
 from experiments.experiments import get_experiment_list
 from django.shortcuts import get_object_or_404
 from uuid import UUID
 from experiments.models import Experiment
 from .schedule import update_scheduled_time, change_experiment_state
 
+
 def schedule(request):
     experiments = get_experiment_list(request)
-    form = ScheduleForm()  # Initialize form
-    return render(
-        request,
-        "schedule.html", 
-        {"experiments": experiments, "form": form})  # Pass form to template
+    schedule_form = ScheduleForm()
+    location_form = LocationFilterForm()
+    search_form = ExperimentSearchForm()
+    
+    return render(request, "schedule.html", {
+        "experiments": experiments,
+        "schedule_form": schedule_form,
+        "location_form": location_form,
+        "search_form": search_form
+    })
+
+def schedule_experiment(request):
+    if request.method == "POST":
+        form = ScheduleForm(request.POST)
+        if form.is_valid():
+            scheduled_date = form.cleaned_data['scheduled_time']
+            experiment_uuid = form.cleaned_data['experiment_uuid']
+            experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
+            update_scheduled_time(experiment, scheduled_date)
+            change_experiment_state(experiment, 1)
+            return redirect('schedule')
+    return redirect('schedule')
 
 def site_filter(request):
-    if request.method == "POST":
-        form = ScheduleForm(request.POST) 
-        location = request.POST.get('location')
-        site_experiments = Experiment.objects.filter(resources__location=location)
-    else:
-        form = ScheduleForm()  # If not POST, create a blank form
-    return render(request,"schedule.html", {"experiments": site_experiments, "form": form})
+    experiments = Experiment.objects.all()
+    location_form = LocationFilterForm(request.POST or None)
+    search_form = ExperimentSearchForm()
+    
+    if location_form.is_valid():
+        location = location_form.cleaned_data['location']
+        experiments = experiments.filter(resources__location=location)
+
+    return render(request, "schedule.html", {
+        "experiments": experiments,
+        "schedule_form": ScheduleForm(),
+        "location_form": location_form,
+        "search_form": search_form
+    })
 
 def search_experiments(request):
-    if request.method == "POST":
-        form = ScheduleForm(request.POST) 
-        name = request.POST.get('experiment_name')
-        experiments = Experiment.objects.filter(name=name)
-    else:
-        form = ScheduleForm()  # If not POST, create a blank form
-    return render(request,"schedule.html", {"experiments": experiments, "form": form})
+    experiments = Experiment.objects.all()
+    location_form = LocationFilterForm()
+    search_form = ExperimentSearchForm(request.POST or None)
+    
+    if search_form.is_valid():
+        name = search_form.cleaned_data['experiment_name']
+        experiments = experiments.filter(name__icontains=name)
+
+    return render(request, "schedule.html", {
+        "experiments": experiments,
+        "schedule_form": ScheduleForm(),
+        "location_form": location_form,
+        "search_form": search_form
+    })
+
 
 def move_to_error(request):
     if request.method == 'POST':
@@ -55,19 +88,3 @@ def move_to_not_scheduled(request):
         change_experiment_state( experiment, 0 )
     
     return redirect('schedule')
-
-def schedule_experiment(request):
-    if request.method == "POST":
-        form = ScheduleForm(request.POST)  # Bind form with POST data
-        if form.is_valid():
-            scheduled_date = form.data['scheduled_time']
-            experiment_uuid = form.data['experiment_uuid']
-            experiment = get_object_or_404(Experiment, 
-                                                uuid=UUID(str(experiment_uuid)))
-            update_scheduled_time(experiment,scheduled_date)
-            # Redirect to prevent re-submission
-            return redirect('schedule')
-    else:
-        form = ScheduleForm()  # If not POST, create a blank form
-
-    return render(request, "schedule.html", {"form": form})  # Pass form to template

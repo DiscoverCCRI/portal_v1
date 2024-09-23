@@ -7,7 +7,7 @@
             <div class="container">
                 <h2>{{ experiment.name }} (in Project: <a href="{% url 'project_detail' project_uuid=experiment.project.uuid %}">{{ experiment.project }})</a></h2>
                 {% if experiment.state_temp == 0 %}
-                    <p style="color: rgb(255, 255, 0); font-style: italic;">This may take 3-5 business days to complete!</p>
+                    <p style="color: rgb(0, 183, 255); font-style: italic;">This may take 3-5 business days to complete!</p>
                 {% elif experiment.state_temp == 1 %}
                     <p style="color: rgb(255, 183, 15); font-style: italic;">Experiment is scheduled.</p>
                 {% elif experiment.state_temp == 2 %}
