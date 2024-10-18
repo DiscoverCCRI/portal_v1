@@ -17,26 +17,24 @@
                 <form method="post" action="{% url 'site_filter' %}">
                     {% csrf_token %}
                     <div>
-                        {{ location_form.location }}  <!-- Use location form -->
+                        {{ location_form.location }} 
                     </div>
                     <button style="background-color: #007bff; color: white; margin-top: 10px;" type="submit">Filter</button>
                 </form>
             </div>
         
-            <div class="exp-search" style="flex: 1; text-align: center; margin-left: 10px;">  <!-- Add margin-left to maintain spacing -->
+            <div class="exp-search" style="flex: 1; text-align: center; margin-left: 10px;">
                 <h2>Search For An Experiment</h2>
                 <form method="post" action="{% url 'search_experiments' %}">
                     {% csrf_token %}
                     <div>
-                        {{ search_form.experiment_name }}  <!-- Use search form -->
+                        {{ search_form.experiment_name }}
                     </div>
                     <button style="background-color: #007bff; color: white; margin-top: 10px;" type="submit">Search</button>
                 </form>
             </div>
         </div>
         
-
-        <!-- Pending Section -->
         <div class="schedule-section">
             <h3 style="color: rgb(60, 131, 245); font-style: italic; font-weight: bold;"><b>Pending</b></h3>
             <table class="table table-striped table-bordered mt-4">
@@ -68,7 +66,7 @@
                                     <form method="post" action="{% url 'schedule_experiment' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                        {{ schedule_form.scheduled_time }}  <!-- Use schedule form -->
+                                        {{ schedule_form.scheduled_time }} 
                                         <button style="background-color: #007bff; color: white;" type="submit" class="button">Schedule</button>
                                     </form>
                                 </td>
@@ -86,7 +84,6 @@
             </table>
         </div>
 
-        <!-- Scheduled Section -->
         <div class="schedule-section">
             <h3 style="color: rgb(255, 183, 15); font-style: italic; font-weight: bold;"><b>Scheduled</b></h3>
             <table class="table table-striped table-bordered mt-4">
@@ -118,7 +115,7 @@
                                     <form method="post" action="{% url 'schedule_experiment' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                        {{ schedule_form.scheduled_time }}  <!-- Use schedule form -->
+                                        {{ schedule_form.scheduled_time }}
                                         <button style="background-color: #007bff; color: white;" type="submit" class="button">Re-Schedule</button>
                                     </form>
                                 </td>
@@ -136,7 +133,6 @@
             </table>
         </div>
 
-        <!-- Completed Section -->
         <div class="schedule-section">
             <h3 style="color: #005d0e; font-style: italic; font-weight: bold;"><b>Completed</b></h3>
             <table class="table table-striped table-bordered mt-4">
@@ -167,7 +163,6 @@
             </table>
         </div>
 
-        <!-- Error Section -->
         <div class="schedule-section">
             <h3 style="color: rgb(254, 0, 0); font-style: italic; font-weight: bold;"><b>Error</b></h3>
             <table class="table table-striped table-bordered mt-4">

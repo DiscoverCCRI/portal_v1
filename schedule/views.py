@@ -6,7 +6,6 @@ from uuid import UUID
 from experiments.models import Experiment
 from .schedule import update_scheduled_time, change_experiment_state
 
-
 def schedule(request):
     experiments = get_experiment_list(request)
     schedule_form = ScheduleForm()
@@ -64,27 +63,20 @@ def search_experiments(request):
         "search_form": search_form
     })
 
+def change_exp_state(request, state):
+    if request.method == 'POST':
+        experiment_uuid = request.POST.get('experiment_uuid')
+        experiment = get_object_or_404(Experiment, uuid=UUID(str(
+                                                              experiment_uuid)))
+        change_experiment_state( experiment, state )
+    
+    return redirect('schedule')   
 
 def move_to_error(request):
-    if request.method == 'POST':
-        experiment_uuid = request.POST.get('experiment_uuid')
-        experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
-        change_experiment_state( experiment, 3 )
-    
-    return redirect('schedule')
+    return change_exp_state(request, 3)
 
 def move_to_complete(request):
-    if request.method == 'POST':
-        experiment_uuid = request.POST.get('experiment_uuid')
-        experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
-        change_experiment_state( experiment, 2 )
-    
-    return redirect('schedule')
+    return change_exp_state(request, 2)
 
 def move_to_not_scheduled(request):
-    if request.method == 'POST':
-        experiment_uuid = request.POST.get('experiment_uuid')
-        experiment = get_object_or_404(Experiment, uuid=UUID(str(experiment_uuid)))
-        change_experiment_state( experiment, 0 )
-    
-    return redirect('schedule')
+    return change_exp_state(request, 0)
