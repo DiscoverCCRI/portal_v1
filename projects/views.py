@@ -778,3 +778,16 @@ def project_requests(request):
         "project_requests.html",
         {"ou_reqs": open_u_reqs, "cu_reqs": closed_u_reqs},
     )
+
+def completed_project_requests(request):
+    closed_u_reqs = ProjectRequest.objects.filter(is_completed=True).order_by(
+        "-created_date"
+    )
+
+    return render(
+        request,
+        "completed_project_requests.html",
+        {
+            "cu_reqs": closed_u_reqs
+        }
+    )

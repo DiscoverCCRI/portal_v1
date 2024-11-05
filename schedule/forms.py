@@ -14,14 +14,18 @@ class ScheduleForm(forms.Form):
 class LocationFilterForm(forms.Form):
     location = forms.ChoiceField(
         choices=ResourceLocationChoice.choices(),
-        widget=forms.Select(),
+        widget=forms.Select(attrs={'class': 'form-select w-70'}),
         required=False,
         label="Site",
     )
 
 class ExperimentSearchForm(forms.Form):
     experiment_name = forms.CharField(
-        widget=forms.TextInput(attrs={"size": 60}),
+        widget=forms.TextInput(
+            attrs={
+                "size": 50,
+                "placeholder": "Searching..."
+        }),
         required=False,
         label="Search",
     )

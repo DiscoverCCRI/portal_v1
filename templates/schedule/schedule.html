@@ -18,8 +18,10 @@
                     {% csrf_token %}
                     <div>
                         {{ location_form.location }}  <!-- Use location form -->
+                        <button class="btn btn-primary" style="margin-left: 10px;" type="submit">
+                            <i class="bi bi-filter"></i>
+                        </button>
                     </div>
-                    <button style="background-color: #007bff; color: white; margin-top: 10px;" type="submit">Filter</button>
                 </form>
             </div>
         
@@ -27,10 +29,12 @@
                 <h2>Search For An Experiment</h2>
                 <form method="post" action="{% url 'search_experiments' %}">
                     {% csrf_token %}
-                    <div>
+                    <div class="input-group">
                         {{ search_form.experiment_name }}  <!-- Use search form -->
+                        <button class="btn btn-primary" style="margin-left: 10px;" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
                     </div>
-                    <button style="background-color: #007bff; color: white; margin-top: 10px;" type="submit">Search</button>
                 </form>
             </div>
         </div>
@@ -69,14 +73,14 @@
                                         {% csrf_token %}
                                         <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
                                         {{ schedule_form.scheduled_time }}  <!-- Use schedule form -->
-                                        <button style="background-color: #007bff; color: white;" type="submit" class="button">Schedule</button>
+                                        <button class="btn btn-primary" type="submit" class="button">Schedule</button>
                                     </form>
                                 </td>
                                 <td>
                                     <form method="post" action="{% url 'move_to_error' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                        <button style="background-color: #007bff; color: white;" type="submit" class="button">Move To Error</button>
+                                        <button class="btn btn-danger" type="submit">Move To Error</button>
                                     </form>
                                 </td>
                             </tr>
@@ -119,14 +123,14 @@
                                         {% csrf_token %}
                                         <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
                                         {{ schedule_form.scheduled_time }}  <!-- Use schedule form -->
-                                        <button style="background-color: #007bff; color: white;" type="submit" class="button">Re-Schedule</button>
+                                        <button class="btn btn-primary" type="submit" class="button">Re-Schedule</button>
                                     </form>
                                 </td>
                                 <td>
                                     <form method="post" action="{% url 'move_to_complete' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                        <button style="background-color: #007bff; color: white;" type="submit" class="button">Move To Complete</button>
+                                        <button class="btn btn-success" type="submit" class="button">Move To Complete</button>
                                     </form>
                                 </td>
                             </tr>
@@ -157,7 +161,7 @@
                                     <form method="post" action="{% url 'move_to_not_scheduled' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                        <button style="background-color: #007bff; color: white;" type="submit" class="button">Move To Pending</button>
+                                        <button class="btn btn-primary" type="submit" class="button">Move To Pending</button>
                                     </form>
                                 </td>
                             </tr>
@@ -194,7 +198,7 @@
                                     <form method="post" action="{% url 'move_to_not_scheduled' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="experiment_uuid" value="{{ experiment.uuid }}">
-                                        <button style="background-color: #007bff; color: white;" type="submit" class="button">Move To Pending</button>
+                                        <button class="btn btn-primary" type="submit" class="button">Move To Pending</button>
                                     </form>
                                 </td>
                             </tr>
