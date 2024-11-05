@@ -11,17 +11,21 @@
         </head>
         <div class="container">
             <div class="d-flex flex-row align-items-center justify-content-between">
-                <h2 style="position:absolute;">Resources</h2>
-                <p style="padding-top: 8rem;">
+                <h2>Resources</h2>
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div class="p-2">
                     Welcome to the DiscoverCCRI Resources page. This page reveals Discover’s current resources. We plan to add more in the future!
-                </p>
-                {% if user.is_resource_manager or user.is_superuser %}
-                    <button class="btn btn-success mr-2"
-                            style="background-color:#076AE0!important;
-                                   margin-left: 2rem">
-                        <a href="{% url 'resource_create' %}" class="unlink">Create New Resource</a>
-                    </button>
-                {% endif %}
+                </div>
+                <div class="w-100"></div>
+                <div class="p-2">
+                    {% if user.is_resource_manager or user.is_superuser %}
+                        <button class="btn btn-primary text-nowrap w-auto">
+                            <i class="bi bi-plus"></i>
+                            <a href="{% url 'project_request' %}" class="unlink">Add New Resource</a>
+                        </button>
+                    {% endif %}
+                </div>
             </div>
             <!--
             {% if user.is_operator or user.is_resource_manager or user.is_site_admin %}

@@ -15,10 +15,10 @@
                     <div class="w-100"></div>
                     <div class="p-2">
                         {% if user.is_project_manager or user.is_site_admin %}
-                        <button class="btn btn-primary text-nowrap w-auto">
-                            <i class="bi bi-plus"></i>
-                            <a href="{% url 'project_request' %}" class="unlink">Add New Project</a>
-                        </button>
+                            <button class="btn btn-primary text-nowrap w-auto">
+                                <i class="bi bi-plus"></i>
+                                <a href="{% url 'project_request' %}" class="unlink">Add New Project</a>
+                            </button>
                         {% endif %}
                     </div>
                 </div>

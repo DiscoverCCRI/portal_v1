@@ -4,55 +4,49 @@
 {% block content %}
     {% if user.is_authenticated and user.is_project_manager or user.is_authenticated and user.is_site_admin %}
         <div class="container">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <h2>Project Requests</h2>
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="fw-bold">Project Requests</h2>
+                <button class="btn btn-primary">
+                    <i class="bi bi-archive-fill me-2"></i>
+                    <a href="{% url 'completed_project_requests' %}" class="unlink">All Closed Requests</a>
+                </button>
             </div>
-            <h3>Open Requests</h3>
-            <form action="#" method="post">
-                {% csrf_token %}
-                <table class="table table-striped table-bordered mt-4">
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Public / Private</th>
-                        <th>Approve / Deny</th>
-                    </tr>
-                    {% for pr in ou_reqs %}
-                        <tr>
-                            <td>{{ pr.name }}</td>
-                            <td>{{ pr.description }}</td>
-                            <td>{{ pr.is_public }}</td>
-                            <td style="text-align: center">
-                                <input type="submit"
-                                       class="btn btn-success mr-2"
-                                       name="{{ pr.name }}_{{ pr.id }}"
-                                       value='Approve'>
-                                <input type="submit"
-                                       class="btn btn-danger mr-2"
-                                       name="{{ pr.name }}_{{ pr.id }}"
-                                       value='Deny'>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </form>
-            <h3>Completed Requests</h3>
-            <table class="table table-striped table-bordered mt-4">
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Public or Private</th>
-                    <th>Approved?</th>
-                </tr>
-                {% for pr in cu_reqs %}
-                    <tr>
-                        <td>{{ pr.name }}</td>
-                        <td>{{ pr.description }}</td>
-                        <td>{{ pr.is_public }}</td>
-                        <td>{{ pr.is_approved }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
+            {% if ou_reqs %}
+                <form action="#" method="post">
+                        {% csrf_token %}
+                        <table class="table table-striped table-bordered mt-4">
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Public / Private</th>
+                                <th>Approve / Deny</th>
+                            </tr>
+                            {% for pr in ou_reqs %}
+                                <tr>
+                                    <td>{{ pr.name }}</td>
+                                    <td>{{ pr.description }}</td>
+                                    <td>{{ pr.is_public }}</td>
+                                    <td style="text-align: center">
+                                        <input type="submit"
+                                            class="btn btn-success mr-2"
+                                            name="{{ pr.name }}_{{ pr.id }}"
+                                            value='Approve'>
+                                        <input type="submit"
+                                            class="btn btn-danger mr-2"
+                                            name="{{ pr.name }}_{{ pr.id }}"
+                                            value='Deny'>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                </form>
+            {% else %}
+                <div class="container text-center my-5">
+                    <i class="bi bi-inbox-fill" style="font-size: 3rem; color: #6c757d;"></i>
+                    <h4 class="mt-3">No Project Requests</h4>
+                    <p class="text-muted">There are currently no project requests. Check back later or create a new request.</p>
+                </div>
+            {% endif %}
         </div>
     {% else %}
         <div class="container">
