@@ -24,13 +24,15 @@
                 </div>
                 <h3 style="padding-top: 3rem;">My Projects</h3>
                 <table class="table table-striped table-bordered mt-4">
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Created By</th>
-                        <th>Created Date</th>
-                        <th>Last Modified</th>
-                    </tr>
+                    <thread class="thread-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Created By</th>
+                            <th>Created Date</th>
+                            <th>Last Modified</th>
+                        </tr>
+                    </thread>
                     {% for project in my_projects %}
                         <tr>
                             <td>
@@ -45,13 +47,15 @@
                 </table>
                 <h3>Public Projects</h3>
                 <table class="table table-striped table-bordered mt-4">
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Created By</th>
-                        <th>Created Date</th>
-                        <th>Last Modified</th>
-                    </tr>
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Created By</th>
+                            <th>Created Date</th>
+                            <th>Last Modified</th>
+                        </tr>
+                    </thead>
                     {% for project in other_projects %}
                         {% if project.is_public %}
                             <tr>

@@ -33,11 +33,11 @@
                                 <a class="dropdown-item"
                                    style="color:black;
                                           font-family: bold"
-                                   href="{% url 'project_requests' %}">Project Requests</a>
+                                   href="{% url 'projects' %}">All Projects</a>
                                 <a class="dropdown-item"
                                    style="color:black;
                                           font-family: bold"
-                                   href="{% url 'projects' %}">Project List</a>
+                                   href="{% url 'project_requests' %}">Manage Requests</a>
                             </div>
                         {% else %}
                             <a class="nav-link" style="color:black;" href="{% url 'projects' %}">Projects</a>
@@ -80,11 +80,11 @@
                             <a class="dropdown-item"
                                style="color:black;
                                       font-family: bold"
-                               href="{% url 'user_requests' %}">Role Requests</a>
+                               href="{% url 'user_groups' %}">All User Roles</a>
                             <a class="dropdown-item"
                                style="color:black;
                                       font-family: bold"
-                               href="{% url 'user_groups' %}">All User Roles</a>
+                               href="{% url 'user_requests' %}">Role Requests</a>
                         </div>
                     </li>
                 {% endif %}
@@ -132,4 +132,16 @@
         {% endif %}
     </div>
 </nav>
+
+<script>
+    $(document).ready(function () {
+        $('.dropdown').hover(function () {
+            $(this).addClass('show');
+            $(this).find('.dropdown-menu').addClass('show');
+        }, function () {
+            $(this).removeClass('show');
+            $(this).find('.dropdown-menu').removeClass('show');
+        });
+    });
+</script>
 <!-- <div style="background-image: linear-gradient(90deg,#1CB5E0,#0d0d77);  width: 100%; height: 0.5rem;"></div> -->

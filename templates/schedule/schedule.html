@@ -11,20 +11,7 @@
             </p>
         </div>
 
-        <div class="filter-container" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-            <div class="site-filter" style="flex: 1; margin-right: 10px; text-align: center;">
-                <h2>Filter By Your Site</h2>
-                <form method="post" action="{% url 'site_filter' %}">
-                    {% csrf_token %}
-                    <div>
-                        {{ location_form.location }}  <!-- Use location form -->
-                        <button class="btn btn-primary" style="margin-left: 10px;" type="submit">
-                            <i class="bi bi-filter"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        
+        <div class="filter-container container mt-3" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <div class="exp-search" style="flex: 1; text-align: center; margin-left: 10px;">  <!-- Add margin-left to maintain spacing -->
                 <h2>Search For An Experiment</h2>
                 <form method="post" action="{% url 'search_experiments' %}">
@@ -33,6 +20,19 @@
                         {{ search_form.experiment_name }}  <!-- Use search form -->
                         <button class="btn btn-primary" style="margin-left: 10px;" type="submit">
                             <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="site-filter" style="flex: 1; margin-right: 10px; text-align: center;">
+                <h2>Filter By Your Site</h2>
+                <form method="post" action="{% url 'site_filter' %}">
+                    {% csrf_token %}
+                    <div>
+                        {{ location_form.location }}  <!-- Use location form -->
+                        <button class="btn btn-primary" style="margin-left: 10px;" type="submit">
+                            <i class="bi bi-filter"></i>
                         </button>
                     </div>
                 </form>

@@ -18,6 +18,11 @@
   font-size: 1.2rem;
 }
 
+/* Show the dropdown menu on hover */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
 .dropdown-menu {
   background-color: #326bb3;
 }
