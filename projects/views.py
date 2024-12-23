@@ -52,12 +52,88 @@ def projects(request):
         if str(project.uuid) in requested_uuid.keys():
             requested_uuids.append(project.uuid)
 
+    public_projects = private_projects = []
+
+    for project in other_projects:
+        if project.is_public:
+            public_projects.append(project)
+        else:
+            private_projects.append(project)
+
+    if request.method == "GET":
+        request_form = ProjectRequestForm()
+        join_form = ProjectJoinForm()
+    else:
+        if 'create-project' in request.POST:
+            form = ProjectRequestForm(
+                request.POST,
+                initial={"project_members": request.user, "project_owners": request.user},
+            )
+            if form.is_valid():
+                # create new project request
+                project_request = create_new_project_request(request, form)
+
+                # initialize email message to admin team members
+                """ subject = (
+                    "[DISCOVER] User: "
+                    + request.user.display_name
+                    + " has requested project: "
+                    + project_request
+                )
+                body_message = form.cleaned_data["description"]
+                sender = request.user
+                receivers = []
+
+                site_admins = AerpawUser.objects.filter(
+                    groups__name__in=["site_admin"]
+                ).distinct()
+                for admin in site_admins:
+                    receivers.append(admin)
+
+                reference_note = "Approve new project: " + str(project_request)
+                reference_url = (
+                    "https://" + str(request.get_host()) + "/projects/project_requests"
+                )
+
+                try:
+                    portal_mail(
+                        subject=subject,
+                        body_message=body_message,
+                        sender=sender,
+                        receivers=receivers,
+                        reference_note=reference_note,
+                        reference_url=reference_url,
+                    )
+                    messages.info(
+                        request,
+                        "Success! Request to add project: "
+                        + project_request
+                        + " has been sent",
+                    )
+                except BadHeaderError:
+                    return HttpResponse("Invalid header found.") """
+                return redirect("projects")
+        else:
+            form = ProjectJoinForm(request.POST)
+            if str(dict(JOIN_CHOICES)[form.data["member_type"]]) == "Project Member":
+                member_type = "MEMBER"
+            else:
+                member_type = "OWNER"
+            body_message = form.cleaned_data["message"]
+            create_new_project_membership_request(
+                    request, project_uuid, member_type, body_message
+                )
+
     return render(
         request,
         "projects.html",
         {
+            "request_form": request_form,
+            "join_form": join_form,
             "my_projects": my_projects,
             "other_projects": other_projects,
+            "private_projects": private_projects,
+            "public_projects": public_projects,
             "requested_projects": requested_uuids,
         },
     )
@@ -291,7 +367,6 @@ def project_join(request, project_uuid):
 @user_passes_test(lambda u: u.is_aerpaw_user())
 def project_update(request, project_uuid):
     """
-
     :param request:
     :param project_uuid:
     :return:

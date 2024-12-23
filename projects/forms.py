@@ -94,3 +94,16 @@ class ProjectRequestForm(forms.ModelForm):
     class Meta:
         model = ProjectRequest
         fields = ("name", "description", "is_public")
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter name'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Tell us more about your project...'
+            }),
+            'is_public': forms.CheckboxInput(attrs={
+                'class': 'form-control',
+            })
+        }
